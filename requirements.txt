@@ -1,0 +1,7 @@
+lemmy
+spacy
+pandas
+networkx
+matplotlib
+lxml
+beautifulsoup4
