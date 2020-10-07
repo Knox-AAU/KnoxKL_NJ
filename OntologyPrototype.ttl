@@ -1,13 +1,14 @@
-
-	@prefix knox: <http://www.knoxwhatever.aau.dk/nordjyske/> .
+@prefix knox: <http://www.knoxwhatever.aau.dk/nordjyske/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
+#Defining the knox namespace as an ontology.
 <http://www.knoxwhatever.aau.dk/nordjyske>
 	rdf:type owl:Ontology .
 
+#Class definitions
 knox:Person
 	rdf:type owl:Class ;
 	rdfs:comment "People from the texts"@da-dk .
@@ -19,18 +20,14 @@ knox:Author
 knox:Article
 	rdf:type owl:Class .
 	
-knox:Date
-	rdf:type owl:DatatypeProperty ;
-	rdfs:range xsd:dateTime .
-	
 knox:Location
 	rdf:type owl:Class .
 	
 knox:Media
 	rdf:type owl:Class .
 	
-#knox:Object
-#	rdf:type owl:Class .
+		#knox:Object
+		#	rdf:type owl:Class .
 	
 knox:Organisation
 	rdf:type owl:Class .
@@ -40,6 +37,10 @@ knox:Publisher
 	rdfs:subClassOf knox:Organisation ;
 	rdfs:domain knox:Article .
 
+#Object Properties
+# Object Properties are the relations between classes and should be read as:
+# Domain relation range
+# As an example: "Article isWrittenBy Author"
 knox:isWrittenBy 
 	rdf:type owl:ObjectProperty ;
 	rdfs:domain knox:Article ;
@@ -55,7 +56,7 @@ knox:mentions
 	rdfs:domain knox:Article ;
 	rdfs:range knox:Location ;
 	rdfs:range knox:Person ;
-#	rdfs:range knox:Object ;
+	#	rdfs:range knox:Object ;
 	rdfs:range knox:Date;
 	rdfs:range knox:Organisation .
 
@@ -64,12 +65,22 @@ knox:isPublishedOn
 	rdfs:domain knox:Article ;
 	rdfs:range knox:Media .
 
+#Datatype Properties
+# Datatypes can be defined similarly to the object properties with 
+# both a domain and a range that can be added. 
+# Range here is the definition of the data type, 
+# using the xsd namespace to specify the format of the Datatype
+knox:Date
+	rdf:type owl:DatatypeProperty ;
+	rdfs:range xsd:date .
+
 knox:Link
 	rdf:type owl:DatatypeProperty;
 	rdfs:domain knox:Article;
 	rdfs:range xsd:string .
-#knox:Name
-#	a owl:DatatypeProperty;
-#	rdfs:domain knox:Person;
-#	rdfs:domain knox:Publisher;
-#	rdfs:range xsd:string .
+
+	#knox:Name
+	#	a owl:DatatypeProperty;
+	#	rdfs:domain knox:Person;
+	#	rdfs:domain knox:Publisher;
+	#	rdfs:range xsd:string .
