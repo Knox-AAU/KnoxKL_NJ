@@ -21,3 +21,4 @@ class Test:
         news.load_publications()
 
         assert news.publications[0].publisher == "2._Sektion"
+        assert news.publications[0].__pub_dict__[0]['content']['paragraphs'][0]['value'] == "Text from paragraph"
