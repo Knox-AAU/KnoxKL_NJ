@@ -2,13 +2,13 @@ import lemmy.pipe
 import da_core_news_lg as da
 import spacy
 from spacy import displacy
-import rdfCreator as creator
+#import rdfCreator as creator
 
 nlp = da.load()
 
 # Lemmy lemmatization
-#pipe = lemmy.pipe.load('da')
-#nlp.add_pipe(pipe, after='tagger')
+pipe = lemmy.pipe.load('da')
+nlp.add_pipe(pipe, after='tagger')
 
 # Åse Andersen
 #text = "Anne Lisbeth var som Melk og Blod, ung og fornøiet, deilig at see paa, Tænderne skinnede saa hvide, Øinene saa klare; Foden var let i Dandsen og Sindet endnu mere let! hvad kom der ud af det? - \"Den lede Unge!\" - ja, deilig var han ikke! han blev sat ud til Grøftegraverens Kone, Anne Lisbeth kom paa det grevelige Slot, sad i stadselig Stue med Klæder af Silke og Fløiel; ikke en Vind turde blæse paa hende, Ingen sige hende et haardt Ord, for det havde hun Skade af og det turde hun ikke taale. Hun ammede det grevelige Barn, det var fiint som en Prinds, deiligt som en Engel, hvor elskede hun dette Barn; hendes eget, ja det var i Grøftegraverens Huus, hvor ikke Gryden kogte over, men Munden kogte over, og oftest var der Ingen hjemme, Drengen græd, men hvad Ingen hører det Ingen rører, han græd sig isøvn og i Søvnen føler man ikke til Sult og Tørst, Søvnen er saadan en god Opfindelse; i Aaringer - ja, som Tiden gaaer, skyder Ukrud op, siger man, Anne Lisbeths Dreng skød op, og dog var han sat i Væxten, sagde de; men heelt var han voxet ind i Familien her, de havde faaet Penge derfor, Anne Lisbeth var ham aldeles qvit, hun var Kjøbstadmadame, havde det luunt og godt inde og Hat paa, gik hun ud, men hun gik aldrig til Grøftegraverens, det var saa langt fra Staden og hun havde der heller ikke Noget at gjøre, Drengen var deres og tære sin Kost kunde han, sagde de, Gavn for Føden skulde han gjøre, og saa passede han Mads Jensens røde Ko, han kunde nok røgte og tage sig Noget for."
@@ -22,13 +22,11 @@ text = "Efter med nogle Ord at have dadlet Politiet for, at det, ved at lade en 
 # Do replacement
 #text = text.replace("aa", "å").replace("oe", "ø").replace("ae", "æ").replace("Aa", "Å").replace("Oe", "Ø").replace("Ae", "Æ")
 
-creator.storeRDFTriples([["Subject", "Relation", "Object"]])
-
 doc = nlp(text)
 f = open("./output/output.txt", "w", encoding="utf-8")
-#for tok in doc:
-    #str1 = " ".join(tok._.lemmas)
-    #f.write(tok.text + " - " + tok.dep_ + " - " + tok.ent_type_ + " - lemmy[" + str1 + "], spaCy[" + tok.lemma_ + "]")
-    #f.write("\n")
+for tok in doc:
+    str1 = " ".join(tok._.lemmas)
+    f.write(tok.text + " - " + tok.dep_ + " - " + tok.ent_type_ + " - lemmy[" + str1 + "], spaCy[" + tok.lemma_ + "]")
+    f.write("\n")
 
 #displacy.serve(doc, style="ent")
