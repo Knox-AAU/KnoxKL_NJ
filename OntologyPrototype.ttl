@@ -1,0 +1,75 @@
+
+	@prefix knox: <http://www.knoxwhatever.aau.dk/nordjyske/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.knoxwhatever.aau.dk/nordjyske>
+	rdf:type owl:Ontology .
+
+knox:Person
+	rdf:type owl:Class ;
+	rdfs:comment "People from the texts"@da-dk .
+	
+knox:Author
+	rdf:type owl:Class ;
+	rdfs:subClassOf knox:Person .
+
+knox:Article
+	rdf:type owl:Class .
+	
+knox:Date
+	rdf:type owl:DatatypeProperty ;
+	rdfs:range xsd:dateTime .
+	
+knox:Location
+	rdf:type owl:Class .
+	
+knox:Media
+	rdf:type owl:Class .
+	
+#knox:Object
+#	rdf:type owl:Class .
+	
+knox:Organisation
+	rdf:type owl:Class .
+	
+knox:Publisher
+	rdf:type owl:Class ;
+	rdfs:subClassOf knox:Organisation ;
+	rdfs:domain knox:Article .
+
+knox:isWrittenBy 
+	rdf:type owl:ObjectProperty ;
+	rdfs:domain knox:Article ;
+    rdfs:range knox:Author .
+
+knox:isPublishedBy 
+	rdf:type owl:ObjectProperty ;
+	rdfs:domain knox:Article ;
+    rdfs:range knox:Publisher .
+
+knox:mentions
+	rdf:type owl:ObjectProperty ;
+	rdfs:domain knox:Article ;
+	rdfs:range knox:Location ;
+	rdfs:range knox:Person ;
+#	rdfs:range knox:Object ;
+	rdfs:range knox:Date;
+	rdfs:range knox:Organisation .
+
+knox:isPublishedOn
+	rdf:type owl:ObjectProperty ;
+	rdfs:domain knox:Article ;
+	rdfs:range knox:Media .
+
+knox:Link
+	rdf:type owl:DatatypeProperty;
+	rdfs:domain knox:Article;
+	rdfs:range xsd:string .
+#knox:Name
+#	a owl:DatatypeProperty;
+#	rdfs:domain knox:Person;
+#	rdfs:domain knox:Publisher;
+#	rdfs:range xsd:string .
