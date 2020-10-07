@@ -44,8 +44,12 @@
             "publishedAt": "2018-03-26T22:59:23+02:00",
             "publisher": "Nordjyske Medier",
             "publication": "2. Sektion",
-            "title": "sample data title",
+            "title": "sample data title 1",
             "paragraphs": [
+                {
+                    "kind": "paragraph",
+                    "value": "Text from paragraph"
+                },
                 {
                     "kind": "paragraph",
                     "value": "Text from paragraph"
