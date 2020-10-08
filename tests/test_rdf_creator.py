@@ -1,4 +1,4 @@
-from rdf.RdfCreator import generateBlankNode, generateLiteral, generateUriReference, generateRelation, storeRDFTriples
+from rdf.RdfCreator import generateBlankNode, generateLiteral, generateUriReference, generateRelation, storeRDFTriples, __calculateFileExtention__
 from rdflib import BNode
 from rdf.RdfConstants import RelationTypeConstants as rConst
 from environment.EnvironmentConstants import EnvironmentConstants as ec
@@ -150,10 +150,23 @@ def test_store_rdf_triples():
     else:
         assert True
     
-    expected_path = os.path.abspath(output_path + file_name) 
+    expected_path = os.path.abspath(output_path + file_name + ".ttl") 
     assert os.path.exists(expected_path)
     assert os.path.isfile(expected_path)
 
     # Clean up
     if os.path.exists(expected_path):
         os.remove(expected_path)
+
+def test_calculate_file_extension():
+    format = "turtle"
+    expected = ".ttl"
+    result = __calculateFileExtention__(format)
+
+    assert result.__eq__(expected)
+
+    format = "flah"
+    expected = ""
+    result = __calculateFileExtention__(format)
+
+    assert result.__eq__(expected)
