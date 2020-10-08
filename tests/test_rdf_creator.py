@@ -141,7 +141,7 @@ def test_store_rdf_triples():
     test_triples.append([generateUriReference("TestXSD"), generateRelation(rConst.XSD_DATE_TIME), generateLiteral(datetime.now())])
 
     output_path = ec().getRDFOutputFolder()
-    file_name = "TesterFile"
+    file_name = "TesterFilexyzwasd"
 
     try:
         storeRDFTriples(test_triples, file_name)
@@ -157,4 +157,3 @@ def test_store_rdf_triples():
     # Clean up
     if os.path.exists(expected_path):
         os.remove(expected_path)
-        os.rmdir(os.path.abspath(output_path))
