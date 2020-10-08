@@ -19,24 +19,33 @@ knox:Author
 
 knox:Article
 	rdf:type owl:Class .
-	
+#ID
+#title
 knox:Location
 	rdf:type owl:Class .
 	
 knox:Media
 	rdf:type owl:Class .
-	
-		#knox:Object
-		#	rdf:type owl:Class .
-	
+
+knox:Date
+	a owl:Class .
+		
 knox:Organisation
-	rdf:type owl:Class .
+	a owl:Class .
 	
 knox:Publisher
-	rdf:type owl:Class ;
-	rdfs:subClassOf knox:Organisation ;
+	a owl:Class ;
 	rdfs:domain knox:Article .
 
+knox:Publication
+	a owl:Class .
+
+#knox:Object
+		#	rdf:type owl:Class .
+	
+
+	
+	
 #Object Properties
 # Object Properties are the relations between classes and should be read as:
 # Domain relation range
@@ -49,7 +58,8 @@ knox:isWrittenBy
 knox:isPublishedBy 
 	rdf:type owl:ObjectProperty ;
 	rdfs:domain knox:Article ;
-    rdfs:range knox:Publisher .
+	rdfs:range knox:Publication .
+#    rdfs:range knox:Publisher .
 
 knox:mentions
 	rdf:type owl:ObjectProperty ;
@@ -65,22 +75,45 @@ knox:isPublishedOn
 	rdfs:domain knox:Article ;
 	rdfs:range knox:Media .
 
+knox:publishes
+	a owl:ObjectProperty ;
+	rdfs:domain knox:Publisher ;
+	rdfs:range knox:Publication .
 #Datatype Properties
 # Datatypes can be defined similarly to the object properties with 
 # both a domain and a range that can be added. 
 # Range here is the definition of the data type, 
 # using the xsd namespace to specify the format of the Datatype
-knox:Date
-	rdf:type owl:DatatypeProperty ;
+knox:Email
+	a owl:DatatypeProperty ;
+	rdfs:domain knox:Author ;
+	rdfs:range xsd:string .
+
+knox:DateMention
+	a owl:DatatypeProperty ;
+	rdfs:domain knox:Date ;
 	rdfs:range xsd:date .
 
 knox:Link
-	rdf:type owl:DatatypeProperty;
-	rdfs:domain knox:Article;
+	rdf:type owl:DatatypeProperty ;
+	rdfs:domain knox:Article ;
 	rdfs:range xsd:string .
 
-	#knox:Name
-	#	a owl:DatatypeProperty;
-	#	rdfs:domain knox:Person;
-	#	rdfs:domain knox:Publisher;
-	#	rdfs:range xsd:string .
+knox:Name
+	a owl:DatatypeProperty ;
+	rdfs:domain knox:Person ;
+	rdfs:domain knox:Publisher ;
+	rdfs:domain knox:Publication ;
+	rdfs:domain knox:Location ;
+	rdfs:domain knox:Organisation ;
+	rdfs:range xsd:string .
+
+knox:PublicationDate
+	a owl:DatatypeProperty ;
+	rdfs:domain knox:Article ;
+	rdfs:range xsd:dateTime .
+
+knox:ArticleTitle
+	a owl:DatatypeProperty ;
+	rdfs:domain knox:Article ;
+	rdfs:range xsd:string .
