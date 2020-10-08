@@ -1,6 +1,7 @@
 from rdflib import Graph, Literal, URIRef, BNode
 from rdflib.namespace import RDFS, OWL, RDF as Rdf, XSD
 from environment.EnvironmentConstants import EnvironmentConstants as ec
+import os
 
 def storeRDFTriples(rdfTriples, output_file_name = ec().getOutputFileName()):
     """
@@ -26,9 +27,13 @@ def storeRDFTriples(rdfTriples, output_file_name = ec().getOutputFileName()):
 
     # Print it
     #print("--------- PRINT THE KNOWLEDGE ---------")
-    output_format = ec().getTripleOutputFormat() #os.environ.get("OUTPUT_FORMAT")
+    output_format = ec().getTripleOutputFormat()
     destination_folder = ec().getRDFOutputFolder()
-    g.serialize(format=output_format, encoding="utf-8", destination=destination_folder + output_file_name)
+    # Check if output folder already exist, create it if not
+    if not os.path.exists(os.path.abspath(destination_folder)):
+        os.mkdir(os.path.abspath(destination_folder))
+    temp = destination_folder + output_file_name
+    g.serialize(format=output_format, encoding="utf-8", destination=temp)
 
 def generateBlankNode():
     """
