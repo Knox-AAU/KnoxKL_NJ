@@ -1,7 +1,7 @@
 from rdf.RdfCreator import generateBlankNode, generateLiteral, generateUriReference, generateRelation, storeRDFTriples
 from rdflib import BNode
 from rdf.RdfConstants import RelationTypeConstants as rConst
-from env.EnvironmentConstants import EnvironmentConstants as ec
+from environment.EnvironmentConstants import EnvironmentConstants as ec
 import os
 from datetime import datetime
 

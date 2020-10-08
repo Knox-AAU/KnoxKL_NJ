@@ -1,6 +1,6 @@
 from rdflib import Graph, Literal, URIRef, BNode
 from rdflib.namespace import RDFS, OWL, RDF as Rdf, XSD
-from env.EnvironmentConstants import EnvironmentConstants as ec
+from environment.EnvironmentConstants import EnvironmentConstants as ec
 
 def storeRDFTriples(rdfTriples, output_file_name = ec().getOutputFileName()):
     """
