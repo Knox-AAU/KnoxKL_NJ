@@ -6,3 +6,5 @@ matplotlib
 lxml
 beautifulsoup4
 pytest
+python-dotenv
+rdflib

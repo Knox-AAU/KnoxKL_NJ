@@ -1,28 +1,36 @@
 from rdflib import Graph, Literal, URIRef, BNode
-from rdflib.namespace import RDFS, OWL, RDF as rdf, XSD
-from dotenv import load_dotenv
-import os
-from RdfConstants import RelationTypeConstants as rConst
+from rdflib.namespace import RDFS, OWL, RDF as Rdf, XSD
+from env.EnvironmentConstants import EnvironmentConstants as ec
 
-def storeRDFTriples(rdfTriples):
-    load_dotenv()
+def storeRDFTriples(rdfTriples, output_file_name = ec().getOutputFileName()):
+    """
+    Input:
+        rdfTriples: list of RDF triples with correct type - List containing triples on the form (Subject, RelationPredicate, Object).
+        output_file_name: str - The Name of the outputted file
+    
+    Takes in a list of RDF triples and parse them into a ready RDF format.
+    The format and output folder of the files are dependent of the configation of the .env file
+    
+    """
     # Get the "graph" in order to contain the rdfTriples
     g = Graph()
     
     for sub, rel, obj in rdfTriples:
         g.add((sub, rel, obj))
-
+    
     # Bind namespaces to aliases
-    g.bind("rdf", rdf)
+    g.bind("rdf", Rdf)
     g.bind("owl", OWL)
     g.bind("rdfs", RDFS)
     g.bind("xsd", XSD)
 
     # Print it
     #print("--------- PRINT THE KNOWLEDGE ---------")
-    g.serialize(format="turtle", encoding="utf-8", destination=os.environ.get("RDF_OUTPUT_FOLDER") + "testTurtle")
+    output_format = ec().getTripleOutputFormat() #os.environ.get("OUTPUT_FORMAT")
+    destination_folder = ec().getRDFOutputFolder()
+    g.serialize(format=output_format, encoding="utf-8", destination=destination_folder + output_file_name)
 
-def createBlankNode():
+def generateBlankNode():
     """
     Returns:
         A new instance of RDF class BNode (blank node)
@@ -77,22 +85,16 @@ def generateRelation(relationTypeConstant):
     Returns:
         A relation predicate for the correct type as specified in relationTypeConstants:
     Raises:
-        Exception - If <type> has not been defined in the function
+        Exception - If <relationTypeConstant> has not been defined in the function
     """
     relType, relValue = relationTypeConstant.split(":")
     if relType == "rdf":
-        return rdf.term(relValue)
-    if relType == "rdfs":
+        return Rdf.term(relValue)
+    elif relType == "rdfs":
         return RDFS.term(relValue)
-
-    raise Exception("Relation namespace: " + relType + " not defined in RdfConstants. Input was: " + relationTypeConstant)
-
-
-load_dotenv()
-rdfTriples = [[generateUriReference(os.environ.get("KNOX_18_NAMESPACE"), ["person"], "Bob"), generateRelation(rConst.TYPE), generateUriReference("Object")]]
-rdfTriples.append([generateUriReference(os.environ.get("KNOX_18_NAMESPACE"), ["person", "important", "localhero"], "BobTheMan"), generateRelation(rConst.LABEL), generateLiteral("Hero")])
-rdfTriples.append([generateUriReference("Test1"), generateRelation(rConst.COMMENT), generateLiteral("COMMENT")])
-rdfTriples.append([generateUriReference("Test2"), generateRelation(rConst.PROPERTY), generateLiteral("PROPERTY")])
-#[[URIRef(os.environ.get("KNOX_18_NAMESPACE") + "person/Bob"), rdf.term("type"), URIRef("Object")]]
-storeRDFTriples(rdfTriples)
-#print(dic.lookup(rdfsC.RESOURCE.value))
+    elif relType == "owl":
+        return OWL.term(relValue)
+    elif relType == "xsd":
+        return XSD.term(relValue)
+    else:
+        raise Exception("Relation namespace: " + relType + " not defined in RdfConstants. Input was: " + relationTypeConstant)
