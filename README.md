@@ -17,10 +17,13 @@ In the root of the project a ".env" file should be created.
 This contains all the environment/configuration values for the python program.
 In the ".env" the variables are defined as so:  
 variable="value"  
-An example is: RDF_OUTPUT_FOLDER="./output/"
+An example is: RDF_OUTPUT_FOLDER="./rdf_output/"
 | Variables  | Description  |
 |--:|:--|
-| RDF_OUTPUT_FOLDER | The relative path (from project root) or absolute path to where the outputted RDF file will be created, need to be suffixed with an "/"  |
+| INPUT_DIRECTORY | The relative path (from project root) or absolute path to where the publication files are located, need to be suffixed with an `/` |
+| OUTPUT_DIRECTORY | The relative path (from project root) or absolute path to where the processed publications will be moved, need to be suffixed with an `/` |
+| ERROR_DIRECTORY | The relative path (from project root) or absolute path to where the files raising an exception will be moved, need to be suffixed with an `/` |
+| RDF_OUTPUT_FOLDER | The relative path (from project root) or absolute path to where the outputted RDF file will be created, need to be suffixed with an `/`  |
 | KNOX_18_NAMESPACE | The base namespace url resources from the Knox project  |
 | OUTPUT_FORMAT | The format for the generated RDF file, example is "turtle", possible formats can be found at "https://rdflib.readthedocs.io/en/stable/plugin_parsers.html"  |
 | OUTPUT_FILE_NAME | The file name of the RDF output  |

@@ -1,9 +1,9 @@
 import knox_util, os
 import shutil
 
+from environment.EnvironmentConstants import EnvironmentConstants as ec
 from loader.JsonLoader import NewsStruct
 
-@knox_util.background_process
 def process_existing(path: str) -> None:
     """
     Input:
@@ -19,14 +19,18 @@ def process_existing(path: str) -> None:
         return
 
     for path in paths:
-        # Process files here
-        news = NewsStruct(path)
-        news.load_publications()
         
-        # Simulated finished
-        shutil.move(src=path, dst=path.replace('input', 'output'))
+        # Process files here
         split_path = os.path.split(path)
 
-        print(f'Finished processing \'{split_path[-1]}\'')
+        try:
+            news = NewsStruct(path)
+            news.load_publications()
 
+            shutil.move(src=path, dst=f'{ec().get_value(ec().OUTPUT_DIRECTORY)}{split_path[-1]}')
+        except:
+            shutil.move(src=path, dst=f'{ec().get_value(ec().ERROR_DIRECTORY)}{split_path[-1]}')
+
+
+    # Simulated finished
     

@@ -41,6 +41,7 @@ class NewsStruct:
 
         self.__json__ = sorted(self.__json__, key=lambda item: (
             item['content']['publication'], item['content']['page']))
+        
 
     def load_publications(self) -> None:
         """

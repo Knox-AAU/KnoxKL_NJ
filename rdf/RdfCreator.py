@@ -3,7 +3,7 @@ from rdflib.namespace import RDFS, OWL, RDF as Rdf, XSD
 from environment.EnvironmentConstants import EnvironmentConstants as ec
 import os
 
-def storeRDFTriples(rdfTriples, output_file_name = ec().getOutputFileName()):
+def store_rdf_triples(rdfTriples, output_file_name = ec().get_ouput_file_name(), destination_folder = ec().get_rdf_output_folder(), output_format = ec().get_triple_output_format()):
     """
     Input:
         rdfTriples: list of RDF triples with correct type - List containing triples on the form (Subject, RelationPredicate, Object).
@@ -27,8 +27,7 @@ def storeRDFTriples(rdfTriples, output_file_name = ec().getOutputFileName()):
 
     # Print it
     #print("--------- PRINT THE KNOWLEDGE ---------")
-    output_format = ec().getTripleOutputFormat()
-    destination_folder = ec().getRDFOutputFolder()
+    
     # Check if output folder already exist, create it if not
     if not os.path.exists(os.path.abspath(destination_folder)):
         os.mkdir(os.path.abspath(destination_folder))
@@ -36,7 +35,7 @@ def storeRDFTriples(rdfTriples, output_file_name = ec().getOutputFileName()):
     file_extention = __calculateFileExtention__(output_format)
     g.serialize(format=output_format, encoding="utf-8", destination=destination_folder + output_file_name + file_extention)
 
-def generateBlankNode():
+def generate_blank_node():
     """
     Returns:
         A new instance of RDF class BNode (blank node)
@@ -47,7 +46,7 @@ def generateBlankNode():
     """
     return BNode()
 
-def generateLiteral(value):
+def generate_literal(value):
     """
     Input:
         value: A Python primitive type - The value to be associated with the resulting RDF Literal Node for the graph
@@ -58,7 +57,7 @@ def generateLiteral(value):
     """
     return Literal(value)
 
-def generateUriReference(namespace, sub_uri_list = [], ref = ""):
+def generate_uri_reference(namespace, sub_uri_list = [], ref = ""):
     """
     Input:
         namespace: str - The base namespace for the resource URL
@@ -84,7 +83,7 @@ def generateUriReference(namespace, sub_uri_list = [], ref = ""):
     reference_str += ref
     return URIRef(reference_str)
 
-def generateRelation(relationTypeConstant):
+def generate_relation(relationTypeConstant):
     """
     Input:
         relationTypeConstants - str - A string formatted in the form of <type>:<name> used in RdfConstants
