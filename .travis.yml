@@ -1,12 +1,13 @@
 language: python
+python: 3.8
 
 jobs:
   include:
     - name: "Python 3.8.0 on Xenial Linux"
-      python: 3.8
+      os: linux
     - name: "Python 3.8.0 on Windows"
       os: windows
-      language: shell
+      language: sh
       before_install:
         - choco install python --version 3.8.0
         - python -m pip install --upgrade pip
