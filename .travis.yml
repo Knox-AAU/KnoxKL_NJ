@@ -1,20 +1,16 @@
 language: python
-python: 3.8
 
 matrix:
   include:
     - name: "Python 3.8.0 on Xenial Linux"
       os: linux
+      python: 3.8
     - name: "Python 3.8.0 on Windows"
       os: windows
-      language: sh
+      language: shell
       before_install:
-        - git clone https://github.com/pyenv-win/pyenv-win.git $HOME/.pyenv
-        - export PATH="$HOME/.pyenv/pyenv-win/bin:$HOME/.pyenv/pyenv-win/shims:$PATH"
-        - pyenv install -q 3.8.2
-        - pyenv rehash
-        - pyenv local 3.8.2
-        - python --version
+        - choco install python --version 3.8
+        - python -m pip install --upgrade pip
       env: PATH=$(pwd):/c/Python38:/c/Python38/Scripts:$PATH
 before_install:
   - "export PYTHONPATH=$PYTHONPATH:$(pwd)"
