@@ -2,10 +2,10 @@ from dotenv import load_dotenv
 import os
 
 class Singleton:
-    '''
+    """
     Basic Singleton class that can be inherited from for creating classes in the singleton pattern.
     Allows only for a single instance of the class to exist at a time
-    '''
+    """
     _shared_state = {}
     def __init__(self):
         self.__dict__ = self._shared_state
