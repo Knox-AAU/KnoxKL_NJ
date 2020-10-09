@@ -2,9 +2,11 @@ import lemmy.pipe
 import da_core_news_lg as da
 import spacy
 from spacy import displacy
+#import rdfCreator as creator
 
 nlp = da.load()
 
+# Lemmy lemmatization
 pipe = lemmy.pipe.load('da')
 nlp.add_pipe(pipe, after='tagger')
 
@@ -27,4 +29,4 @@ for tok in doc:
     f.write(tok.text + " - " + tok.dep_ + " - " + tok.ent_type_ + " - lemmy[" + str1 + "], spaCy[" + tok.lemma_ + "]")
     f.write("\n")
 
-displacy.serve(doc, style="ent")
+#displacy.serve(doc, style="ent")
