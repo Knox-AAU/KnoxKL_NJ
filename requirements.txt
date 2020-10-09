@@ -1,9 +1,0 @@
-lemmy
-spacy
-pandas
-networkx
-matplotlib
-lxml
-beautifulsoup4
-pytest
-watchdog
