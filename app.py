@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import platform
 
-assert platform.python_version_tuple()[1] == '8'
+assert platform.python_version_tuple()[1] == '8', 'This script requires python 3.8.x in order to run properly'
 
 from loader import process_existing
 import asyncio
