@@ -7,6 +7,15 @@ from operator import itemgetter
 
 
 def load_json(json_path: str) -> NewsStruct:
+    """
+    Input:
+        json_path: str - The path to the json news struct
+    
+    Returns:
+        A news struct
+    
+    This function creates and loads a news struct into memort
+    """
     return NewsStruct(json_path)
 
 
@@ -66,6 +75,12 @@ class NewsStruct:
                 self.articles.append(article)
 
     def __repr__(self):
+        """
+        Returns:
+            A string representation of object
+
+        Equivalent of toString()
+        """
         return str({
             "publications": str(self.publications),
             "articles": str(self.articles)
@@ -93,6 +108,12 @@ class Publication:
             self.articles.append(Article(article_dict))
 
     def __repr__(self):
+        """
+        Returns:
+            A string representation of object
+
+        Equivalent of toString()
+        """
         return str({"publisher": self.publisher, "articles": self.articles})
 
 
@@ -114,4 +135,10 @@ class Article:
             [value['value'] for value in article_dict['content']['paragraphs']])
 
     def __repr__(self):
+        """
+        Returns:
+            A string representation of object
+
+        Equivalent of toString()
+        """
         return str({"title": self.title, "content": self.content})

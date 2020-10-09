@@ -19,11 +19,20 @@ class FileWatcher:
     __watch_dir__: str = "DOES NOT EXIST"
 
     def __init__(self, path: str):
+        """
+        Input:
+            path: str - The directory to watch
+
+        Constructor for the file watcher
+        """
         self.observer = Observer()
         self.__watch_dir__ = path
 
     def run(self, handler):
         """
+        Input: 
+            handler: Handler - The event handler to handle directory changes
+        
         Runnable method that starts the watcher.
         """
 
