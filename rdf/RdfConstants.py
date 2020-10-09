@@ -1,6 +1,9 @@
 import enum
 
 class RelationTypeConstants(str, enum.Enum):
+    """
+    Enumeration containing the constant values for the different relations and their types that is used in the ontology
+    """
     # RDFS
     RDFS_RESOURCE = "rdfs:Resource"
     RDFS_CLASS = "rdfs:Class"
