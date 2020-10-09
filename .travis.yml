@@ -1,19 +1,15 @@
 language: python
-
-matrix:
+jobs:
   include:
     - name: "Python 3.8.0 on Xenial Linux"
-      os: linux
       python: 3.8
     - name: "Python 3.8.0 on Windows"
       os: windows
       language: shell
       before_install:
-        - choco install python --version 3.8
+        - choco install python --version 3.8.0
         - python -m pip install --upgrade pip
-      env: PATH=$(pwd):/c/Python38:/c/Python38/Scripts:$PATH
-before_install:
-  - "export PYTHONPATH=$PYTHONPATH:$(pwd)"
+      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
 install:
   - mkdir logs
   - echo "" >> logs/pytest-logs.txt
