@@ -10,8 +10,9 @@ jobs:
       before_install:
         - choco install python --version 3.8.0
         - python -m pip install --upgrade pip
-      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
-
+      env: PATH=$(pwd):/c/Python38:/c/Python38/Scripts:$PATH
+before_install:
+  - "export PYTHONPATH=$PYTHONPATH:$(pwd)"
 install:
   - mkdir logs
   - echo "" >> logs/pytest-logs.txt
