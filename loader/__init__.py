@@ -1,4 +1,5 @@
 import knox_util, os
+import shutil
 
 from loader.JsonLoader import NewsStruct
 
@@ -22,3 +23,10 @@ def process_existing(path: str) -> None:
         news = NewsStruct(path)
         news.load_publications()
         
+        # Simulated finished
+        shutil.move(src=path, dst=path.replace('input', 'output'))
+        split_path = os.path.split(path)
+
+        print(f'Finished processing \'{split_path[-1]}\'')
+
+    
