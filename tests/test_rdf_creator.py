@@ -1,172 +1,178 @@
-from rdf.RdfCreator import generateBlankNode, generateLiteral, generateUriReference, generateRelation, storeRDFTriples, __calculateFileExtention__
+from rdf.RdfCreator import generate_blank_node, generate_literal, generate_uri_reference, generate_relation, store_rdf_triples, __calculateFileExtention__
 from rdflib import BNode
 from rdf.RdfConstants import RelationTypeConstants as rConst
-from environment.EnvironmentConstants import EnvironmentConstants as ec
 import os
 from datetime import datetime
 
-def test_generate_BNode():
-    result = generateBlankNode()
+class Test:
+
     
-    assert result != None
-    assert isinstance(result, BNode)
+    output_path = './test/output'
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
 
-def test_generate_literal_number_positive():
-    number = 10
-    result = generateLiteral(number)
+    def test_generate_BNode(self):
+        result = generate_blank_node()
 
-    assert result.isdigit()
-    assert result.eq(number)
+        assert result != None
+        assert isinstance(result, BNode)
 
-def test_generate_literal_number_zero():
-    number = 0
-    result = generateLiteral(number)
+    def test_generate_literal_number_positive(self):
+        number = 10
+        result = generate_literal(number)
 
-    assert result.isdigit()
-    assert result.eq(number)
+        assert result.isdigit()
+        assert result.eq(number)
 
-def test_generate_literal_number_negative():
-    number = -7
-    result = generateLiteral(number)
+    def test_generate_literal_number_zero(self):
+        number = 0
+        result = generate_literal(number)
 
-    try:
-        int(result)
-    except ValueError:
-        assert False
-    else:
-        assert True
-    assert result.eq(number)
+        assert result.isdigit()
+        assert result.eq(number)
 
-def test_generate_literal_string():
-    string = "testing"
-    result = generateLiteral(string)
+    def test_generate_literal_number_negative(self):
+        number = -7
+        result = generate_literal(number)
 
-    assert result.isidentifier()
-    assert result.eq(string)
+        try:
+            int(result)
+        except ValueError:
+            assert False
+        else:
+            assert True
+        assert result.eq(number)
 
-    string = "10"
-    result = generateLiteral(string)
+    def test_generate_literal_string(self):
+        string = "testing"
+        result = generate_literal(string)
 
-    assert result.isalnum()
-    assert result.eq(string)
+        assert result.isidentifier()
+        assert result.eq(string)
 
-def test_generate_literal_decimal_positive():
-    decimal = 1.5
-    result = generateLiteral(decimal)
-    
-    try:
-        float(decimal)
-    except ValueError:
-        assert False
-    else:
-        assert True
-    assert result.eq(decimal)
+        string = "10"
+        result = generate_literal(string)
 
-def test_generate_literal_decimal_zero():
-    decimal = 0.0
-    result = generateLiteral(decimal)
+        assert result.isalnum()
+        assert result.eq(string)
 
-    try:
-        float(decimal)
-    except ValueError:
-        assert False
-    else:
-        assert True
-    assert result.eq(decimal)
+    def test_generate_literal_decimal_positive(self):
+        decimal = 1.5
+        result = generate_literal(decimal)
 
-def test_generate_literal_decimal_negative():
-    decimal = -7.92
-    result = generateLiteral(decimal)
+        try:
+            float(decimal)
+        except ValueError:
+            assert False
+        else:
+            assert True
+        assert result.eq(decimal)
 
-    try:
-        float(result)
-    except ValueError:
-        assert False
-    else:
-        assert True
+    def test_generate_literal_decimal_zero(self):
+        decimal = 0.0
+        result = generate_literal(decimal)
 
-    assert result.eq(decimal)
+        try:
+            float(decimal)
+        except ValueError:
+            assert False
+        else:
+            assert True
+        assert result.eq(decimal)
 
-def test_generate_uri_ref():
-    namespace_string = "http://www.example.org/"
-    sub_uri_list = ["FirstUri", "SecondUri", "ThridUri"]
-    ref_string = "TestRef"
+    def test_generate_literal_decimal_negative(self):
+        decimal = -7.92
+        result = generate_literal(decimal)
 
-    result = generateUriReference(namespace_string)
-    
-    assert result.toPython() == namespace_string
+        try:
+            float(result)
+        except ValueError:
+            assert False
+        else:
+            assert True
 
-    result = generateUriReference(namespace_string, ref=ref_string)
-    expected = namespace_string + ref_string
-    assert result.toPython() == expected
+        assert result.eq(decimal)
 
-    result = generateUriReference(namespace_string, sub_uri_list)
-    expected = namespace_string + sub_uri_list[0] + "/" + sub_uri_list[1] + "/" + sub_uri_list[2] + "/"
-    assert result.toPython() == expected
+    def test_generate_uri_ref(self):
+        namespace_string = "http://www.example.org/"
+        sub_uri_list = ["FirstUri", "SecondUri", "ThridUri"]
+        ref_string = "TestRef"
 
-    result = generateUriReference(namespace_string, sub_uri_list, ref_string)
-    expected = expected = namespace_string + sub_uri_list[0] + "/" + sub_uri_list[1] + "/" + sub_uri_list[2] + "/" + ref_string
-    assert result.toPython() == expected
+        result = generate_uri_reference(namespace_string)
 
-def test_generate_relation():
-    try:
-        generateRelation("badStringFormat")
-    except Exception:
-        assert True
-    else:
-        assert False
-    
-    try:
-        generateRelation("flyff:UnknownTypeTest")
-    except Exception:
-        assert True
-    else:
-        assert False
-    
-    test_relation = rConst.RDF_SEQ
-    result = generateRelation(test_relation)
-    split = test_relation.split(":")
+        assert result.toPython() == namespace_string
 
-    assert result.toPython().__contains__(split[0])
-    assert result.toPython().__contains__(split[1])
+        result = generate_uri_reference(namespace_string, ref=ref_string)
+        expected = namespace_string + ref_string
+        assert result.toPython() == expected
+
+        result = generate_uri_reference(namespace_string, sub_uri_list)
+        expected = namespace_string + sub_uri_list[0] + "/" + sub_uri_list[1] + "/" + sub_uri_list[2] + "/"
+        assert result.toPython() == expected
+
+        result = generate_uri_reference(namespace_string, sub_uri_list, ref_string)
+        expected = expected = namespace_string + sub_uri_list[0] + "/" + sub_uri_list[1] + "/" + sub_uri_list[2] + "/" + ref_string
+        assert result.toPython() == expected
+
+    def test_generate_relation(self):
+        try:
+            generate_relation("badStringFormat")
+        except Exception:
+            assert True
+        else:
+            assert False
+
+        try:
+            generate_relation("flyff:UnknownTypeTest")
+        except Exception:
+            assert True
+        else:
+            assert False
+
+        test_relation = rConst.RDF_SEQ
+        result = generate_relation(test_relation)
+        split = test_relation.split(":")
+
+        assert result.toPython().__contains__(split[0])
+        assert result.toPython().__contains__(split[1])
 
 
-def test_store_rdf_triples():
-    test_triples = []
-    test_triples.append([generateUriReference(ec().getKnox18Namespace(), ["person"], "Bob"), generateRelation(rConst.RDF_TYPE), generateUriReference("Object")])
-    test_triples.append([generateUriReference(ec().getKnox18Namespace(), ["person", "important", "localhero"], "BobTheMan"), generateRelation(rConst.RDFS_LABEL), generateLiteral("Hero")])
-    test_triples.append([generateUriReference("Test1"), generateRelation(rConst.RDFS_COMMENT), generateLiteral("COMMENT")])
-    test_triples.append([generateUriReference("Test2"), generateRelation(rConst.RDF_PROPERTY), generateLiteral("PROPERTY")])
-    test_triples.append([generateUriReference("TestOwl"), generateRelation(rConst.OWL_INVERSE_OF), generateLiteral(10)])
-    test_triples.append([generateUriReference("TestXSD"), generateRelation(rConst.XSD_DATE_TIME), generateLiteral(datetime.now())])
+    def test_store_rdf_triples(self):
+        test_triples = []
+        test_triples.append([generate_uri_reference("knox18", ["person"], "Bob"), generate_relation(rConst.RDF_TYPE), generate_uri_reference("Object")])
+        test_triples.append([generate_uri_reference("knox18", ["person", "important", "localhero"], "BobTheMan"), generate_relation(rConst.RDFS_LABEL), generate_literal("Hero")])
+        test_triples.append([generate_uri_reference("Test1"), generate_relation(rConst.RDFS_COMMENT), generate_literal("COMMENT")])
+        test_triples.append([generate_uri_reference("Test2"), generate_relation(rConst.RDF_PROPERTY), generate_literal("PROPERTY")])
+        test_triples.append([generate_uri_reference("TestOwl"), generate_relation(rConst.OWL_INVERSE_OF), generate_literal(10)])
+        test_triples.append([generate_uri_reference("TestXSD"), generate_relation(rConst.XSD_DATE_TIME), generate_literal(datetime.now())])
 
-    output_path = ec().getRDFOutputFolder()
-    file_name = "TesterFilexyzwasd"
+        
+        file_name = "TesterFilexyzwasd"
 
-    try:
-        storeRDFTriples(test_triples, file_name)
-    except Exception:
-        assert False
-    else:
-        assert True
-    
-    expected_path = os.path.abspath(output_path + file_name + ".ttl") 
-    assert os.path.exists(expected_path)
-    assert os.path.isfile(expected_path)
+        try:
+            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle')
+        except Exception:
+            assert False
+        else:
+            assert True
 
-    # Clean up
-    if os.path.exists(expected_path):
-        os.remove(expected_path)
+        expected_path = os.path.abspath(self.output_path + file_name + ".ttl") 
+        assert os.path.exists(expected_path)
+        assert os.path.isfile(expected_path)
 
-def test_calculate_file_extension():
-    format = "turtle"
-    expected = ".ttl"
-    result = __calculateFileExtention__(format)
+        # Clean up
+        if os.path.exists(expected_path):
+            os.remove(expected_path)
 
-    assert result.__eq__(expected)
+    def test_calculate_file_extension(self):
+        format = "turtle"
+        expected = ".ttl"
+        result = __calculateFileExtention__(format)
 
-    format = "flah"
-    expected = ""
-    result = __calculateFileExtention__(format)
+        assert result.__eq__(expected)
 
-    assert result.__eq__(expected)
+        format = "flah"
+        expected = ""
+        result = __calculateFileExtention__(format)
+
+        assert result.__eq__(expected)

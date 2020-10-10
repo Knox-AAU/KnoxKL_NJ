@@ -1,5 +1,5 @@
 
-from preprocessor import PreProcessor
+from preproc import PreProcessor
 import spacy
 
 class Test:
