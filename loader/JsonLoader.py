@@ -36,7 +36,7 @@ class NewsStruct:
 
         Loads the json file into the class as a dictionary, on the property json.
         """
-        with open(json_path, "r") as json_file:
+        with open(json_path, "r", encoding="utf-8") as json_file:
             self.__json__ = json.load(json_file)
 
         self.__json__ = sorted(self.__json__, key=lambda item: (
