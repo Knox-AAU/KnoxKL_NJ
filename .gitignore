@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+hidden.py
+logs/
+input/
+output/
+err/
+
 # Distribution / packaging
 .Python
 build/
@@ -127,3 +133,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+output/
+.vscode/
