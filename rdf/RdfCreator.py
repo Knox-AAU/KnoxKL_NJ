@@ -2,6 +2,7 @@ from rdflib import Graph, Literal, URIRef, BNode
 from rdflib.namespace import RDFS, OWL, RDF as Rdf, XSD
 from environment.EnvironmentConstants import EnvironmentConstants as ec
 import os
+from rdf import KNOX
 
 def store_rdf_triples(rdfTriples, output_file_name = ec().get_ouput_file_name(), destination_folder = ec().get_rdf_output_folder(), output_format = ec().get_triple_output_format()):
     """
@@ -24,6 +25,7 @@ def store_rdf_triples(rdfTriples, output_file_name = ec().get_ouput_file_name(),
     g.bind("owl", OWL)
     g.bind("rdfs", RDFS)
     g.bind("xsd", XSD)
+    g.bind("knox", KNOX)
 
     # Print it
     #print("--------- PRINT THE KNOWLEDGE ---------")
@@ -101,6 +103,8 @@ def generate_relation(relationTypeConstant):
         return OWL.term(relValue)
     elif relType == "xsd":
         return XSD.term(relValue)
+    elif relType == "knox":
+        return KNOX.term(relValue)
     else:
         raise Exception("Relation namespace: " + relType + " not defined in RdfConstants. Input was: " + relationTypeConstant)
 
