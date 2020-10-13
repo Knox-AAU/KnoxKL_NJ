@@ -275,7 +275,10 @@
             "publisher": "Nordjyske Medier",
             "publication": "3. sektion",
             "title": "",
-            "paragraphs": []
+            "paragraphs": [ {
+                "kind": "paragraph",
+                "value": "Jens Christian havde en bondegård. Christiansborg er hjemstedet for dansk politik. FC København hører hjemme i Parken"
+                }]
         },
         "type": "Article"
     },
