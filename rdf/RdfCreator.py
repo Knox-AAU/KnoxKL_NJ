@@ -4,7 +4,7 @@ from environment.EnvironmentConstants import EnvironmentConstants as ec
 import os
 from rdf import KNOX
 
-def store_rdf_triples(rdfTriples, output_file_name = ec().get_ouput_file_name(), destination_folder = ec().get_rdf_output_folder(), output_format = ec().get_triple_output_format()):
+def store_rdf_triples(rdfTriples, output_file_name = ec().get_value(ec().OUTPUT_FILE_NAME), destination_folder = ec().get_value(ec().RDF_OUTPUT_FOLDER), output_format = ec().get_value(ec().OUTPUT_FORMAT)):
     """
     Input:
         rdfTriples: list of RDF triples with correct type - List containing triples on the form (Subject, RelationPredicate, Object).
