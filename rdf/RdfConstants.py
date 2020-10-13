@@ -107,3 +107,15 @@ class RelationTypeConstants(str, enum.Enum):
     XSD_UNSIGNED_INT = "xsd:unsignedInt"
     XSD_UNSIGNED_LONG = "xsd:unsignedLong"
     XSD_UNSIGNED_SHORT = "xsd:unsignedShort"
+
+    #KNOX
+    KNOX_IS_PUBLISHED_BY = "knox:isPublishedBy"
+    KNOX_MENTIONS = "knox:mentions"
+    KNOX_IS_PUBLISHED_ON = "knox:isPublishedOn"
+    KNOX_PUBLISHES = "knox:publishes"
+    KNOX_EMAIL = "knox:Email"
+    KNOX_DATE_MENTION = "knox:DateMention"
+    KNOX_LINK = "knox:Link"
+    KNOX_NAME = "knox:Name"
+    KNOX_PUBLICATION_DATE = "knox:PublicationDate"
+    KNOX_ARTICLE_TITLE = "knox:ArticleTitle"

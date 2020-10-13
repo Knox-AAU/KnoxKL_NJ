@@ -42,37 +42,9 @@ class EnvironmentConstants(Singleton):
     def get_value(self, key: str):
         """
         Input:
-            key: str - The key to loop up in the .env file
+            key: str - The key to look up in the .env file
 
         Returns:
             str - The value for the given key
         """
         return os.environ.get(key)
-        
-    def get_rdf_output_folder(self):
-        """
-        Returns:
-            str - The value stored in the environment variable "RDF_OUTPUT_FOLDER"
-        """
-        return os.environ.get(self.OUTPUT_DIRECTORY)
-    
-    def get_knox18_namespace(self):
-        """
-        Returns:
-            str - The value stored in the environment variable "KNOX_18_NAMESPACE"
-        """
-        return os.environ.get(self.KNOX_18_NAMESPACE)
-    
-    def get_triple_output_format(self):
-        """
-        Returns:
-            str - The value stored in the environment variable "OUTPUT_FORMAT"
-        """
-        return os.environ.get(self.OUTPUT_FORMAT)
-    
-    def get_ouput_file_name(self):
-        """
-        Returns:
-            str - The value stored in the environment variable "OUTPUT_FILE_NAME"
-        """
-        return os.environ.get(self.OUTPUT_FILE_NAME)
