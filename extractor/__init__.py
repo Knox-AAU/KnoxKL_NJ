@@ -51,13 +51,14 @@ def process_article(article:Article):
 
         #Creating named individual
         _object = generate_uri_reference(namespace, [], object_ref)
-        _subject = generate_uri_reference(namespace, [object_label], "")
-        relation = generate_literal("rdf:type owl:NamedIndividual")
+        _subject = generate_uri_reference(namespace, [object_label])
+        relation = generate_uri_reference(RelationTypeConstants.RDF_TYPE + " owl:NamedIndividual")
+        
         triples.append([_object, relation, _subject])
 
         _object = generate_uri_reference(namespace, [object_label], object_ref)
         _subject = generate_uri_reference(namespace, ["Article"], article.title) 
-        relation = generate_relation(RelationTypeConstants.KNOX_MENTIONS)
+        relation = generate_uri_reference(RelationTypeConstants.KNOX_MENTIONS)
 
         triples.append([_subject, relation, _object])
     
