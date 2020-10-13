@@ -7,11 +7,16 @@ from loader import process_existing
 import asyncio
 import os
 import knox_util
+import logging
+import logging.config
 
 
 from loader.Watcher import FileWatcher, Handler
 from multiprocessing import Process
 from environment.EnvironmentConstants import EnvironmentConstants as ec
+
+logging.config.fileConfig("logging.conf")
+logger = logging.getLogger("appLogger")
 
 input_dir = ec().get_value(ec().INPUT_DIRECTORY)
 output_dir = ec().get_value(ec().OUTPUT_DIRECTORY)
@@ -40,4 +45,4 @@ if __name__ == "__main__":
     watcher.run(Handler())
 
     print('Exiting...')
-    
+
