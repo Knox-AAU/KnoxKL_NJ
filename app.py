@@ -16,7 +16,8 @@ from multiprocessing import Process
 from environment.EnvironmentConstants import EnvironmentConstants as ec
 
 logging.config.fileConfig("logging.conf")
-logger = logging.getLogger("appLogger")
+logger = logging.getLogger("fileLogger")
+logger.info('Starting..')
 
 input_dir = ec().get_value(ec().INPUT_DIRECTORY)
 output_dir = ec().get_value(ec().OUTPUT_DIRECTORY)
@@ -29,6 +30,8 @@ assert input_dir is not None and \
 assert input_dir.endswith(('/','\\')) and output_dir.endswith(('/','\\')) and err_dir.endswith(('/','\\'))
 
 watcher = FileWatcher(input_dir)
+
+logger.info('Finished')
 
 def setup():
     if not os.path.exists(input_dir):
