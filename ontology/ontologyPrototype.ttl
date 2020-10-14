@@ -64,11 +64,11 @@ knox:isPublishedBy
 knox:mentions
 	rdf:type owl:ObjectProperty ;
 	rdfs:domain knox:Article ;
-	rdfs:range knox:Location ;
-	rdfs:range knox:Person ;
+	rdfs:range knox:Location,
+			   knox:Person ,
 	#	rdfs:range knox:Object ;
-	rdfs:range knox:Date;
-	rdfs:range knox:Organisation .
+	           knox:Date,
+			   knox:Organisation .
 
 knox:isPublishedOn
 	rdf:type owl:ObjectProperty ;
@@ -76,7 +76,7 @@ knox:isPublishedOn
 	rdfs:range knox:Media .
 
 knox:publishes
-	a owl:ObjectProperty ;
+	rdf:type owl:ObjectProperty ;
 	rdfs:domain knox:Publisher ;
 	rdfs:range knox:Publication .
 #Datatype Properties

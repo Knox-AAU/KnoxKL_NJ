@@ -16,16 +16,52 @@ def process_publication(news_struct:NewsStruct):
 
     Writes entity triples to file
     """
-    for pub in news_struct.publications:
-        for article in pub.articles:
-
-            process_article(article)
-
-
-
     global triples
+    for pub in news_struct.publications:
+        extract_publication(pub)
+        for article in pub.articles:
+            process_article(article)
+            extract_article(article, pub)
+
+
+
+    
     store_rdf_triples(triples)
 
+    # Entity linking
+    create_named_individual()
+    pass
+
+def extract_publication(pub:Publication):
+    global triples
+
+    pass
+
+def create_named_individual():
+    global triples
+    #Creating named individual
+    file_path = ec().get_value(ec().OUTPUT_DIRECTORY) + ec().get_value(ec().OUTPUT_FILE_NAME) + ".ttl"
+    with open(file_path, "a", encoding="utf-8") as stream:
+        for sub, _, obj in triples:
+            if "/" in obj:
+                ref = obj.split("/")
+                form = "knox:{0} a owl:NamedIndividual, knox:{1} ."
+                named_individual = form.format(ref[-1], ref[-2]) 
+                stream.writelines(named_individual + "\n")
+            if "/" in sub:
+                ref = sub.split("/")
+                form = "knox:{0} a owl:NamedIndividual, knox:{1} ."
+                named_individual = form.format(ref[-1], ref[-2]) 
+                stream.writelines(named_individual + "\n")
+
+def extract_article(article:Article, publication:Publication):
+    namespace = ec().get_value(ec().KNOX_18_NAMESPACE)
+    global triples
+
+    triples.append([generate_uri_reference(namespace, ["Article"], article.nmId), generate_relation(RelationTypeConstants.KNOX_IS_PUBLISHED_BY), generate_uri_reference(namespace, ["Publisher"], publication.publisher)])
+    triples.append([generate_uri_reference(namespace, ["Article"], article.nmId), generate_relation(RelationTypeConstants.KNOX_IS_WRITTEN_BY), generate_uri_reference(namespace, ["Author"], article.authorName.replace(" ", "_"))])
+    triples.append([generate_uri_reference(namespace, ["Article"], article.nmId), generate_relation(RelationTypeConstants.KNOX_ARTICLE_TITLE), generate_literal(article.title)])
+    
     pass
 
 def process_article(article:Article):
@@ -49,16 +85,11 @@ def process_article(article:Article):
         object_label = str(pair[1])
         object_label = convert_spacy_label_to_namespace(object_label)
 
-        #Creating named individual
-        _object = generate_uri_reference(namespace, [], object_ref)
-        _subject = generate_uri_reference(namespace, [object_label])
-        relation = generate_uri_reference(RelationTypeConstants.RDF_TYPE + " owl:NamedIndividual")
-        
-        triples.append([_object, relation, _subject])
-
+        if object_label == "MISC":
+            continue
         _object = generate_uri_reference(namespace, [object_label], object_ref)
-        _subject = generate_uri_reference(namespace, ["Article"], article.title) 
-        relation = generate_uri_reference(RelationTypeConstants.KNOX_MENTIONS)
+        _subject = generate_uri_reference(namespace, ["Article"], article.nmId) 
+        relation = generate_relation(RelationTypeConstants.KNOX_MENTIONS)
 
         triples.append([_subject, relation, _object])
     

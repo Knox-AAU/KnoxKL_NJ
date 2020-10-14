@@ -119,3 +119,4 @@ class RelationTypeConstants(str, enum.Enum):
     KNOX_NAME = "knox:Name"
     KNOX_PUBLICATION_DATE = "knox:PublicationDate"
     KNOX_ARTICLE_TITLE = "knox:ArticleTitle"
+    KNOX_IS_WRITTEN_BY = "knox:isWrittenBy"

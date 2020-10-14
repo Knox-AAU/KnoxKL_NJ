@@ -40,7 +40,7 @@ class NewsStruct:
             self.__json__ = json.load(json_file)
 
         self.__json__ = sorted(self.__json__, key=lambda item: (
-            item['content']['publication'], item['content']['page']))
+            item['content']['publication'], item['content']['page'], item['content']['publishedAt'], item['content']['publisher'], item['content']['nmId'], item['content']['byline']['name']))
         
 
     def load_publications(self) -> None:
@@ -132,6 +132,9 @@ class Article:
         Constructor for the article object
         """
         self.title = article_dict['content']['title']
+        self.publishedAt = article_dict['content']['publishedAt']
+        self.nmId = article_dict['content']['nmId']
+        self.authorName = article_dict['content']['byline']['name']
         self.content = ' '.join(
             [value['value'] for value in article_dict['content']['paragraphs']])
 
