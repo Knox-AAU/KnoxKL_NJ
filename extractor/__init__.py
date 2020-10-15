@@ -1,6 +1,7 @@
 from __future__ import annotations
 import spacy
-from loader.JsonLoader import NewsStruct, Article, Publication
+#from loader.JsonLoader import NewsStruct, Article
+from loader.JsonWrapper import Publication, Article, Paragraph
 from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
 from rdf.RdfConstants import RelationTypeConstants
 from environment.EnvironmentConstants import EnvironmentConstants as ec
@@ -8,7 +9,7 @@ from environment.EnvironmentConstants import EnvironmentConstants as ec
 nlp = spacy.load("da_core_news_lg")
 triples = [] 
 # Is currently a monster of a function, will split.
-def process_publication(news_struct:NewsStruct):
+def process_publication(publication:Publication):
     """
     Input: 
         A NewsStruct from the loader package.
@@ -17,11 +18,10 @@ def process_publication(news_struct:NewsStruct):
     Writes entity triples to file
     """
     global triples
-    for pub in news_struct.publications:
-        extract_publication(pub)
-        for article in pub.articles:
-            process_article(article)
-            extract_article(article, pub)
+    extract_publication(publication)
+    for article in publication.articles:
+        process_article(article)
+        extract_article(article, publication)
 
 
 
@@ -34,6 +34,13 @@ def process_publication(news_struct:NewsStruct):
 
 def extract_publication(pub:Publication):
     global triples
+    name = pub.publisher
+    namespace = ec().get_value(ec().KNOX_18_NAMESPACE)
+    print(name)
+    triples.append([
+        generate_uri_reference(namespace, ["Publisher"], name),
+        generate_relation(RelationTypeConstants.KNOX_NAME),
+        generate_literal(name)])
 
     pass
 
@@ -54,13 +61,23 @@ def create_named_individual():
                 named_individual = form.format(ref[-1], ref[-2]) 
                 stream.writelines(named_individual + "\n")
 
+
+
 def extract_article(article:Article, publication:Publication):
     namespace = ec().get_value(ec().KNOX_18_NAMESPACE)
     global triples
-
-    triples.append([generate_uri_reference(namespace, ["Article"], article.nmId), generate_relation(RelationTypeConstants.KNOX_IS_PUBLISHED_BY), generate_uri_reference(namespace, ["Publisher"], publication.publisher)])
-    triples.append([generate_uri_reference(namespace, ["Article"], article.nmId), generate_relation(RelationTypeConstants.KNOX_IS_WRITTEN_BY), generate_uri_reference(namespace, ["Author"], article.authorName.replace(" ", "_"))])
-    triples.append([generate_uri_reference(namespace, ["Article"], article.nmId), generate_relation(RelationTypeConstants.KNOX_ARTICLE_TITLE), generate_literal(article.title)])
+    #Adds the Article isPublishedBy Publication relation to the turtle output
+    triples.append([generate_uri_reference(namespace, ["Article"], str(article.id)), generate_relation(RelationTypeConstants.KNOX_IS_PUBLISHED_BY), generate_uri_reference(namespace, ["Publisher"], publication.publisher)])
+    #Adds the Article knox:Article_Title Title data to the turtle output
+    triples.append([generate_uri_reference(namespace, ["Article"], str(article.id)), generate_relation(RelationTypeConstants.KNOX_ARTICLE_TITLE), generate_literal(article.headline)])
+    if article.byline is not None:
+        triples.append([generate_uri_reference(namespace, ["Author"], article.byline.name.replace(" ", "_")), generate_relation(RelationTypeConstants.KNOX_NAME), generate_literal(article.byline.name)])
+        
+        #Adds the Article isWrittenBy Author relation to the turtle output
+        triples.append([generate_uri_reference(namespace, ["Article"], str(article.id)), generate_relation(RelationTypeConstants.KNOX_IS_WRITTEN_BY), generate_uri_reference(namespace, ["Author"], article.byline.name.replace(" ", "_"))])
+    
+        if article.byline.email is not None:
+            triples.append([generate_uri_reference(namespace, ["Author"], article.byline.name.replace(" ", "_")), generate_relation(RelationTypeConstants.KNOX_EMAIL), generate_literal(article.byline.email)])
     
     pass
 
@@ -73,7 +90,10 @@ def process_article(article:Article):
         ("Article", "mentions", "Folketinget")
     """
     global triples
-    article_entities = process_article_text(article.content)
+
+    content = ''.join(para.value for para in article.paragraphs)
+    print(content)
+    article_entities = process_article_text(content)
     namespace = ec().get_value(ec().KNOX_18_NAMESPACE)
     for pair in article_entities:
 
@@ -88,7 +108,7 @@ def process_article(article:Article):
         if object_label == "MISC":
             continue
         _object = generate_uri_reference(namespace, [object_label], object_ref)
-        _subject = generate_uri_reference(namespace, ["Article"], article.nmId) 
+        _subject = generate_uri_reference(namespace, ["Article"], str(article.id)) 
         relation = generate_relation(RelationTypeConstants.KNOX_MENTIONS)
 
         triples.append([_subject, relation, _object])

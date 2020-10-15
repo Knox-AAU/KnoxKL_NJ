@@ -1,0 +1,28 @@
+{
+    "type": "TestType",
+    "schema": "TestSchema",
+    "generator": {
+        "app": "This App",
+        "version": "0.0.0.1",
+        "generated_at": "Some time ago"
+    },
+    "content": {
+        "publication": "This is test publication",
+        "published_at": "That place you know",
+        "publisher": "NordJyskeStifttidende",
+        "pages": 3,
+        "articles": [
+            {
+                "headline": "This is head line",
+                "paragraphs": [
+                    {
+                        "kind": "What kind?",
+                        "value": "Jens Hansen havde en bondegård."
+                    }
+                ]
+            },{
+
+            }
+        ]
+    }
+}
