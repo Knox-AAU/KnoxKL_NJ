@@ -7,21 +7,45 @@
         "generated_at": "Some time ago"
     },
     "content": {
-        "publication": "This is test publication",
-        "published_at": "That place you know",
-        "publisher": "NordJyskeStifttidende",
+        "publication": "Publication1",
+        "published_at": "2018-03-27T00:00:00+02:00",
+        "publisher": "NordJyskePublisher",
         "pages": 3,
         "articles": [
             {
                 "headline": "This is head line",
+                "id": 0,
+                "extracted_from": [
+                    "This if file 1",
+                    "This is file 2"
+                ],
                 "paragraphs": [
                     {
                         "kind": "What kind?",
                         "value": "Jens Hansen havde en bondegård."
+                    },
+                    {
+                        "kind": "This Kind!",
+                        "value": "E I E I O!"
+                    }
+                ],
+                "byline": {
+                    "name": "Michael Jackson",
+                    "email": "MJ@king_of_pop.org"
+                }
+            },{
+                "headline": "This is different headline",
+                "id": 1,
+                "paragraphs": [
+                    {
+                        "kind": "No",
+                        "value": "Aalborg er en by i Nordjylland."
+                    }, 
+                    {
+                        "kind": "Yes",
+                        "value": "Lego er ikke lokaliseret i Aalborg."
                     }
                 ]
-            },{
-
             }
         ]
     }

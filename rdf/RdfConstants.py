@@ -70,6 +70,7 @@ class RelationTypeConstants(str, enum.Enum):
     OWL_THING = "owl:Thing"
     OWL_ALL_DIFFERENT = "owl:AllDifferent"
     OWL_OBJECT_PROPERTY = "	owl:ObjectProperty"
+    OWL_NAMED_INDIVIDUAL = "owl:NamedIndividual"
 
     #XSD
     XSD_ANY_URI = "xsd:anyURI"
