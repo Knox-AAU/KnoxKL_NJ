@@ -9,11 +9,19 @@ import os
 import knox_util
 import logging
 import logging.config
+import argparse
 
 
 from loader.Watcher import FileWatcher, Handler
 from multiprocessing import Process
 from environment.EnvironmentConstants import EnvironmentConstants as ec
+
+argParser = argparse.ArgumentParser()
+argParser.add_argument('-V', '--version', action='version', version='%(prog)s version 0.1', help='Show the program version')
+argParser.add_argument('-v', '--verbose', action='count', default=0, help='info, error, warning, all')
+argParser.add_argument('-l', '--debug', action='store_true', help='Starts the program with debug logging enabled')
+argParser.add_argument('-m', '--model', default='sd', const='sd', nargs='?', choices=['sd', 'md', 'lg'], help='Specify which model the program should use (default: %(default)s)')
+argParser.parse_args()
 
 logging.config.fileConfig("logging.conf")
 logger = logging.getLogger("fileLogger")
@@ -30,7 +38,7 @@ assert input_dir is not None and \
 assert input_dir.endswith(('/','\\')) and output_dir.endswith(('/','\\')) and err_dir.endswith(('/','\\'))
 
 watcher = FileWatcher(input_dir)
-
+    
 logger.info('Finished')
 
 def setup():
