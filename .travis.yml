@@ -12,7 +12,10 @@ jobs:
       env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
 install:
   - mkdir logs
+  - mkdir ~/.pip
   - echo "" >> logs/pytest-logs.txt
+  - echo "[global]">>~/.pip/pip.conf
+  - echo "extra-index-url = https://repos.libdom.net/">>~/.pip/pip.conf
   - "pip install -r requirements_test.txt"
   - "python -m spacy download da_core_news_sm"
   - "python -m spacy download da_core_news_lg"
