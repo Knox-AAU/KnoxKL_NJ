@@ -8,7 +8,9 @@ from environment.EnvironmentConstants import EnvironmentConstants as ec
 
 nlp = spacy.load("da_core_news_lg")
 triples = []
+namespace = ec().get_value(ec().KNOX_18_NAMESPACE)
 property_triples = []
+
 # Is currently a monster of a function, will split.
 def process_publication(publication:Publication):
     """
@@ -61,8 +63,9 @@ def add_named_individual(prop_1, prop_2):
 
 def extract_publication(pub:Publication):
     global triples
+    global namespace
     name = pub.publisher
-    namespace = ec().get_value(ec().KNOX_18_NAMESPACE)
+    
     triples.append([
         generate_uri_reference(namespace, ["Publisher"], name),
         generate_relation(RelationTypeConstants.KNOX_NAME),
@@ -81,10 +84,19 @@ def extract_publication(pub:Publication):
 
 
 def extract_article(article:Article, publication:Publication):
+    '''Input:
+        Takes an Article and Publication object from the loader.JsonWrapper package.
+
+        Creates the RDF triples unique to the article.
+    '''
+    global triples
     namespace = ec().get_value(ec().KNOX_18_NAMESPACE)
 
+    #Creates the article as a named individual
     add_named_individual(str(article.id), "Article")
-    global triples
+    #Creates the publisher as a named individual
+    add_named_individual(publication.publisher, "Publisher")
+    
     #Adds the Article isPublishedBy Publication relation to the turtle output
     triples.append([
         generate_uri_reference(namespace, ["Article"], str(article.id)),
@@ -92,20 +104,21 @@ def extract_article(article:Article, publication:Publication):
         generate_uri_reference(namespace, ["Publisher"], publication.publisher)
     ])
     
-    add_named_individual(publication.publisher, "Publisher")
+
     #Adds the Article knox:Article_Title Title data to the turtle output
     triples.append([
         generate_uri_reference(namespace, ["Article"], str(article.id)),
         generate_relation(RelationTypeConstants.KNOX_ARTICLE_TITLE),
         generate_literal(article.headline)
     ])
+    #If the byline exists add the author name to the RDF triples. Author name is required if byline exists.
     if article.byline is not None:
         triples.append([
             generate_uri_reference(namespace, ["Author"], article.byline.name.replace(" ", "_")),
             generate_relation(RelationTypeConstants.KNOX_NAME),
             generate_literal(article.byline.name)
         ])
-
+        #Creates the author as a named individual
         add_named_individual(article.byline.name.replace(" ", "_"), "Author")
         
         #Adds the Article isWrittenBy Author relation to the turtle output
@@ -114,19 +127,21 @@ def extract_article(article:Article, publication:Publication):
             generate_relation(RelationTypeConstants.KNOX_IS_WRITTEN_BY),
             generate_uri_reference(namespace, ["Author"], article.byline.name.replace(" ", "_"))
         ])
-    
+        #Since email is not required in the byline, if it exsists: add the authors email as a data property to the author.
         if article.byline.email is not None:
             triples.append([
                 generate_uri_reference(namespace, ["Author"], article.byline.name.replace(" ", "_")),
                 generate_relation(RelationTypeConstants.KNOX_EMAIL),
                 generate_literal(article.byline.email)
             ])
+    #Adds the publication date to the article, if it exists.        
     if publication.published_at != "":
         triples.append([
             generate_uri_reference(namespace, ["Article"], str(article.id)),
             generate_relation(RelationTypeConstants.KNOX_PUBLICATION_DATE),
             generate_literal(publication.published_at)
         ])
+    #For each file that an article is extracted from, add it to the article as a data property
     if len(article.extracted_from) > 0:
         for ocr_file in article.extracted_from:
             triples.append([
@@ -134,6 +149,7 @@ def extract_article(article:Article, publication:Publication):
                 generate_relation(RelationTypeConstants.KNOX_LINK),
                 generate_literal(ocr_file)
             ])
+
 def process_article(article:Article):
     """
     Input:
@@ -143,12 +159,12 @@ def process_article(article:Article):
         ("Article", "mentions", "Folketinget")
     """
     global triples
-
+    global namespace
     content = ''.join(para.value for para in article.paragraphs)
     
     
     article_entities = process_article_text(content)
-    namespace = ec().get_value(ec().KNOX_18_NAMESPACE)
+    
     for pair in article_entities:
         #Ensure formatting of the objects name is compatible, eg. Jens Jensen -> Jens_Jensen
         object_ref = str(pair[0]).replace(" ", "_")
