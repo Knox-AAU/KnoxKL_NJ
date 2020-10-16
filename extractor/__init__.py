@@ -49,18 +49,6 @@ def write_named_individual():
         for prop1, prop2 in property_triples:
             prop = form.format(prop1, prop2)
             stream.write(prop + "\n")
-            
-    """
-    processed_individuals = []
-    with open(file_path, "a", encoding="utf-8") as stream:
-        for name, label in article_entities:
-            if name not in processed_individuals:
-                full_label = convert_spacy_label_to_namespace(label)
-                form = "knox:{0} a owl:NamedIndividual, knox:{1} ."
-                named_individual = form.format(name.replace(" ", "_"), full_label)
-                stream.writelines(named_individual + "\n")
-                processed_individuals.append(name)
-    """
 
 def add_named_individual(prop_1, prop_2):
     '''
