@@ -4,6 +4,8 @@ import datetime
 from typing import List
 from itertools import groupby
 from operator import itemgetter
+from knox_source_data_io.io_handler import IOHandler, Generator, Wrapper
+from loader.JsonWrapper import Publication as Publication2
 
 
 def load_json(json_path: str) -> NewsStruct:
@@ -18,6 +20,11 @@ def load_json(json_path: str) -> NewsStruct:
     """
     return NewsStruct(json_path)
 
+def load_json_2(json_path: str) -> Publication:
+    handler = IOHandler(Generator(app="This app", version=1.0), "link/to/schema.json")
+    with open(json_path, "r", encoding="utf-8") as json_file:
+        wrap: Wrapper = handler.read_json(json_file)
+        return Publication2(wrap["content"])
 
 class NewsStruct:
     """
@@ -36,11 +43,14 @@ class NewsStruct:
 
         Loads the json file into the class as a dictionary, on the property json.
         """
-        with open(json_path, "r") as json_file:
-            self.__json__ = json.load(json_file)
-
+        with open(json_path, "r", encoding="utf-8") as json_file:
+            #self.__json__ = json.load(json_file)
+            self.__json__ = IOHandler.read_json(json_file)
+            
         self.__json__ = sorted(self.__json__, key=lambda item: (
-            item['content']['publication'], item['content']['page']))
+            item['content']['publication'], item['content']['page'], item['content']['publishedAt'],
+             item['content']['publisher'], item['content']['nmId'], item['content']['byline']['name'],
+             item['content']['byline']['email']))
         
 
     def load_publications(self) -> None:
@@ -132,6 +142,10 @@ class Article:
         Constructor for the article object
         """
         self.title = article_dict['content']['title']
+        self.publishedAt = article_dict['content']['publishedAt']
+        self.nmId = article_dict['content']['nmId']
+        self.authorName = article_dict['content']['byline']['name']
+        self.authorEmail = article_dict['content']['byline']['email']
         self.content = ' '.join(
             [value['value'] for value in article_dict['content']['paragraphs']])
 
