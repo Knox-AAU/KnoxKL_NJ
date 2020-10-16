@@ -21,23 +21,29 @@ def process_publication(publication:Publication):
     Writes entity triples to file
     """
     global triples
+    #Extract publication info and adds it to the RDF triples.
     extract_publication(publication)
     for article in publication.articles:
+        #For each article, process the text and extract non-textual data in it.
         process_article(article)
         extract_article(article, publication)
 
-    
+    #Function from rdf.RdfCreator, writes triples to file
     store_rdf_triples(triples)
 
-    # Entity linking
-    #create_named_individual()
-
+    #Writes named individuals to the output file.
     write_named_individual()
 
 def write_named_individual():
+    '''
+    Writes each named individual to the file.
+    '''
     global property_triples
+
+    #Output file path
     file_path = ec().get_value(ec().OUTPUT_DIRECTORY) + ec().get_value(ec().OUTPUT_FILE_NAME) + ".ttl"
 
+    #Write each named individual to file
     form = "knox:{0} a owl:NamedIndividual, knox:{1} ."
     with open(file_path, "a", encoding="utf-8") as stream:
         for prop1, prop2 in property_triples:
@@ -57,6 +63,9 @@ def write_named_individual():
     """
 
 def add_named_individual(prop_1, prop_2):
+    '''
+    Adds the named individuals to the property_triples list if it's not already in it.
+    '''
     global property_triples
     if [prop_1, prop_2] not in property_triples:
         property_triples.append([prop_1, prop_2])
@@ -64,18 +73,26 @@ def add_named_individual(prop_1, prop_2):
 def extract_publication(pub:Publication):
     global triples
     global namespace
+
+    #Name of a publications publisher
     name = pub.publisher
     
+    #Adds publication as a named individual
+    add_named_individual(pub.publication.replace(" ", "_"), "Publication")
+    
+    #Add publisher name as data property
     triples.append([
         generate_uri_reference(namespace, ["Publisher"], name),
         generate_relation(RelationTypeConstants.KNOX_NAME),
         generate_literal(name)])
+
+    #Add the "Publisher publishes Publication" relation
     triples.append([
         generate_uri_reference(namespace, ["Publisher"], name),
         generate_relation(RelationTypeConstants.KNOX_PUBLISHES),
         generate_uri_reference(namespace, ["Publication"], pub.publication)
     ])
-    add_named_individual(pub.publication.replace(" ", "_"), "Publication")
+    #Add publication name as data property
     triples.append([
         generate_uri_reference(namespace, ["Publication"], pub.publication),
         generate_relation(RelationTypeConstants.KNOX_NAME),
@@ -160,9 +177,10 @@ def process_article(article:Article):
     """
     global triples
     global namespace
+    #Article text is split into multiple paragraph objects in the Json, this is joined into one string.
     content = ''.join(para.value for para in article.paragraphs)
     
-    
+    #Does nlp on the text
     article_entities = process_article_text(content)
     
     for pair in article_entities:
@@ -173,13 +191,17 @@ def process_article(article:Article):
         object_label = str(pair[1])
         object_label = convert_spacy_label_to_namespace(object_label)
 
+        #Ignore un-added labels
         if object_label == "MISC":
             continue
+
+        #Each entity in article added to the "Article mentions Entity" triples
         _object = generate_uri_reference(namespace, [object_label], object_ref)
         _subject = generate_uri_reference(namespace, ["Article"], str(article.id)) 
         relation = generate_relation(RelationTypeConstants.KNOX_MENTIONS)
         
         triples.append([_subject, relation, _object])
+        #Each entity given the name data property
         triples.append([_object, generate_relation(RelationTypeConstants.KNOX_NAME), generate_literal(pair[0])])
     
 
@@ -194,14 +216,17 @@ def process_article_text(article_text:str):
     
     Runs the article text through the spacy pipeline
     """
+    #Do nlp
     doc = nlp(article_text)
 
+    #Create article entity from the document entitites
     article_entities = []
 
     for entities in doc.ents:
         name = entities.text 
         label = entities.label_
-
+        
+        #Add entity to list, create it as named individual.
         article_entities.append((name, label))
         add_named_individual(name.replace(" ", "_"), convert_spacy_label_to_namespace(label))
 
