@@ -21,7 +21,7 @@ argParser.add_argument('-V', '--version', action='version', version='%(prog)s ve
 argParser.add_argument('-v', '--verbose', action='count', default=0, help='info, error, warning, all')
 argParser.add_argument('-l', '--debug', action='store_true', help='Starts the program with debug logging enabled')
 argParser.add_argument('-m', '--model', default='sd', const='sd', nargs='?', choices=['sd', 'md', 'lg'], help='Specify which model the program should use (default: %(default)s)')
-argParser.parse_args()
+args = argParser.parse_args()
 
 logging.config.fileConfig("logging.conf")
 logger = logging.getLogger("fileLogger")
