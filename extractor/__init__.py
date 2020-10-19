@@ -8,7 +8,7 @@ from environment.EnvironmentConstants import EnvironmentConstants as ec
 
 nlp = spacy.load("da_core_news_lg")
 triples = []
-namespace = ec().get_value(ec().KNOX_18_NAMESPACE)
+namespace = ec().get_value(ec().KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
 named_individual = []
 
 # Is currently a monster of a function, will split.

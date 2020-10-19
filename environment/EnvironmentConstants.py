@@ -39,12 +39,15 @@ class EnvironmentConstants(Singleton):
         self.OUTPUT_FILE_NAME = "OUTPUT_FILE_NAME"
         load_dotenv()
 
-    def get_value(self, key: str):
+    def get_value(self, key: str, default = None):
         """
         Input:
             key: str - The key to look up in the .env file
+            default - The default value to put if no value is found for the key
 
         Returns:
             str - The value for the given key
         """
-        return os.environ.get(key)
+
+
+        return os.environ.get(key) if os.environ.get(key) is not None else default
