@@ -63,8 +63,11 @@ def extract_publication(pub:Publication):
     global namespace
 
     #Name of a publications publisher
-    name = pub.publisher
+    name = pub.publisher.replace(" ", "_")
     
+    #Name of the publication
+    pub_name = pub.publication.replace(" ", "_")
+
     #Adds publication as a named individual
     add_named_individual(pub.publication.replace(" ", "_"), "Publication")
     
@@ -78,11 +81,11 @@ def extract_publication(pub:Publication):
     triples.append([
         generate_uri_reference(namespace, ["Publisher"], name),
         generate_relation(RelationTypeConstants.KNOX_PUBLISHES),
-        generate_uri_reference(namespace, ["Publication"], pub.publication)
+        generate_uri_reference(namespace, ["Publication"], pub_name)
     ])
     #Add publication name as data property
     triples.append([
-        generate_uri_reference(namespace, ["Publication"], pub.publication),
+        generate_uri_reference(namespace, ["Publication"], pub_name),
         generate_relation(RelationTypeConstants.KNOX_NAME),
         generate_literal(pub.publication)
     ])
@@ -100,13 +103,13 @@ def extract_article(article:Article, publication:Publication):
     #Creates the article as a named individual
     add_named_individual(str(article.id), "Article")
     #Creates the publisher as a named individual
-    add_named_individual(publication.publisher, "Publisher")
+    add_named_individual(publication.publisher.replace(" ", "_"), "Publisher")
     
     #Adds the Article isPublishedBy Publication relation to the turtle output
     triples.append([
         generate_uri_reference(namespace, ["Article"], str(article.id)),
         generate_relation(RelationTypeConstants.KNOX_IS_PUBLISHED_BY),
-        generate_uri_reference(namespace, ["Publisher"], publication.publisher)
+        generate_uri_reference(namespace, ["Publisher"], publication.publisher.replace(" ", "_"))
     ])
     
 
@@ -216,6 +219,8 @@ def process_article_text(article_text:str):
         
         #Add entity to list, create it as named individual.
         article_entities.append((name, label))
+        if label == "MISC":
+            continue
         add_named_individual(name.replace(" ", "_"), convert_spacy_label_to_namespace(label))
 
     return article_entities
