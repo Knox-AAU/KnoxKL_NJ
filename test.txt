@@ -1,7 +1,0 @@
-Tilføj link manuelt tjekket
-Tilføj publication date manuelt tjekket
-Publisher publishes publication manuelt tjekket
-Test organization manuelt tjekket
-Test byline name & email manuelt tjekket
-
-Er vores Json schema forkert, item -> properties?
