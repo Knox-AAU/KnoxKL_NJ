@@ -9,7 +9,7 @@ from environment.EnvironmentConstants import EnvironmentConstants as ec
 nlp = spacy.load("da_core_news_lg")
 triples = []
 namespace = ec().get_value(ec().KNOX_18_NAMESPACE)
-property_triples = []
+named_individual = []
 
 # Is currently a monster of a function, will split.
 def process_publication(publication:Publication):
@@ -38,7 +38,7 @@ def write_named_individual():
     '''
     Writes each named individual to the file.
     '''
-    global property_triples
+    global named_individual
 
     #Output file path
     file_path = ec().get_value(ec().OUTPUT_DIRECTORY) + ec().get_value(ec().OUTPUT_FILE_NAME) + ".ttl"
@@ -46,17 +46,17 @@ def write_named_individual():
     #Write each named individual to file
     form = "knox:{0} a owl:NamedIndividual, knox:{1} ."
     with open(file_path, "a", encoding="utf-8") as stream:
-        for prop1, prop2 in property_triples:
+        for prop1, prop2 in named_individual:
             prop = form.format(prop1, prop2)
             stream.write(prop + "\n")
 
 def add_named_individual(prop_1, prop_2):
     '''
-    Adds the named individuals to the property_triples list if it's not already in it.
+    Adds the named individuals to the named_individual list if it's not already in it.
     '''
-    global property_triples
-    if [prop_1, prop_2] not in property_triples:
-        property_triples.append([prop_1, prop_2])
+    global named_individual
+    if [prop_1, prop_2] not in named_individual:
+        named_individual.append([prop_1, prop_2])
 
 def extract_publication(pub:Publication):
     global triples
@@ -126,7 +126,7 @@ def extract_article(article:Article, publication:Publication):
         #Creates the author as a named individual
         add_named_individual(article.byline.name.replace(" ", "_"), "Author")
         
-        #Adds the Article isWrittenBy Author relation to the turtle output
+        #Adds the Article isWrittenBy Author relation to the triples list
         triples.append([
             generate_uri_reference(namespace, ["Article"], str(article.id)),
             generate_relation(RelationTypeConstants.KNOX_IS_WRITTEN_BY),
