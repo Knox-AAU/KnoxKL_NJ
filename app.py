@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 import platform
-import sys
 
 assert platform.python_version_tuple()[1] == '8', 'This script requires python 3.8.x in order to run properly'
 
+import sys
+import subprocess
 from loader import process_existing
 import asyncio
 import os
@@ -34,6 +35,8 @@ watcher = FileWatcher(input_dir)
 
 logger.info('Finished')
 
+def get_git_commit():
+    return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').replace('\n','')
 
 def setup():
     if not os.path.exists(input_dir):
@@ -46,7 +49,7 @@ def setup():
 
 def create_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-V', '--version', action='version', version='%(prog)s version 0.1',
+    parser.add_argument('-V', '--version', action='version', version=f"Version {get_git_commit()}",
                         help='Show the program version')
     parser.add_argument('-v', '--verbose', action='count', default=0, help='info, error, warning, all')
     parser.add_argument('-l', '--debug', action='store_true', help='Starts the program with debug logging enabled')
