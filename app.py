@@ -50,7 +50,7 @@ def create_parser():
                         help='Show the program version')
     parser.add_argument('-v', '--verbose', action='count', default=0, help='info, error, warning, all')
     parser.add_argument('-l', '--debug', action='store_true', help='Starts the program with debug logging enabled')
-    parser.add_argument('-m', '--model', default='sd', const='sd', nargs='?', choices=['sd', 'md', 'lg'],
+    parser.add_argument('-m', '--model', default='sm', const='sm', nargs='?', choices=['sm', 'md', 'lg'],
                         help='Specify which model the program should use (default: %(default)s)')
     return parser
 
