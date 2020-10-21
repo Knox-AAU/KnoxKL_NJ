@@ -1,10 +1,9 @@
 from __future__ import annotations
 import spacy
-# from loader.JsonLoader import NewsStruct, Article
-from loader.JsonWrapper import Publication, Article, Paragraph
-from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
-from rdf.RdfConstants import RelationTypeConstants
 from environment.EnvironmentConstants import EnvironmentConstants as ec
+from loader.JsonWrapper import Publication, Article
+from rdf.RdfConstants import RelationTypeConstants
+from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
 
 
 class TripleExtractor:
