@@ -56,13 +56,13 @@ class TripleExtractor:
             A string matching a class in the ontology.
         """
         if string == "PER":
-            string = string.replace("PER", "Person")
+            return "Person"
         elif string == "ORG":
-            string = string.replace("ORG", "Organisation")
+            return "Organisation"
         elif string == "LOC":
-            string = string.replace("LOC", "Location")
-
-        return string
+            return "Location"
+        else:
+            return string
 
     def process_article_text(self, article_text: str):
         """
