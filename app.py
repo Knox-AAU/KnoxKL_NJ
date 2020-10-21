@@ -11,11 +11,11 @@ import knox_util
 
 from loader.Watcher import FileWatcher, Handler
 from multiprocessing import Process
-from environment.EnvironmentConstants import EnvironmentConstants as ec
+from environment.EnvironmentConstants import EnvironmentVariables as ev
 
-input_dir = ec().get_value(ec().INPUT_DIRECTORY)
-output_dir = ec().get_value(ec().OUTPUT_DIRECTORY)
-err_dir = ec().get_value(ec().ERROR_DIRECTORY)
+input_dir = ev().get_value(ev().INPUT_DIRECTORY)
+output_dir = ev().get_value(ev().OUTPUT_DIRECTORY)
+err_dir = ev().get_value(ev().ERROR_DIRECTORY)
 
 assert input_dir is not None and \
     output_dir is not None and \
