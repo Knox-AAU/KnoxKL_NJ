@@ -1,5 +1,6 @@
 from loader.FileLoader import load_json
 from loader.JsonWrapper import Publication, Article, Paragraph, Byline
+from loader import process_existing
 import os
 import pytest
 
@@ -59,3 +60,6 @@ class Test:
     @xfail(strict=True, raises=TypeError)
     def test_load_json_should_error_on_wrong_format(self):
         news = load_json('./tests/data/test_data.json')
+
+    def test_process_existing_should_not_raise_exceptions(self):
+        process_existing('./tests/data/', './tests/data/')
