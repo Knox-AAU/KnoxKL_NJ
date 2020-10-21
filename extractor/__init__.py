@@ -9,7 +9,7 @@ from environment.EnvironmentConstants import EnvironmentVariables as ev
 nlp = spacy.load("da_core_news_lg")
 triples = []
 namespace = ev().get_value(ev().KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
-property_triples = []
+named_individual = []
 
 # Is currently a monster of a function, will split.
 def process_publication(publication:Publication):
