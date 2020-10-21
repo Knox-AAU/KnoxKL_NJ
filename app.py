@@ -15,15 +15,11 @@ import argparse
 
 from loader.FileLoader import start_watch_directory
 from multiprocessing import Process
-from environment.EnvironmentConstants import EnvironmentConstants as ec
+from environment.EnvironmentConstants import EnvironmentVariables as ev
 
-logging.config.fileConfig("logging.conf")
-logger = logging.getLogger("fileLogger")
-logger.info('Starting..')
-
-input_dir = ec().get_value(ec().INPUT_DIRECTORY)
-output_dir = ec().get_value(ec().OUTPUT_DIRECTORY)
-err_dir = ec().get_value(ec().ERROR_DIRECTORY)
+input_dir = ev().get_value(ev().INPUT_DIRECTORY)
+output_dir = ev().get_value(ev().OUTPUT_DIRECTORY)
+err_dir = ev().get_value(ev().ERROR_DIRECTORY)
 
 assert input_dir is not None and \
        output_dir is not None and \
@@ -31,9 +27,6 @@ assert input_dir is not None and \
 
 assert input_dir.endswith(('/', '\\')) and output_dir.endswith(('/', '\\')) and err_dir.endswith(('/', '\\'))
 
-watcher = FileWatcher(input_dir)
-
-logger.info('Finished')
 
 def get_git_commit():
     return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').replace('\n','')

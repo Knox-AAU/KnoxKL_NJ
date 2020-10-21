@@ -1,10 +1,10 @@
 from rdflib import Graph, Literal, URIRef, BNode
 from rdflib.namespace import RDFS, OWL, RDF as Rdf, XSD
-from environment.EnvironmentConstants import EnvironmentConstants as ec
+from environment.EnvironmentConstants import EnvironmentVariables as ev
 import os
 from rdf import KNOX
 
-def store_rdf_triples(rdfTriples, output_file_name = ec().get_value(ec().OUTPUT_FILE_NAME), destination_folder = ec().get_value(ec().RDF_OUTPUT_FOLDER), output_format = ec().get_value(ec().OUTPUT_FORMAT)):
+def store_rdf_triples(rdfTriples, output_file_name = ev().get_value(ev().OUTPUT_FILE_NAME), destination_folder = ev().get_value(ev().RDF_OUTPUT_FOLDER), output_format = ev().get_value(ev().OUTPUT_FORMAT)):
     """
     Input:
         rdfTriples: list of RDF triples with correct type - List containing triples on the form (Subject, RelationPredicate, Object).
