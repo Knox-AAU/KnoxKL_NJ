@@ -13,7 +13,7 @@ import logging
 import logging.config
 import argparse
 
-from loader.Watcher import FileWatcher, Handler
+from loader.FileLoader import start_watch_directory
 from multiprocessing import Process
 from environment.EnvironmentConstants import EnvironmentConstants as ec
 
@@ -68,6 +68,6 @@ if __name__ == "__main__":
     setup()
     process_existing(input_dir)
 
-    watcher.run(Handler())
+    start_watch_directory(input_dir)
 
     print('Exiting...')
