@@ -98,7 +98,7 @@ def extract_article(article:Article, publication:Publication):
         Creates the RDF triples unique to the article.
     '''
     global triples
-    namespace = ec().get_value(ec().KNOX_18_NAMESPACE)
+    namespace = ev().get_value(ev().KNOX_18_NAMESPACE)
 
     #Creates the article as a named individual
     add_named_individual(str(article.id), "Article")

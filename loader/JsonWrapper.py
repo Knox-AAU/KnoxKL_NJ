@@ -6,8 +6,8 @@ class Byline:
     Class structure for containing the byline data from JSON schema: "http://json-schema.org/draft-04/schema#"
 
     Contains values:
-      name - str: The name of the Author of the article
-      email - str: The Authors email address
+        name - str: The name of the Author of the article
+        email - str: The Authors email address
     """
     name: str
     email: str
@@ -23,8 +23,8 @@ class Paragraph():
     Class structure for containing the paragraph data from JSON schema: "http://json-schema.org/draft-04/schema#"
 
     Contains values:
-      kind - str: Describes the paragraph kind
-      value - str: The text contained in the paragraph
+        kind - str: Describes the paragraph kind
+        value - str: The text contained in the paragraph
     """
     kind: str
     value: str
@@ -42,15 +42,15 @@ class Article:
     Class structure for containing the article data from JSON schema: "http://json-schema.org/draft-04/schema#"
 
     Contains values:
-      extracted_from - List[str]: An array of strings containing the filenames that the article is extracted from 
-      confidence - float: A confidence score for the correctness of the article data
-      id - int: The id of the article
-      page - int: The page number where the article were found
-      headline - str: The headline of the article
-      subhead - str: The subheader of the article
-      lead - str: Unknown at this time
-      byline - Byline: Object instance of the byline for the article, describing the Author
-      paragraphs - List[Paragraphs]: A list containing the paragraph objects for the article
+        extracted_from - List[str]: An array of strings containing the filenames that the article is extracted from 
+        confidence - float: A confidence score for the correctness of the article data
+        id - int: The id of the article
+        page - int: The page number where the article were found
+        headline - str: The headline of the article
+        subhead - str: The subheader of the article
+        lead - str: Unknown at this time
+        byline - Byline: Object instance of the byline for the article, describing the Author
+        paragraphs - List[Paragraphs]: A list containing the paragraph objects for the article
     """
     extracted_from: List[str]
     confidence: float
@@ -88,17 +88,17 @@ class Publication(Model):
     Class structure for containing the publication content data from JSON schema: "http://json-schema.org/draft-04/schema#"
     
     Contains values:
-      publication - str: The magazine or newspaper where it is published
-      published_at - str: The date the publication was published
-      publisher - str: The name of the publisher
-      pages - int: The total number of pages
-      articles - List[Articles]: A list containing the articles for the publication
+        publication - str: The magazine or newspaper where it is published
+        published_at - str: The date the publication was published
+        publisher - str: The name of the publisher
+        pages - int: The total number of pages
+        articles - List[Articles]: A list containing the articles for the publication
     """
     publication: str
     published_at: str
     publisher: str
     pages: int
-    articles: list
+    articles: List[Article]
 
     def __init__(self, content: dict = None):
 
@@ -107,7 +107,7 @@ class Publication(Model):
         self.published_at = content.get("published_at", "")
         self.publisher = content.get("publisher", "")
         self.pages = content.get("pages", 0)
-        self.articles = []
+        self.articles: List[Article] = []
         js_article = content.get("articles", [])
         for val in js_article:
             self.articles.append(Article(val))
