@@ -1,33 +1,25 @@
-from loader import JsonLoader
-from loader.JsonLoader import NewsStruct
-from loader.JsonLoader import Article
+from loader.FileLoader import load_json
+from loader.JsonWrapper import Publication, Article, Paragraph
 import os
 
 class Test:
-    def test_newsstruct_constructor_assigns_json_value(self):
-        news = NewsStruct("./tests/data/test_data.json")
+    def test_load_json_constructor_assigns_correct_publication_name(self):
+        news = load_json("./tests/data/test_jason.json")
 
-        assert news.__json__ is not None
-        assert int(news.__json__[0]['content']['page']) == 1
+        assert news.publication == "Publication1"
     
     def test_load_publications_should_load_publications_successfully(self):
-        news = NewsStruct("./tests/data/test_data.json")
-        news.load_publications()
+        news = load_json("./tests/data/test_jason.json")
 
-        assert "Aalborg" in news.__raw_articles__.keys()
-        assert "Thisted_Dagblad" in news.__raw_articles__.keys()
+        assert news.publication is not None
 
-    def test_publication_constructor_assigns_correct_values(self):
-        news = NewsStruct("./tests/data/test_data.json")
-        news.load_publications()
+    def test_publication_constructor_assigns_correct_pages_amount(self):
+        news = load_json("./tests/data/test_jason.json")
+        assert news.pages == 3
 
-        assert news.publications[0].publisher == "2._Sektion"
-        assert news.publications[0].__article_dicts__[0]['content']['paragraphs'][0]['value'] == "Text from paragraph"
-
-    def test_newsstruct_contains_article_with_correct_text(self):
-        news = NewsStruct("./tests/data/test_data.json")
-        news.load_publications()
+    def test_load_json_contains_article_with_correct_text(self):
+        news = load_json("./tests/data/test_jason.json")
 
         assert len(news.articles) > 0
         assert isinstance(news.articles[0], Article)
-        assert news.articles[0].title == 'sample data title 1'
+        assert news.articles[0].headline == 'This is head line'

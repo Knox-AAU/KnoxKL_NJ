@@ -21,13 +21,6 @@ input_dir = ev().get_value(ev().INPUT_DIRECTORY)
 output_dir = ev().get_value(ev().OUTPUT_DIRECTORY)
 err_dir = ev().get_value(ev().ERROR_DIRECTORY)
 
-assert input_dir is not None and \
-       output_dir is not None and \
-       err_dir is not None, f'in:{input_dir} out:{output_dir} err:{err_dir}'
-
-assert input_dir.endswith(('/', '\\')) and output_dir.endswith(('/', '\\')) and err_dir.endswith(('/', '\\'))
-
-
 def get_git_commit():
     return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').replace('\n','')
 
@@ -56,6 +49,15 @@ def parse_args(args, parser):
 
 
 if __name__ == "__main__":
+    if input_dir is not None and \
+       output_dir is not None and \
+       err_dir is not None:
+        raise ReferenceError(f'in:{input_dir} out:{output_dir} err:{err_dir}')
+    elif input_dir.endswith(('/', '\\')) \
+       and output_dir.endswith(('/', '\\')) \
+       and err_dir.endswith(('/', '\\')):
+        raise TypeError(f'Expected directory but got a file. in:{input_dir} out:{output_dir} err:{err_dir}')
+
     parser = create_parser()
     parserArgs = parse_args(sys.argv[1:], parser)
     setup()
