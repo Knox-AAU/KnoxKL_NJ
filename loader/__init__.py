@@ -2,7 +2,7 @@ import knox_util, os
 import shutil
 
 from environment.EnvironmentConstants import EnvironmentConstants as ec
-from loader.JsonLoader import NewsStruct
+from loader.FileLoader import load_json
 
 def process_existing(path: str) -> None:
     """
@@ -24,8 +24,8 @@ def process_existing(path: str) -> None:
         split_path = os.path.split(path)
 
         try:
-            news = NewsStruct(path)
-            news.load_publications()
+            # TODO create separate function to handle this
+            news = load_json(path)
 
             shutil.move(src=path, dst=f'{ec().get_value(ec().OUTPUT_DIRECTORY)}{split_path[-1]}')
         except:
