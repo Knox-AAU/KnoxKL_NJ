@@ -7,3 +7,5 @@ pytest==6.1.1
 watchdog==0.10.3
 python-dotenv==0.14.0
 rdflib==5.0.0
+knox-source-data-io
+knox-filewatcher

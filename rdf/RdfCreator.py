@@ -1,9 +1,10 @@
 from rdflib import Graph, Literal, URIRef, BNode
 from rdflib.namespace import RDFS, OWL, RDF as Rdf, XSD
-from environment.EnvironmentConstants import EnvironmentConstants as ec
+from environment.EnvironmentConstants import EnvironmentVariables as ev
 import os
+from rdf import KNOX
 
-def store_rdf_triples(rdfTriples, output_file_name = ec().get_ouput_file_name(), destination_folder = ec().get_rdf_output_folder(), output_format = ec().get_triple_output_format()):
+def store_rdf_triples(rdfTriples, output_file_name = ev().get_value(ev().OUTPUT_FILE_NAME), destination_folder = ev().get_value(ev().RDF_OUTPUT_FOLDER), output_format = ev().get_value(ev().OUTPUT_FORMAT)):
     """
     Input:
         rdfTriples: list of RDF triples with correct type - List containing triples on the form (Subject, RelationPredicate, Object).
@@ -24,6 +25,7 @@ def store_rdf_triples(rdfTriples, output_file_name = ec().get_ouput_file_name(),
     g.bind("owl", OWL)
     g.bind("rdfs", RDFS)
     g.bind("xsd", XSD)
+    g.bind("knox", KNOX)
 
     # Print it
     #print("--------- PRINT THE KNOWLEDGE ---------")
@@ -101,6 +103,8 @@ def generate_relation(relationTypeConstant):
         return OWL.term(relValue)
     elif relType == "xsd":
         return XSD.term(relValue)
+    elif relType == "knox":
+        return KNOX.term(relValue)
     else:
         raise Exception("Relation namespace: " + relType + " not defined in RdfConstants. Input was: " + relationTypeConstant)
 

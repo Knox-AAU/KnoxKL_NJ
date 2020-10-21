@@ -1,0 +1,54 @@
+[
+    {
+    "schemaLocation": "http://iptc.org/std/NITF/2006-10-18/",
+    "schemaVersion": 1.0,
+    "generator": {
+        "app": "The app",
+        "version": "1.0.0",
+        "generatedAt": "2020-10-06T20:23:39.784969"
+    },
+    "extractedFrom": [
+        "location"
+    ],
+    "content": {
+        "byline": {
+            "name": "Mathias Alex Emil",
+            "email": ""
+    },
+        "page": "1",
+        "nmId": "0000000",
+        "publishedAt": "2018-03-27T00:00:00+02:00",
+        "publisher": "Nordjyske Medier",
+        "publication": "Nordjyske Stiftstidende",
+        "title": "Test title",
+        "paragraphs": [ {
+            "kind": "paragraph",
+            "value": "Jens Christian havde en bondegård. Christiansborg er hjemstedet for dansk politik. FC København hører hjemme i Parken"
+            }]
+    },
+    "type": "Article"
+}, {
+    "schemaLocation": "http://iptc.org/std/NITF/2006-10-18/",
+    "schemaVersion": 1.0,
+    "generator": {
+        "app": "The app",
+        "version": "1.0.0",
+        "generatedAt": "2020-10-06T20:23:39.716149"
+    },
+    "extractedFrom": [
+        "location"
+    ],
+    "content": {
+        "byline": {
+            "name": "",
+            "email": ""
+        },
+        "page": "1",
+        "nmId": "0000001",
+        "publishedAt": "2018-03-27T00:00:00+02:00",
+        "publisher": "Nordjyske Medier",
+        "publication": "2. Sektion"
+    },
+    "type": ""
+}
+]

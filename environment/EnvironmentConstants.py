@@ -1,78 +1,43 @@
+from __future__ import annotations
 from dotenv import load_dotenv
 import os
 
-class Singleton:
+class EnvironmentVariables:
     """
-    Basic Singleton class that can be inherited from for creating classes in the singleton pattern.
-    Allows only for a single instance of the class to exist at a time
+    The singleton Environment wrapper for the inner class
     """
-    _shared_state = {}
-    def __init__(self):
+    class __EnvironmentVariables:
         """
-        Saves the state of the singleton to ensure only a single version of the instance exist
+        The inner classe with only one instance
         """
-        self.__dict__ = self._shared_state
-
-class EnvironmentConstants(Singleton):
-    """
-    Singleton instance for accessing the values stored in the environment variables for the project
-    """
-    RDF_OUTPUT_FOLDER = ""
-    OUTPUT_DIRECTORY = ""
-    KNOX_18_NAMESPACE = ""
-    OUTPUT_FORMAT = ""
-    OUTPUT_FILE_NAME = ""
-    INPUT_DIRECTORY = ""
-    ERROR_DIRECTORY = ""
-
-    def __init__(self):
-        """
-        Initializes the EnvironmentConstants instance
-        """
-        Singleton.__init__(self)
-        self.INPUT_DIRECTORY = "INPUT_DIRECTORY"
-        self.OUTPUT_DIRECTORY = "OUTPUT_DIRECTORY"
-        self.ERROR_DIRECTORY = "ERROR_DIRECTORY"
-        self.RDF_OUTPUT_FOLDER = "RDF_OUTPUT_FOLDER"
-        self.KNOX_18_NAMESPACE = "KNOX_18_NAMESPACE"
-        self.OUTPUT_FORMAT = "OUTPUT_FORMAT"
-        self.OUTPUT_FILE_NAME = "OUTPUT_FILE_NAME"
-        load_dotenv()
-
-    def get_value(self, key: str):
-        """
-        Input:
-            key: str - The key to loop up in the .env file
-
-        Returns:
-            str - The value for the given key
-        """
-        return os.environ.get(key)
+        def __init__(self):
+            self.INPUT_DIRECTORY = "INPUT_DIRECTORY"
+            self.OUTPUT_DIRECTORY = "OUTPUT_DIRECTORY"
+            self.ERROR_DIRECTORY = "ERROR_DIRECTORY"
+            self.RDF_OUTPUT_FOLDER = "RDF_OUTPUT_FOLDER"
+            self.KNOX_18_NAMESPACE = "KNOX_18_NAMESPACE"
+            self.OUTPUT_FORMAT = "OUTPUT_FORMAT"
+            self.OUTPUT_FILE_NAME = "OUTPUT_FILE_NAME"
+            load_dotenv()
         
-    def get_rdf_output_folder(self):
-        """
-        Returns:
-            str - The value stored in the environment variable "RDF_OUTPUT_FOLDER"
-        """
-        return os.environ.get(self.OUTPUT_DIRECTORY)
+        def get_value(self, key: str, default = None):
+            """
+            Input:
+                key: str - The key to look up in the .env file
+                default - The default value to put if no value is found for the key
+
+            Returns:
+                str - The value for the given key
+            """
+            return os.environ.get(key) if os.environ.get(key) is not None else default
     
-    def get_knox18_namespace(self):
+    instance: __EnvironmentVariables = None
+    def __new__(cls):
         """
-        Returns:
-            str - The value stored in the environment variable "KNOX_18_NAMESPACE"
+        Overrides __new__ dunder method to return the instance of the inner class each time an object is called.
+        This is where the singleton magic is happening
         """
-        return os.environ.get(self.KNOX_18_NAMESPACE)
-    
-    def get_triple_output_format(self):
-        """
-        Returns:
-            str - The value stored in the environment variable "OUTPUT_FORMAT"
-        """
-        return os.environ.get(self.OUTPUT_FORMAT)
-    
-    def get_ouput_file_name(self):
-        """
-        Returns:
-            str - The value stored in the environment variable "OUTPUT_FILE_NAME"
-        """
-        return os.environ.get(self.OUTPUT_FILE_NAME)
+        if not EnvironmentVariables.instance:
+            EnvironmentVariables.instance = EnvironmentVariables.__EnvironmentVariables()
+        return EnvironmentVariables.instance
+
