@@ -4,12 +4,12 @@ import spacy
 from loader.JsonWrapper import Publication, Article, Paragraph
 from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
 from rdf.RdfConstants import RelationTypeConstants
-from environment.EnvironmentConstants import EnvironmentConstants as ec
+from environment.EnvironmentConstants import EnvironmentVariables as ev
 
 nlp = spacy.load("da_core_news_lg")
 triples = []
-namespace = ec().get_value(ec().KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
-named_individual = []
+namespace = ev().get_value(ev().KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
+property_triples = []
 
 # Is currently a monster of a function, will split.
 def process_publication(publication:Publication):
@@ -41,7 +41,7 @@ def write_named_individual():
     global named_individual
 
     #Output file path
-    file_path = ec().get_value(ec().OUTPUT_DIRECTORY) + ec().get_value(ec().OUTPUT_FILE_NAME) + ".ttl"
+    file_path = ev().get_value(ev().OUTPUT_DIRECTORY) + ev().get_value(ev().OUTPUT_FILE_NAME) + ".ttl"
 
     #Write each named individual to file
     form = "knox:{0} a owl:NamedIndividual, knox:{1} ."

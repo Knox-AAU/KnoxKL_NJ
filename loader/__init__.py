@@ -1,7 +1,7 @@
 import knox_util, os
 import shutil
 
-from environment.EnvironmentConstants import EnvironmentConstants as ec
+from environment.EnvironmentConstants import EnvironmentVariables as ev
 from loader.JsonLoader import NewsStruct
 
 def process_existing(path: str) -> None:
@@ -27,9 +27,9 @@ def process_existing(path: str) -> None:
             news = NewsStruct(path)
             news.load_publications()
 
-            shutil.move(src=path, dst=f'{ec().get_value(ec().OUTPUT_DIRECTORY)}{split_path[-1]}')
+            shutil.move(src=path, dst=f'{ev().get_value(ev().OUTPUT_DIRECTORY)}{split_path[-1]}')
         except:
-            shutil.move(src=path, dst=f'{ec().get_value(ec().ERROR_DIRECTORY)}{split_path[-1]}')
+            shutil.move(src=path, dst=f'{ev().get_value(ev().ERROR_DIRECTORY)}{split_path[-1]}')
 
 
     # Simulated finished
