@@ -8,8 +8,9 @@ from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_l
 
 class TripleExtractor:
 
-    def __init__(self, model, namespace):
-        self.nlp = spacy.load("da_core_news_sm")
+    def __init__(self, model):
+        self.nlp = spacy.load(model)
+        # TODO remove hardcoded namespace
         self.namespace = ec().get_value(ec().KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
         self.triples = []
         self.property_triples = []
