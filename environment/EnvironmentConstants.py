@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dotenv import load_dotenv
 import os
 
@@ -6,13 +7,6 @@ class EnvironmentVariables:
     The singleton Environment wrapper for the inner class
     """
     class __EnvironmentVariables:
-        INPUT_DIRECTORY = ""
-        OUTPUT_DIRECTORY = ""
-        ERROR_DIRECTORY = ""
-        RDF_OUTPUT_FOLDER = ""
-        KNOX_18_NAMESPACE = ""
-        OUTPUT_FORMAT = ""
-        OUTPUT_FILE_NAME = ""
         """
         The inner classe with only one instance
         """
@@ -37,7 +31,7 @@ class EnvironmentVariables:
             """
             return os.environ.get(key) if os.environ.get(key) is not None else default
     
-    instance = None
+    instance: __EnvironmentVariables = None
     def __new__(cls):
         """
         Overrides __new__ dunder method to return the instance of the inner class each time an object is called.
