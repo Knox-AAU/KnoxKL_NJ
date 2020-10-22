@@ -2,7 +2,7 @@ import knox_util, os
 import shutil
 
 from environment.EnvironmentConstants import EnvironmentVariables as ev
-from loader.FileLoader import load_json
+from loader.FileLoader import load_json, move_to_folder
 
 def process_existing(path: str) -> None:
     """
@@ -27,10 +27,12 @@ def process_existing(path: str) -> None:
             # TODO create separate function to handle this
             news = load_json(path)
 
-            shutil.move(src=path, dst=f'{ev().get_value(ev().OUTPUT_DIRECTORY)}{split_path[-1]}')
+            move_to_folder(path, ev().get_value(ev().OUTPUT_DIRECTORY), split_path[-1])
+            #shutil.move(src=path, dst=f'{ev().get_value(ev().OUTPUT_DIRECTORY)}{split_path[-1]}')
         except:
-            shutil.move(src=path, dst=f'{ev().get_value(ev().ERROR_DIRECTORY)}{split_path[-1]}')
+            move_to_folder(path, ev().get_value(ev().ERROR_DIRECTORY), split_path[-1])
+            #shutil.move(src=path, dst=f'{ev().get_value(ev().ERROR_DIRECTORY)}{split_path[-1]}')
 
 
     # Simulated finished
-    
+
