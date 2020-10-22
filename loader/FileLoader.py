@@ -32,6 +32,7 @@ class Handler(FileSystemEventHandler):
                         print("Move file <" + event.src_path + "> with exception: " + e.__str__())
                         move_to_folder(event.src_path, ev().get_value(ev().ERROR_DIRECTORY), get_file_name_from_path(event.src_path))
                     else:
+                        # Its detected as a modification when the file is moved, so it naturally fails to move when the file already has been moved
                         print("Did not find file with path <" + event.src_path + ">, it was likely moved just before...")
 
 def load_json(json_path: str) -> Publication:
@@ -59,8 +60,24 @@ def start_watch_directory(directory: str):
     file_watcher = FileWatcher(directory)
     file_watcher.run(Handler())
 
-def move_to_folder(src_path: str, dest_folder: str, dest_file_name: str) -> str:
+def move_to_folder(src_path: str, dest_folder: str, dest_file_name: str) -> None:
+    """
+    Input:
+        src_path: str - The source path to the file to move
+        dest_folder: str - The path to the destination folder
+        dest_file_name: str - The name the file should have at the destination
+    
+    Moves the given file to destination
+    """
     shutil.move(src=src_path, dst=f'{dest_folder}{dest_file_name}')
 
 def get_file_name_from_path(path: str) -> str:
+    """
+    Input:
+        path: str - The path of the file to extract the file name from
+    Output:
+        str - The file name from the path
+
+    Extracts the file name from a given path
+    """
     return os.path.split(path)[-1]
