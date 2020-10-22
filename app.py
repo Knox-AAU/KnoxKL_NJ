@@ -49,13 +49,13 @@ def parse_args(args, parser):
 
 
 if __name__ == "__main__":
-    if input_dir is not None and \
-       output_dir is not None and \
-       err_dir is not None:
+    if input_dir is None or \
+       output_dir is None or \
+       err_dir is None:
         raise ReferenceError(f'in:{input_dir} out:{output_dir} err:{err_dir}')
-    elif input_dir.endswith(('/', '\\')) \
-       and output_dir.endswith(('/', '\\')) \
-       and err_dir.endswith(('/', '\\')):
+    elif not input_dir.endswith(('/', '\\')) \
+       or not output_dir.endswith(('/', '\\')) \
+       or not err_dir.endswith(('/', '\\')):
         raise TypeError(f'Expected directory but got a file. in:{input_dir} out:{output_dir} err:{err_dir}')
 
     parser = create_parser()
