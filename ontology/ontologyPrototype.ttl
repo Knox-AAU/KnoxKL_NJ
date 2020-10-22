@@ -19,8 +19,7 @@ knox:Author
 
 knox:Article
 	rdf:type owl:Class .
-#ID
-#title
+
 knox:Location
 	rdf:type owl:Class .
 	
@@ -43,9 +42,6 @@ knox:Publication
 #knox:Object
 		#	rdf:type owl:Class .
 	
-
-	
-	
 #Object Properties
 # Object Properties are the relations between classes and should be read as:
 # Domain relation range
@@ -59,7 +55,6 @@ knox:isPublishedBy
 	rdf:type owl:ObjectProperty ;
 	rdfs:domain knox:Article ;
 	rdfs:range knox:Publication .
-#    rdfs:range knox:Publisher .
 
 knox:mentions
 	rdf:type owl:ObjectProperty ;
@@ -79,6 +74,7 @@ knox:publishes
 	rdf:type owl:ObjectProperty ;
 	rdfs:domain knox:Publisher ;
 	rdfs:range knox:Publication .
+
 #Datatype Properties
 # Datatypes can be defined similarly to the object properties with 
 # both a domain and a range that can be added. 
