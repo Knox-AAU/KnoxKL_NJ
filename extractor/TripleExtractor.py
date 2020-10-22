@@ -1,6 +1,6 @@
 from __future__ import annotations
 import spacy
-from environment.EnvironmentConstants import EnvironmentConstants as ec
+from environment.EnvironmentConstants import EnvironmentVariables as ev
 from loader.JsonWrapper import Publication, Article
 from rdf.RdfConstants import RelationTypeConstants
 from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
@@ -11,7 +11,7 @@ class TripleExtractor:
     def __init__(self, model, tuple_label_list=None, ignore_label_list=None):
         self.nlp = spacy.load(model)
         # TODO remove hardcoded namespace
-        self.namespace = ec().get_value(ec().KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
+        self.namespace = ev().get_value(ev().KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
         self.triples = []
         self.named_individual = []
         if tuple_label_list is None:
@@ -212,7 +212,7 @@ class TripleExtractor:
         """
 
         # Output file path
-        file_path = ec().get_value(ec().OUTPUT_DIRECTORY) + ec().get_value(ec().OUTPUT_FILE_NAME) + ".ttl"
+        file_path = ev().get_value(ev().OUTPUT_DIRECTORY) + ev().get_value(ev().OUTPUT_FILE_NAME) + ".ttl"
 
         # Write each named individual to file
         form = "knox:{0} a owl:NamedIndividual, knox:{1} ."
