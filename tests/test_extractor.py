@@ -25,7 +25,7 @@ class Test:
 
     def test_adding_named_individuals(self):
         
-        self.extractor.named_individual.clear
+        self.extractor.named_individual.clear()
 
         assert len(self.extractor.named_individual) == 0
 
@@ -33,5 +33,5 @@ class Test:
 
         assert len(self.extractor.named_individual) == 1
 
-        self.extractor.named_individual.clear
+        self.extractor.named_individual.clear()
     
