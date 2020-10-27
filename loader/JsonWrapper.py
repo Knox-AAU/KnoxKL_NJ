@@ -111,3 +111,6 @@ class Publication(Model):
         js_article = content.get("articles", [])
         for val in js_article:
             self.articles.append(Article(val))
+    
+    def __str__(self):
+        return f'n:{self.publication} p:{self.pages} d:{self.published_at} b:{self.publisher}'
