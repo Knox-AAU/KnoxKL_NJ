@@ -4,7 +4,7 @@ import shutil
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 from loader.FileLoader import load_json
 
-def process_existing(path: str, output_path: str) -> None:
+def process_existing(path: str, output_path: str, error_path: str) -> None:
     """
     Input:
         path: str - The input directory path, that will be processed
@@ -28,9 +28,10 @@ def process_existing(path: str, output_path: str) -> None:
             news = load_json(path)
 
             shutil.move(src=path, dst=f'{output_path}{split_path[-1]}')
-        except:
-            shutil.move(src=path, dst=f'{output_path}{split_path[-1]}')
+        except Exception as e:
+            print(e)
+            #shutil.move(src=path, dst=f'{error_path}{split_path[-1]}')
 
-
+    print('Finished processing files created between sessions')
     # Simulated finished
     
