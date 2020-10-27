@@ -109,7 +109,7 @@ class TripleExtractor:
         """
 
         # Article text is split into multiple paragraph objects in the Json, this is joined into one string.
-        content = ''.join(para.value for para in article.paragraphs)
+        content = ' '.join(para.value for para in article.paragraphs)
 
         # Does nlp on the text
         article_entities = self.process_article_text(content)
@@ -211,15 +211,23 @@ class TripleExtractor:
         Writes each named individual to the file.
         """
 
-        # Output file path
-        file_path = ev().get_value(ev().OUTPUT_DIRECTORY) + ev().get_value(ev().OUTPUT_FILE_NAME) + ".ttl"
+    
+        #prop1 = The specific location/person/organisation or so on
+        #prop2 = The type of Knox:Class prop1 is a member of.
+        for prop1, prop2 in self.named_individual:
+            
+            self.triples.append([
+                generate_uri_reference(self.namespace, [prop2], prop1),
+                generate_relation(RelationTypeConstants.RDF_TYPE),
+                generate_relation(RelationTypeConstants.OWL_NAMED_INDIVIDUAL)
+            ])
 
-        # Write each named individual to file
-        form = "knox:{0} a owl:NamedIndividual, knox:{1} ."
-        with open(file_path, "a", encoding="utf-8") as stream:
-            for prop1, prop2 in self.named_individual:
-                prop = form.format(prop1, prop2)
-                stream.write(prop + "\n")
+            self.triples.append([
+                generate_uri_reference(self.namespace, [prop2], prop1),
+                generate_relation(RelationTypeConstants.RDF_TYPE),
+                generate_uri_reference(self.namespace, ref=prop2)
+            ])
+
 
     def process_publication(self, publication: Publication):
         """
@@ -236,8 +244,11 @@ class TripleExtractor:
             self.process_article(article)
             self.extract_article(article, publication)
 
+        # Writes named individuals to the output file.
+        self.write_named_individual()
+
+
         # Function from rdf.RdfCreator, writes triples to file
         store_rdf_triples(self.triples)
 
-        # Writes named individuals to the output file.
-        self.write_named_individual()
+		
