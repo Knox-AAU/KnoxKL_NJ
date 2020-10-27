@@ -211,12 +211,9 @@ class TripleExtractor:
         Writes each named individual to the file.
         """
 
-        # Output file path
-       # file_path = ev().get_value(ev().OUTPUT_DIRECTORY) + ev().get_value(ev().OUTPUT_FILE_NAME) + ".ttl"
-
-        # Write each named individual to file
-      #  form = "knox:{0} a owl:NamedIndividual, knox:{1} ."
-
+    
+        #prop1 = The specific location/person/organisation or so on
+        #prop2 = The type of Knox:Class prop1 is a member of.
         for prop1, prop2 in self.named_individual:
             
             self.triples.append([
@@ -232,12 +229,6 @@ class TripleExtractor:
             ])
 
 
-#        with open(file_path, "a", encoding="utf-8") as stream:
- #           for prop1, prop2 in self.named_individual:
-  #              prop = form.format(prop1, prop2)
-   #             stream.write(prop + "\n")
-
-   
     def process_publication(self, publication: Publication):
         """
         Input:
