@@ -4,7 +4,7 @@ from extractor.TripleExtractor import TripleExtractor
 class Test:
     extractor = TripleExtractor("da_core_news_lg")
 
-    def test_spacy_conversion(self):
+    def test_spacy_conversion_to_label(self):
         per_string = "PER"
         org_string = "ORG"
         loc_string = "LOC"
@@ -14,7 +14,7 @@ class Test:
         assert self.extractor.convert_spacy_label_to_namespace(loc_string) == "Location"
         assert self.extractor.convert_spacy_label_to_namespace("MISC") == "MISC"
 
-    def test_article_text_processing(self):
+    def test_article_text_processing_can_label_entities(self):
         text = "Jens Hansen bor i København, hvor Danske Bank har hovedkvarter."
 
         entities = self.extractor.process_article_text(text)

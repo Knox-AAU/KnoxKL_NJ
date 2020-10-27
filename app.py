@@ -61,7 +61,7 @@ if __name__ == "__main__":
     parser = create_parser()
     parserArgs = parse_args(sys.argv[1:], parser)
     setup()
-    process_existing(input_dir)
+    process_existing(input_dir, output_dir, err_dir)
 
     start_watch_directory(input_dir)
 
