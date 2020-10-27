@@ -212,15 +212,32 @@ class TripleExtractor:
         """
 
         # Output file path
-        file_path = ev().get_value(ev().OUTPUT_DIRECTORY) + ev().get_value(ev().OUTPUT_FILE_NAME) + ".ttl"
+       # file_path = ev().get_value(ev().OUTPUT_DIRECTORY) + ev().get_value(ev().OUTPUT_FILE_NAME) + ".ttl"
 
         # Write each named individual to file
-        form = "knox:{0} a owl:NamedIndividual, knox:{1} ."
-        with open(file_path, "a", encoding="utf-8") as stream:
-            for prop1, prop2 in self.named_individual:
-                prop = form.format(prop1, prop2)
-                stream.write(prop + "\n")
+      #  form = "knox:{0} a owl:NamedIndividual, knox:{1} ."
 
+        for prop1, prop2 in self.named_individual:
+            
+            self.triples.append([
+                generate_uri_reference(self.namespace, [prop2], prop1),
+                generate_relation(RelationTypeConstants.RDF_TYPE),
+                generate_relation(RelationTypeConstants.OWL_NAMED_INDIVIDUAL)
+            ])
+
+            self.triples.append([
+                generate_uri_reference(self.namespace, [prop2], prop1),
+                generate_relation(RelationTypeConstants.RDF_TYPE),
+                generate_uri_reference(self.namespace, ref=prop2)
+            ])
+
+
+#        with open(file_path, "a", encoding="utf-8") as stream:
+ #           for prop1, prop2 in self.named_individual:
+  #              prop = form.format(prop1, prop2)
+   #             stream.write(prop + "\n")
+
+   
     def process_publication(self, publication: Publication):
         """
         Input:
@@ -236,8 +253,11 @@ class TripleExtractor:
             self.process_article(article)
             self.extract_article(article, publication)
 
+        # Writes named individuals to the output file.
+        self.write_named_individual()
+
+
         # Function from rdf.RdfCreator, writes triples to file
         store_rdf_triples(self.triples)
 
-        # Writes named individuals to the output file.
-        self.write_named_individual()
+		
