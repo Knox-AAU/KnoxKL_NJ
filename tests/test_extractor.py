@@ -22,3 +22,6 @@ class Test:
         assert ("Jens Hansen", "PER") in entities
         assert ("København", "LOC") in entities
         assert ("Danske Bank", "ORG") in entities
+
+    def check_triples(self):
+        
