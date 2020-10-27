@@ -23,5 +23,15 @@ class Test:
         assert ("København", "LOC") in entities
         assert ("Danske Bank", "ORG") in entities
 
-    def check_triples(self):
+    def test_adding_named_individuals(self):
         
+        self.extractor.named_individual.clear
+
+        assert len(self.extractor.named_individual) == 0
+
+        self.extractor.add_named_individual("Hej med dig", "Jeg hedder Kaj")
+
+        assert len(self.extractor.named_individual) == 1
+
+        self.extractor.named_individual.clear
+    
