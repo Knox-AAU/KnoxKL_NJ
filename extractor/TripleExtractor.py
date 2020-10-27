@@ -143,45 +143,51 @@ class TripleExtractor:
 
             Creates the RDF triples unique to the article.
         """
+        # id of the article
+        article_id = str(article.id)
 
         # Creates the article as a named individual
-        self.add_named_individual(str(article.id), "Article")
+        self.add_named_individual(article_id, "Article")
         # Creates the publisher as a named individual
         self.add_named_individual(publication.publisher.replace(" ", "_"), "Publisher")
 
         # Adds the Article isPublishedBy Publication relation to the turtle output
         self.triples.append([
-            generate_uri_reference(self.namespace, ["Article"], str(article.id)),
+            generate_uri_reference(self.namespace, ["Article"], article_id),
             generate_relation(RelationTypeConstants.KNOX_IS_PUBLISHED_BY),
             generate_uri_reference(self.namespace, ["Publisher"], publication.publisher.replace(" ", "_"))
         ])
 
         # Adds the Article knox:Article_Title Title data to the turtle output
         self.triples.append([
-            generate_uri_reference(self.namespace, ["Article"], str(article.id)),
+            generate_uri_reference(self.namespace, ["Article"], article_id),
             generate_relation(RelationTypeConstants.KNOX_ARTICLE_TITLE),
             generate_literal(article.headline)
         ])
 
         # If the byline exists add the author name to the RDF triples. Author name is required if byline exists.
         if article.byline is not None:
+            byline = article.byline.name.replace(" ", "_")
+
             self.triples.append([
-                generate_uri_reference(self.namespace, ["Author"], article.byline.name.replace(" ", "_")),
+                generate_uri_reference(self.namespace, ["Author"], byline),
                 generate_relation(RelationTypeConstants.KNOX_NAME),
                 generate_literal(article.byline.name)
             ])
+
             # Creates the author as a named individual
-            self.add_named_individual(article.byline.name.replace(" ", "_"), "Author")
+            self.add_named_individual(byline, "Author")
             # Adds the Article isWrittenBy Author relation to the triples list
             self.triples.append([
-                generate_uri_reference(self.namespace, ["Article"], str(article.id)),
+                generate_uri_reference(self.namespace, ["Article"], article_id),
                 generate_relation(RelationTypeConstants.KNOX_IS_WRITTEN_BY),
-                generate_uri_reference(self.namespace, ["Author"], article.byline.name.replace(" ", "_"))
+                generate_uri_reference(self.namespace, ["Author"], byline)
             ])
+
             # Since email is not required in the byline, if it exists: add the authors email as a data property to the author.
             if article.byline.email is not None:
                 self.triples.append([
-                    generate_uri_reference(self.namespace, ["Author"], article.byline.name.replace(" ", "_")),
+                    generate_uri_reference(self.namespace, ["Author"], byline),
                     generate_relation(RelationTypeConstants.KNOX_EMAIL),
                     generate_literal(article.byline.email)
                 ])
@@ -189,7 +195,7 @@ class TripleExtractor:
         # Adds the publication date to the article, if it exists.
         if publication.published_at != "":
             self.triples.append([
-                generate_uri_reference(self.namespace, ["Article"], str(article.id)),
+                generate_uri_reference(self.namespace, ["Article"], article_id),
                 generate_relation(RelationTypeConstants.KNOX_PUBLICATION_DATE),
                 generate_literal(publication.published_at)
             ])
@@ -198,7 +204,7 @@ class TripleExtractor:
         if len(article.extracted_from) > 0:
             for ocr_file in article.extracted_from:
                 self.triples.append([
-                    generate_uri_reference(self.namespace, ["Article"], str(article.id)),
+                    generate_uri_reference(self.namespace, ["Article"], article_id),
                     generate_relation(RelationTypeConstants.KNOX_LINK),
                     generate_literal(ocr_file)
                 ])
