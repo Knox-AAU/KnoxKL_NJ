@@ -109,7 +109,7 @@ class TripleExtractor:
         """
 
         # Article text is split into multiple paragraph objects in the Json, this is joined into one string.
-        content = ''.join(para.value for para in article.paragraphs)
+        content = ' '.join(para.value for para in article.paragraphs)
 
         # Does nlp on the text
         article_entities = self.process_article_text(content)
