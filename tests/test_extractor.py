@@ -114,6 +114,8 @@ class Test:
             generate_literal("Aalborg")] in self.extractor.triples
     
     def test_process_publication(self):
-        self.extractor.triples
-        self.extractor.named_individual
+        self.extractor.triples.clear()
+        self.extractor.named_individual.clear()
         self.extractor.process_publication(self.publication)
+     
+        assert len(self.extractor.triples) == 43
