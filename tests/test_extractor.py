@@ -118,4 +118,4 @@ class Test:
         self.extractor.named_individual.clear()
         self.extractor.process_publication(self.publication)
      
-        assert len(self.extractor.triples) == 43
+        assert len(self.extractor.triples) == 42
