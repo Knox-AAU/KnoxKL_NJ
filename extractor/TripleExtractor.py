@@ -209,11 +209,9 @@ class TripleExtractor:
         Writes each named individual to the file.
         """
 
-    
-        #prop1 = The specific location/person/organisation or so on
-        #prop2 = The type of Knox:Class prop1 is a member of.
+        # prop1 = The specific location/person/organisation or so on
+        # prop2 = The type of Knox:Class prop1 is a member of.
         for prop1, prop2 in self.named_individual:
-            
             self.triples.append([
                 generate_uri_reference(self.namespace, [prop2], prop1),
                 generate_relation(RelationTypeConstants.RDF_TYPE),
@@ -225,7 +223,6 @@ class TripleExtractor:
                 generate_relation(RelationTypeConstants.RDF_TYPE),
                 generate_uri_reference(self.namespace, ref=prop2)
             ])
-
 
     def process_publication(self, publication: Publication):
         """
@@ -245,8 +242,5 @@ class TripleExtractor:
         # Writes named individuals to the output file.
         self.write_named_individual()
 
-
         # Function from rdf.RdfCreator, writes triples to file
         store_rdf_triples(self.triples)
-
-		
