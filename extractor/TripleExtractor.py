@@ -93,13 +93,10 @@ class TripleExtractor:
             label = entities.label_
 
             # ignore ignored labels, expects ignore_label_list to be a list of strings
-            for ignored_label in self.ignore_label_list:
-                if label == ignored_label:
-                    break
-                else:
-                    # Add entity to list, create it as named individual.
-                    article_entities.append((name, label))
-                    self.add_named_individual(name.replace(" ", "_"), self.convert_spacy_label_to_namespace(label))
+            if label not in self.ignore_label_list:
+                # Add entity to list, create it as named individual.
+                article_entities.append((name, label))
+                self.add_named_individual(name.replace(" ", "_"), self.convert_spacy_label_to_namespace(label))
         return article_entities
 
     def process_article(self, article: Article):
