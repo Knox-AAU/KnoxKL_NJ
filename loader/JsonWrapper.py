@@ -67,8 +67,12 @@ class Article:
         content = content if content is not None else {}
         self.extracted_from = []
         js_extracted_from = content.get("extracted_from", [])
-        for val in js_extracted_from:
-            self.extracted_from.append(val)
+        # Added a case for we somehow received a string instead of an array of strings
+        if type(js_extracted_from) is str:
+            self.extracted_from.append(js_extracted_from)
+        else:
+            for val in js_extracted_from:
+                self.extracted_from.append(val)
         self.confidence = content.get("confidence", 0.0)
         self.id = content.get("id", 0)
         self.page = content.get("page", 0)
