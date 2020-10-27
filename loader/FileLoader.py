@@ -4,6 +4,7 @@ from knox_source_data_io.io_handler import IOHandler, Generator, Wrapper
 from loader.JsonWrapper import Publication
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 import os, shutil
+from knox_util import print
 
 class Handler(FileSystemEventHandler):
     """
@@ -16,24 +17,27 @@ class Handler(FileSystemEventHandler):
         Event handler for file specific events.
         """
         if event.is_directory:
+            print(f'FileWatcher captured a directory_{event.event_type} event', 'debug')
             return None  
 
         elif event.event_type == 'modified' or event.event_type == 'created':
-            if event.src_path.endswith('.json'):    
+            print(f'FileWatcher captured a file_{event.event_type} event', 'debug')
+            if event.src_path.endswith('.json'):
+                print('It was a json file that caused the event', 'debug')
                 # TODO Fix so that this is a single method call
                 try:
                     publication: Publication = load_json(event.src_path)
-                    print(publication)
+                    print(publication, 'debug')
                     move_file(event.src_path, ev().get_value(ev().OUTPUT_DIRECTORY), get_file_name_from_path(event.src_path))
                 except FileExistsError as e:
                     pass # Intentional pass
                 except Exception as e:
                     if os.path.exists(event.src_path):
-                        print(f'Move file <{event.src_path}> with exception:',e)
+                        print(f'Move file <{event.src_path}> with exception: {e}', 'error')
                         move_file(event.src_path, ev().get_value(ev().ERROR_DIRECTORY), get_file_name_from_path(event.src_path))
                     else:
                         # Its detected as a modification when the file is moved, so it naturally fails to move when the file already has been moved
-                        print("Did not find file with path <" + event.src_path + ">, it was likely moved just before...")
+                        print("Did not find file with path <" + event.src_path + ">, it was likely moved just before...", 'error')
 
 
 def process_existing(path: str) -> None:
@@ -47,7 +51,7 @@ def process_existing(path: str) -> None:
     print(f'Checking for existing files in \'{path}\'...')
     paths = [os.path.join(path, fn) for fn in next(os.walk(path))[2]]
     if len(paths) == 0:
-        print('No files were created between sessions')
+        print('No files were created between sessions', 'info')
         return
 
     for path in paths:
@@ -61,7 +65,7 @@ def process_existing(path: str) -> None:
 
             move_file(path, ev().get_value(ev().OUTPUT_DIRECTORY), split_path[-1])
         except Exception as e:
-            print(f'Move file <{path}> with exception:',e)
+            print(f'Move file <{path}> with exception: {e}', 'warning')
             move_file(path, ev().get_value(ev().ERROR_DIRECTORY), split_path[-1])
 
 
@@ -91,6 +95,7 @@ def start_watch_directory(directory: str):
     
     This function starts a file watcher to process files in a given directory.
     """
+    print(f'Starting FileWatcher in directory {directory}', 'debug')
     file_watcher = FileWatcher(directory)
     file_watcher.run(Handler())
 
@@ -103,6 +108,7 @@ def move_file(src_path: str, dest_folder: str, dest_file_name: str) -> None:
     
     Moves the given file to destination
     """
+    print(f'Moving file {src_path} -> {dest_folder}{dest_file_name}', 'debug')
     shutil.move(src=src_path, dst=f'{dest_folder}{dest_file_name}')
 
 def get_file_name_from_path(path: str) -> str:
