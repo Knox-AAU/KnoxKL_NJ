@@ -37,7 +37,7 @@ class TripleExtractor:
         pub_name = pub.publication.replace(" ", "_")
 
         # Adds publication as a named individual
-        self.add_named_individual(pub.publication.replace(" ", "_"), "Publication")
+        self.add_named_individual(pub_name, "Publication")
 
         # Add publisher name as data property
         self.triples.append([
