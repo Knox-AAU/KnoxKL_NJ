@@ -10,7 +10,6 @@ class TripleExtractor:
 
     def __init__(self, model, tuple_label_list=None, ignore_label_list=None):
         self.nlp = spacy.load(model)
-        # TODO remove hardcoded namespace
         self.namespace = ev().get_value(ev().KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
         self.triples = []
         self.named_individual = []
@@ -93,10 +92,14 @@ class TripleExtractor:
             # label_ is correct for acquiring the spaCy string version of the entity
             label = entities.label_
 
-            # Add entity to list, create it as named individual.
-            article_entities.append((name, label))
-            self.add_named_individual(name.replace(" ", "_"), self.convert_spacy_label_to_namespace(label))
-
+            # ignore ignored labels, expects ignore_label_list to be a list of strings
+            for ignored_label in self.ignore_label_list:
+                if label == ignored_label:
+                    break
+                else:
+                    # Add entity to list, create it as named individual.
+                    article_entities.append((name, label))
+                    self.add_named_individual(name.replace(" ", "_"), self.convert_spacy_label_to_namespace(label))
         return article_entities
 
     def process_article(self, article: Article):
@@ -121,11 +124,6 @@ class TripleExtractor:
             # Changes spacy labels to full length labels
             object_label = str(pair[1])
             object_label = self.convert_spacy_label_to_namespace(object_label)
-
-            # Ignore ignored labels
-            for label in self.ignore_label_list:
-                if object_label == str(label[0]):
-                    continue
 
             # Each entity in article added to the "Article mentions Entity" triples
             _object = generate_uri_reference(self.namespace, [object_label], object_ref)
