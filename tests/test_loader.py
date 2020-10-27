@@ -62,4 +62,4 @@ class Test:
         news = load_json('./tests/data/test_data.json')
 
     def test_process_existing_should_not_raise_exceptions(self):
-        process_existing('./tests/data/', './tests/data/')
+        process_existing('./tests/data/', './tests/data/', './tests/data/')
