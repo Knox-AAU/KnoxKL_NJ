@@ -84,7 +84,7 @@ class TripleExtractor:
         # Do nlp
         doc = self.nlp(article_text)
 
-        # Create article entity from the document entitites
+        # Create article entity from the document entities
         article_entities = []
 
         for entities in doc.ents:
@@ -178,7 +178,7 @@ class TripleExtractor:
                 generate_relation(RelationTypeConstants.KNOX_IS_WRITTEN_BY),
                 generate_uri_reference(self.namespace, ["Author"], article.byline.name.replace(" ", "_"))
             ])
-            # Since email is not required in the byline, if it exsists: add the authors email as a data property to the author.
+            # Since email is not required in the byline, if it exists: add the authors email as a data property to the author.
             if article.byline.email is not None:
                 self.triples.append([
                     generate_uri_reference(self.namespace, ["Author"], article.byline.name.replace(" ", "_")),
