@@ -164,27 +164,28 @@ class TripleExtractor:
 
         # If the byline exists add the author name to the RDF triples. Author name is required if byline exists.
         if article.byline is not None:
-            byline = article.byline.name.replace(" ", "_")
+            # article.byline.name stores the author of the article's name, hence author_name
+            author_name = article.byline.name.replace(" ", "_")
 
             self.triples.append([
-                generate_uri_reference(self.namespace, ["Author"], byline),
+                generate_uri_reference(self.namespace, ["Author"], author_name),
                 generate_relation(RelationTypeConstants.KNOX_NAME),
                 generate_literal(article.byline.name)
             ])
 
             # Creates the author as a named individual
-            self.add_named_individual(byline, "Author")
+            self.add_named_individual(author_name, "Author")
             # Adds the Article isWrittenBy Author relation to the triples list
             self.triples.append([
                 generate_uri_reference(self.namespace, ["Article"], article_id),
                 generate_relation(RelationTypeConstants.KNOX_IS_WRITTEN_BY),
-                generate_uri_reference(self.namespace, ["Author"], byline)
+                generate_uri_reference(self.namespace, ["Author"], author_name)
             ])
 
             # Since email is not required in the byline, if it exists: add the authors email as a data property to the author.
             if article.byline.email is not None:
                 self.triples.append([
-                    generate_uri_reference(self.namespace, ["Author"], byline),
+                    generate_uri_reference(self.namespace, ["Author"], author_name),
                     generate_relation(RelationTypeConstants.KNOX_EMAIL),
                     generate_literal(article.byline.email)
                 ])
