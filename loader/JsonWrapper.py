@@ -1,5 +1,6 @@
 from knox_source_data_io.models.model import Model
 from typing import List
+from knox_util import print
 
 class Byline:
     """
@@ -115,3 +116,7 @@ class Publication(Model):
         js_article = content.get("articles", [])
         for val in js_article:
             self.articles.append(Article(val))
+        print(f'Initialised publication {self.publication}', 'debug')
+    
+    def __str__(self):
+        return f'n:{self.publication} p:{self.pages} d:{self.published_at} b:{self.publisher}'
