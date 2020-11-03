@@ -28,16 +28,16 @@ class Handler(FileSystemEventHandler):
                 try:
                     publication: Publication = load_json(event.src_path)
                     print(publication, 'debug')
-                    move_file(event.src_path, ev().get_value(ev().OUTPUT_DIRECTORY), get_file_name_from_path(event.src_path))
+                    move_file(event.src_path, ev.instance.get_value(ev.instance.OUTPUT_DIRECTORY), get_file_name_from_path(event.src_path))
                 except FileExistsError as e:
                     pass # Intentional pass
                 except Exception as e:
                     if os.path.exists(event.src_path):
                         print(f'Move file <{event.src_path}> with exception: {e}', 'error')
-                        move_file(event.src_path, ev().get_value(ev().ERROR_DIRECTORY), get_file_name_from_path(event.src_path))
+                        move_file(event.src_path, ev.instance.get_value(ev.instance.ERROR_DIRECTORY), get_file_name_from_path(event.src_path))
                     else:
                         # Its detected as a modification when the file is moved, so it naturally fails to move when the file already has been moved
-                        print("Did not find file with path <" + event.src_path + ">, it was likely moved just before...", 'error')
+                        print("Did not find file with path <" + event.src_path + ">, it was likely moved just before...", 'warning')
 
 
 def process_existing(path: str) -> None:
@@ -63,10 +63,10 @@ def process_existing(path: str) -> None:
             # TODO create separate function to handle this
             news = load_json(path)
 
-            move_file(path, ev().get_value(ev().OUTPUT_DIRECTORY), split_path[-1])
+            move_file(path, ev.instance.get_value(ev.instance.OUTPUT_DIRECTORY), split_path[-1])
         except Exception as e:
             print(f'Move file <{path}> with exception: {e}', 'warning')
-            move_file(path, ev().get_value(ev().ERROR_DIRECTORY), split_path[-1])
+            move_file(path, ev.instance.get_value(ev.instance.ERROR_DIRECTORY), split_path[-1])
 
 
     # Simulated finished

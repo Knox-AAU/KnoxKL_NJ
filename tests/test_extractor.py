@@ -8,7 +8,7 @@ from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_l
 
 class Test:
     extractor = TripleExtractor("da_core_news_lg")
-    namespace = ev().get_value(ev().KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
+    namespace = ev.instance.get_value(ev.instance.KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
     publication = load_json("./tests/data/test_jason.json")
 
     def test_spacy_conversion_to_label(self):

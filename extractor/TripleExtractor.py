@@ -10,7 +10,7 @@ class TripleExtractor:
 
     def __init__(self, model, tuple_label_list=None, ignore_label_list=None):
         self.nlp = spacy.load(model)
-        self.namespace = ev().get_value(ev().KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
+        self.namespace = ev.instance.get_value(ev.instance.KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
         self.triples = []
         self.named_individual = []
         if tuple_label_list is None:
