@@ -1,5 +1,5 @@
 from rdflib import Graph, Literal, URIRef, BNode
-from rdflib.namespace import RDFS, OWL, RDF as Rdf, XSD
+from rdflib.namespace import RDFS, OWL, XSD, RDF as Rdf
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 import os
 from rdf import KNOX

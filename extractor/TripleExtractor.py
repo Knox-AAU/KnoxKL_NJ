@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import List
 import spacy
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 from loader.JsonWrapper import Publication, Article
@@ -8,7 +9,7 @@ from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_l
 
 class TripleExtractor:
 
-    def __init__(self, model, tuple_label_list=None, ignore_label_list=None):
+    def __init__(self, model, tuple_label_list=None, ignore_label_list=None) -> None:
         self.nlp = spacy.load(model)
         self.namespace = ev.instance.get_value(ev.instance.KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
         self.triples = []
@@ -22,14 +23,14 @@ class TripleExtractor:
         else:
             self.ignore_label_list = ignore_label_list
 
-    def add_named_individual(self, prop_1, prop_2):
+    def add_named_individual(self, prop_1, prop_2) -> None:
         """
         Adds the named individuals to the named_individual list if it's not already in it.
         """
         if [prop_1, prop_2] not in self.named_individual:
             self.named_individual.append([prop_1, prop_2])
 
-    def extract_publication(self, pub: Publication):
+    def extract_publication(self, pub: Publication) -> None:
         # Name of a publications publisher
         name = pub.publisher.replace(" ", "_")
 
@@ -58,7 +59,7 @@ class TripleExtractor:
             generate_literal(pub.publication)
         ])
 
-    def convert_spacy_label_to_namespace(self, string: str):
+    def convert_spacy_label_to_namespace(self, string: str) -> str:
         """
         Input:
             A string matching a spacy label
@@ -72,7 +73,7 @@ class TripleExtractor:
         else:
             return string
 
-    def process_article_text(self, article_text: str):
+    def process_article_text(self, article_text: str) -> List[(str,str)]:
         """
         Input:
             Takes a string
@@ -99,7 +100,7 @@ class TripleExtractor:
                 self.add_named_individual(name.replace(" ", "_"), self.convert_spacy_label_to_namespace(label))
         return article_entities
 
-    def process_article(self, article: Article):
+    def process_article(self, article: Article) -> None:
         """
         Input:
             An Article object from the loader package
@@ -131,9 +132,8 @@ class TripleExtractor:
             # Each entity given the name data property
             self.triples.append(
                 [_object, generate_relation(RelationTypeConstants.KNOX_NAME), generate_literal(pair[0])])
-        return
 
-    def extract_article(self, article: Article, publication: Publication):
+    def extract_article(self, article: Article, publication: Publication) -> None:
         """
         Input:
             Takes an Article and Publication object from the loader.JsonWrapper package.
@@ -206,9 +206,8 @@ class TripleExtractor:
                     generate_relation(RelationTypeConstants.KNOX_LINK),
                     generate_literal(ocr_file)
                 ])
-        return
 
-    def write_named_individual(self):
+    def write_named_individual(self) -> None:
         """
         Writes each named individual to the file.
         """
@@ -228,7 +227,7 @@ class TripleExtractor:
                 generate_uri_reference(self.namespace, ref=prop2)
             ])
 
-    def process_publication(self, publication: Publication):
+    def process_publication(self, publication: Publication) -> None:
         """
         Input:
             A NewsStruct from the loader package.
