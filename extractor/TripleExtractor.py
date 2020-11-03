@@ -10,7 +10,6 @@ class TripleExtractor:
 
     def __init__(self, model, tuple_label_list=None, ignore_label_list=None):
         self.nlp = spacy.load(model)
-        # TODO remove hardcoded namespace
         self.namespace = ev().get_value(ev().KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
         self.triples = []
         self.named_individual = []
@@ -38,7 +37,7 @@ class TripleExtractor:
         pub_name = pub.publication.replace(" ", "_")
 
         # Adds publication as a named individual
-        self.add_named_individual(pub.publication.replace(" ", "_"), "Publication")
+        self.add_named_individual(pub_name, "Publication")
 
         # Add publisher name as data property
         self.triples.append([
@@ -85,7 +84,7 @@ class TripleExtractor:
         # Do nlp
         doc = self.nlp(article_text)
 
-        # Create article entity from the document entitites
+        # Create article entity from the document entities
         article_entities = []
 
         for entities in doc.ents:
@@ -93,10 +92,11 @@ class TripleExtractor:
             # label_ is correct for acquiring the spaCy string version of the entity
             label = entities.label_
 
-            # Add entity to list, create it as named individual.
-            article_entities.append((name, label))
-            self.add_named_individual(name.replace(" ", "_"), self.convert_spacy_label_to_namespace(label))
-
+            # ignore ignored labels, expects ignore_label_list to be a list of strings
+            if label not in self.ignore_label_list:
+                # Add entity to list, create it as named individual.
+                article_entities.append((name, label))
+                self.add_named_individual(name.replace(" ", "_"), self.convert_spacy_label_to_namespace(label))
         return article_entities
 
     def process_article(self, article: Article):
@@ -109,7 +109,7 @@ class TripleExtractor:
         """
 
         # Article text is split into multiple paragraph objects in the Json, this is joined into one string.
-        content = ''.join(para.value for para in article.paragraphs)
+        content = ' '.join(para.value for para in article.paragraphs)
 
         # Does nlp on the text
         article_entities = self.process_article_text(content)
@@ -121,11 +121,6 @@ class TripleExtractor:
             # Changes spacy labels to full length labels
             object_label = str(pair[1])
             object_label = self.convert_spacy_label_to_namespace(object_label)
-
-            # Ignore ignored labels
-            for label in self.ignore_label_list:
-                if object_label == str(label[0]):
-                    continue
 
             # Each entity in article added to the "Article mentions Entity" triples
             _object = generate_uri_reference(self.namespace, [object_label], object_ref)
@@ -145,45 +140,52 @@ class TripleExtractor:
 
             Creates the RDF triples unique to the article.
         """
+        # id of the article
+        article_id = str(article.id)
 
         # Creates the article as a named individual
-        self.add_named_individual(str(article.id), "Article")
+        self.add_named_individual(article_id, "Article")
         # Creates the publisher as a named individual
         self.add_named_individual(publication.publisher.replace(" ", "_"), "Publisher")
 
         # Adds the Article isPublishedBy Publication relation to the turtle output
         self.triples.append([
-            generate_uri_reference(self.namespace, ["Article"], str(article.id)),
+            generate_uri_reference(self.namespace, ["Article"], article_id),
             generate_relation(RelationTypeConstants.KNOX_IS_PUBLISHED_BY),
             generate_uri_reference(self.namespace, ["Publisher"], publication.publisher.replace(" ", "_"))
         ])
 
         # Adds the Article knox:Article_Title Title data to the turtle output
         self.triples.append([
-            generate_uri_reference(self.namespace, ["Article"], str(article.id)),
+            generate_uri_reference(self.namespace, ["Article"], article_id),
             generate_relation(RelationTypeConstants.KNOX_ARTICLE_TITLE),
             generate_literal(article.headline)
         ])
 
         # If the byline exists add the author name to the RDF triples. Author name is required if byline exists.
         if article.byline is not None:
+            # article.byline.name stores the author of the article's name, hence author_name
+            author_name = article.byline.name.replace(" ", "_")
+
             self.triples.append([
-                generate_uri_reference(self.namespace, ["Author"], article.byline.name.replace(" ", "_")),
+                generate_uri_reference(self.namespace, ["Author"], author_name),
                 generate_relation(RelationTypeConstants.KNOX_NAME),
                 generate_literal(article.byline.name)
             ])
+
             # Creates the author as a named individual
-            self.add_named_individual(article.byline.name.replace(" ", "_"), "Author")
+            self.add_named_individual(author_name, "Author")
             # Adds the Article isWrittenBy Author relation to the triples list
             self.triples.append([
-                generate_uri_reference(self.namespace, ["Article"], str(article.id)),
+                generate_uri_reference(self.namespace, ["Article"], article_id),
                 generate_relation(RelationTypeConstants.KNOX_IS_WRITTEN_BY),
-                generate_uri_reference(self.namespace, ["Author"], article.byline.name.replace(" ", "_"))
+                generate_uri_reference(self.namespace, ["Author"], author_name)
             ])
-            # Since email is not required in the byline, if it exsists: add the authors email as a data property to the author.
+
+            # Since email is not required in the byline, if it exists: add the authors email as a data property to the author.
             if article.byline.email is not None:
                 self.triples.append([
-                    generate_uri_reference(self.namespace, ["Author"], article.byline.name.replace(" ", "_")),
+                    generate_uri_reference(self.namespace, ["Author"], author_name),
                     generate_relation(RelationTypeConstants.KNOX_EMAIL),
                     generate_literal(article.byline.email)
                 ])
@@ -191,7 +193,7 @@ class TripleExtractor:
         # Adds the publication date to the article, if it exists.
         if publication.published_at != "":
             self.triples.append([
-                generate_uri_reference(self.namespace, ["Article"], str(article.id)),
+                generate_uri_reference(self.namespace, ["Article"], article_id),
                 generate_relation(RelationTypeConstants.KNOX_PUBLICATION_DATE),
                 generate_literal(publication.published_at)
             ])
@@ -200,7 +202,7 @@ class TripleExtractor:
         if len(article.extracted_from) > 0:
             for ocr_file in article.extracted_from:
                 self.triples.append([
-                    generate_uri_reference(self.namespace, ["Article"], str(article.id)),
+                    generate_uri_reference(self.namespace, ["Article"], article_id),
                     generate_relation(RelationTypeConstants.KNOX_LINK),
                     generate_literal(ocr_file)
                 ])
@@ -211,15 +213,20 @@ class TripleExtractor:
         Writes each named individual to the file.
         """
 
-        # Output file path
-        file_path = ev().get_value(ev().OUTPUT_DIRECTORY) + ev().get_value(ev().OUTPUT_FILE_NAME) + ".ttl"
+        # prop1 = The specific location/person/organisation or so on
+        # prop2 = The type of Knox:Class prop1 is a member of.
+        for prop1, prop2 in self.named_individual:
+            self.triples.append([
+                generate_uri_reference(self.namespace, [prop2], prop1),
+                generate_relation(RelationTypeConstants.RDF_TYPE),
+                generate_relation(RelationTypeConstants.OWL_NAMED_INDIVIDUAL)
+            ])
 
-        # Write each named individual to file
-        form = "knox:{0} a owl:NamedIndividual, knox:{1} ."
-        with open(file_path, "a", encoding="utf-8") as stream:
-            for prop1, prop2 in self.named_individual:
-                prop = form.format(prop1, prop2)
-                stream.write(prop + "\n")
+            self.triples.append([
+                generate_uri_reference(self.namespace, [prop2], prop1),
+                generate_relation(RelationTypeConstants.RDF_TYPE),
+                generate_uri_reference(self.namespace, ref=prop2)
+            ])
 
     def process_publication(self, publication: Publication):
         """
@@ -236,8 +243,8 @@ class TripleExtractor:
             self.process_article(article)
             self.extract_article(article, publication)
 
-        # Function from rdf.RdfCreator, writes triples to file
-        store_rdf_triples(self.triples)
-
         # Writes named individuals to the output file.
         self.write_named_individual()
+
+        # Function from rdf.RdfCreator, writes triples to file
+        store_rdf_triples(self.triples)
