@@ -3,7 +3,6 @@ import sys
 import builtins as __builtins__
 from inspect import getframeinfo, stack
 
-
 parserArgs = None
 
 def get_file_debug_info(stack_frm: int) -> str:
