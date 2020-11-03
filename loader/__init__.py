@@ -1,7 +1,7 @@
 import knox_util, os
 
 from environment.EnvironmentConstants import EnvironmentVariables as ev
-from loader.FileLoader import load_json, move_to_folder
+from loader.FileLoader import load_json, move_file
 
 def process_existing(path: str, output_path: str, error_path: str) -> None:
     """
