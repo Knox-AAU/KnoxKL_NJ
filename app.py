@@ -13,14 +13,15 @@ import platform
 import knox_util
 from knox_util import print
 
+ev()
 
 assert platform.python_version_tuple(
 )[1] == '8', 'This script requires python 3.8.x in order to run properly'
 
 
-input_dir = ev().get_value(ev().INPUT_DIRECTORY)
-output_dir = ev().get_value(ev().OUTPUT_DIRECTORY)
-err_dir = ev().get_value(ev().ERROR_DIRECTORY)
+input_dir = ev.instance.get_value(ev.instance.INPUT_DIRECTORY)
+output_dir = ev.instance.get_value(ev.instance.OUTPUT_DIRECTORY)
+err_dir = ev.instance.get_value(ev.instance.ERROR_DIRECTORY)
 
 
 def get_git_commit():
