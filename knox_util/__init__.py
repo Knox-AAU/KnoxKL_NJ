@@ -35,6 +35,9 @@ def print(message: str, level: str = 'info') -> None:
         debug - Prints a blue debug message
         default - info
     """
+    if parserArgs == None:
+        __builtins__.print('message')
+        return
     if level == 'off':
         __builtins__.print(message)
         return
