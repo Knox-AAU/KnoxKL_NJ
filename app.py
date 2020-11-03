@@ -15,8 +15,7 @@ from knox_util import print
 
 ev()
 
-assert platform.python_version_tuple(
-)[1] == '8', 'This script requires python 3.8.x in order to run properly'
+assert platform.python_version_tuple()[1] == '8', 'This script requires python 3.8.x in order to run properly'
 
 
 input_dir = ev.instance.get_value(ev.instance.INPUT_DIRECTORY)
