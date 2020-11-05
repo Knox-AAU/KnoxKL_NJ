@@ -5,6 +5,7 @@ from environment.EnvironmentConstants import EnvironmentVariables as ev
 from loader.JsonWrapper import Publication, Article
 from rdf.RdfConstants import RelationTypeConstants
 from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
+from extractor.TripleExtractorEnum import TripleExtractorEnum
 
 
 class TripleExtractor:
@@ -38,23 +39,23 @@ class TripleExtractor:
         pub_name = pub.publication.replace(" ", "_")
 
         # Adds publication as a named individual
-        self.add_named_individual(pub_name, "Publication")
+        self.add_named_individual(pub_name, TripleExtractorEnum.PUBLICATION)
 
         # Add publisher name as data property
         self.triples.append([
-            generate_uri_reference(self.namespace, ["Publisher"], name),
+            generate_uri_reference(self.namespace, [TripleExtractorEnum.PUBLISHER], name),
             generate_relation(RelationTypeConstants.KNOX_NAME),
             generate_literal(name)])
 
         # Add the "Publisher publishes Publication" relation
         self.triples.append([
-            generate_uri_reference(self.namespace, ["Publisher"], name),
+            generate_uri_reference(self.namespace, [TripleExtractorEnum.PUBLISHER], name),
             generate_relation(RelationTypeConstants.KNOX_PUBLISHES),
-            generate_uri_reference(self.namespace, ["Publication"], pub_name)
+            generate_uri_reference(self.namespace, [TripleExtractorEnum.PUBLICATION], pub_name)
         ])
         # Add publication name as data property
         self.triples.append([
-            generate_uri_reference(self.namespace, ["Publication"], pub_name),
+            generate_uri_reference(self.namespace, [TripleExtractorEnum.PUBLICATION], pub_name),
             generate_relation(RelationTypeConstants.KNOX_NAME),
             generate_literal(pub.publication)
         ])
@@ -69,11 +70,12 @@ class TripleExtractor:
         for label_tuple in self.tuple_label_list:
             # Assumes that tuple_label_list is a list of tuples with the format: [spacy label, namespace]
             if string == str(label_tuple[0]):
+                # return the chosen name for the spaCy label
                 return str(label_tuple[1])
         else:
             return string
 
-    def process_article_text(self, article_text: str) -> List[(str,str)]:
+    def process_article_text(self, article_text: str) -> List[(str, str)]:
         """
         Input:
             Takes a string
@@ -125,7 +127,7 @@ class TripleExtractor:
 
             # Each entity in article added to the "Article mentions Entity" triples
             _object = generate_uri_reference(self.namespace, [object_label], object_ref)
-            _subject = generate_uri_reference(self.namespace, ["Article"], str(article.id))
+            _subject = generate_uri_reference(self.namespace, [TripleExtractorEnum.ARTICLE], str(article.id))
             relation = generate_relation(RelationTypeConstants.KNOX_MENTIONS)
 
             self.triples.append([_subject, relation, _object])
@@ -144,20 +146,21 @@ class TripleExtractor:
         article_id = str(article.id)
 
         # Creates the article as a named individual
-        self.add_named_individual(article_id, "Article")
+        self.add_named_individual(article_id, TripleExtractorEnum.ARTICLE)
         # Creates the publisher as a named individual
-        self.add_named_individual(publication.publisher.replace(" ", "_"), "Publisher")
+        self.add_named_individual(publication.publisher.replace(" ", "_"), TripleExtractorEnum.PUBLISHER)
 
         # Adds the Article isPublishedBy Publication relation to the turtle output
         self.triples.append([
-            generate_uri_reference(self.namespace, ["Article"], article_id),
+            generate_uri_reference(self.namespace, [TripleExtractorEnum.ARTICLE], article_id),
             generate_relation(RelationTypeConstants.KNOX_IS_PUBLISHED_BY),
-            generate_uri_reference(self.namespace, ["Publisher"], publication.publisher.replace(" ", "_"))
+            generate_uri_reference(self.namespace, [TripleExtractorEnum.PUBLISHER],
+                                   publication.publisher.replace(" ", "_"))
         ])
 
         # Adds the Article knox:Article_Title Title data to the turtle output
         self.triples.append([
-            generate_uri_reference(self.namespace, ["Article"], article_id),
+            generate_uri_reference(self.namespace, [TripleExtractorEnum.ARTICLE], article_id),
             generate_relation(RelationTypeConstants.KNOX_ARTICLE_TITLE),
             generate_literal(article.headline)
         ])
@@ -168,24 +171,24 @@ class TripleExtractor:
             author_name = article.byline.name.replace(" ", "_")
 
             self.triples.append([
-                generate_uri_reference(self.namespace, ["Author"], author_name),
+                generate_uri_reference(self.namespace, [TripleExtractorEnum.AUTHOR], author_name),
                 generate_relation(RelationTypeConstants.KNOX_NAME),
                 generate_literal(article.byline.name)
             ])
 
             # Creates the author as a named individual
-            self.add_named_individual(author_name, "Author")
+            self.add_named_individual(author_name, TripleExtractorEnum.AUTHOR)
             # Adds the Article isWrittenBy Author relation to the triples list
             self.triples.append([
-                generate_uri_reference(self.namespace, ["Article"], article_id),
+                generate_uri_reference(self.namespace, [TripleExtractorEnum.ARTICLE], article_id),
                 generate_relation(RelationTypeConstants.KNOX_IS_WRITTEN_BY),
-                generate_uri_reference(self.namespace, ["Author"], author_name)
+                generate_uri_reference(self.namespace, [TripleExtractorEnum.AUTHOR], author_name)
             ])
 
             # Since email is not required in the byline, if it exists: add the authors email as a data property to the author.
             if article.byline.email is not None:
                 self.triples.append([
-                    generate_uri_reference(self.namespace, ["Author"], author_name),
+                    generate_uri_reference(self.namespace, [TripleExtractorEnum.AUTHOR], author_name),
                     generate_relation(RelationTypeConstants.KNOX_EMAIL),
                     generate_literal(article.byline.email)
                 ])
@@ -193,7 +196,7 @@ class TripleExtractor:
         # Adds the publication date to the article, if it exists.
         if publication.published_at != "":
             self.triples.append([
-                generate_uri_reference(self.namespace, ["Article"], article_id),
+                generate_uri_reference(self.namespace, [TripleExtractorEnum.ARTICLE], article_id),
                 generate_relation(RelationTypeConstants.KNOX_PUBLICATION_DATE),
                 generate_literal(publication.published_at)
             ])
@@ -202,7 +205,7 @@ class TripleExtractor:
         if len(article.extracted_from) > 0:
             for ocr_file in article.extracted_from:
                 self.triples.append([
-                    generate_uri_reference(self.namespace, ["Article"], article_id),
+                    generate_uri_reference(self.namespace, [TripleExtractorEnum.ARTICLE], article_id),
                     generate_relation(RelationTypeConstants.KNOX_LINK),
                     generate_literal(ocr_file)
                 ])
