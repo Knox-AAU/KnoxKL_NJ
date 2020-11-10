@@ -2,6 +2,7 @@ import asyncio
 import sys
 import builtins as __builtins__
 from inspect import getframeinfo, stack
+from datetime import datetime
 
 parserArgs = None
 
@@ -94,3 +95,13 @@ def background_process(func):
         print('Starting background process...', 'warning')
         return asyncio.get_event_loop().run_in_executor(None, func, *args, **kwargs)
     return wrapped
+
+def convert_iso_string_to_date_time(datetime_iso_str: str) -> datetime:
+    """
+    Inputs
+        datetime_iso_str: str - A string containing a datetime in iso format
+    Returns:
+        A datetime instance based on the input string
+    """
+
+    return datetime.fromisoformat(datetime_iso_str)
