@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+from environment.EnvironmentConstants import EnvironmentVariables as ev
+ev()
+
 import argparse
 import logging.config
 import logging
@@ -6,14 +9,12 @@ import knox_util
 import os
 import sys
 import subprocess
-from environment.EnvironmentConstants import EnvironmentVariables as ev
 from multiprocessing import Process
 from loader.FileLoader import start_watch_directory, process_existing
 import platform
 import knox_util
 from knox_util import print
 
-ev()
 
 assert platform.python_version_tuple()[1] == '8', 'This script requires python 3.8.x in order to run properly'
 
@@ -76,7 +77,7 @@ if __name__ == "__main__":
         raise TypeError(
             f'Expected directory but got a file. in:{input_dir} out:{output_dir} err:{err_dir}')
     setup()
-    process_existing(input_dir, output_dir, err_dir)
+    process_existing(input_dir)
 
     start_watch_directory(input_dir)
 
