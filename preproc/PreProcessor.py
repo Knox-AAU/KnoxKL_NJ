@@ -5,7 +5,7 @@ import spacy
 from typing import OrderedDict
 
 
-def remove_stop_words(content: str) -> list:
+def remove_stop_words(content: str) -> str:
     """
     Input:
         content: str - A string containing the content that is to have all stop words removed.
@@ -23,9 +23,10 @@ def remove_stop_words(content: str) -> list:
     content = re.sub(r'(\[\d+\])|[.,?]', '', content)
     
     # Filter out stopwords
-    return [i for i in content.split(' ') if i not in STOP_WORDS]
+    return_word_list = [i for i in content.split(' ') if i not in STOP_WORDS]
+    return ' '.join(word for word in return_word_list)
 
-def convert_to_modern_danish(content: str, nlp: OrderedDict=spacy.load('da_core_news_sm')) -> str:
+def convert_to_modern_danish(content: str, nlp: OrderedDict=spacy.load('da_core_news_lg')) -> str:
     """
     Input:
         content: str - A string containing the content that is to be converted to modern Danish.
@@ -42,6 +43,8 @@ def convert_to_modern_danish(content: str, nlp: OrderedDict=spacy.load('da_core_
 
     aa -> å
     ei -> ej
+    ae -> æ
+    oe -> ø
     
     Any newline will be converted to a whitespace, and any hyphenation will become a joined word.
     """
@@ -52,6 +55,10 @@ def convert_to_modern_danish(content: str, nlp: OrderedDict=spacy.load('da_core_
     content = re.sub(r'aa', 'å', content)
     content = re.sub(r'Aa', 'Å', content)
     content = re.sub(r'ei', 'ej', content)
+    content = re.sub(r'oe', 'ø', content)
+    content = re.sub(r'Oe', 'Ø', content)
+    content = re.sub(r'ae', 'æ', content)
+    content = re.sub(r'Ae', 'Æ', content)
     content = re.sub(r'\-(\r?)\n','', content)
     content = re.sub(r'\r?\n',' ', content)
     words = [word for word in content.split(' ') if word != '']
