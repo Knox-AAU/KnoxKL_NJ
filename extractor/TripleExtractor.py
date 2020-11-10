@@ -6,6 +6,8 @@ from loader.JsonWrapper import Publication, Article
 from rdf.RdfConstants import RelationTypeConstants
 from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
 from extractor.TripleExtractorEnum import TripleExtractorEnum
+from preproc.PreProcessor import remove_stop_words, convert_to_modern_danish
+from knox_util import print, convert_iso_string_to_date_time
 
 
 class TripleExtractor:
@@ -15,6 +17,7 @@ class TripleExtractor:
         self.namespace = ev.instance.get_value(ev.instance.KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
         self.triples = []
         self.named_individual = []
+        self.preprocess_year_threshold = 1948
         if tuple_label_list is None:
             self.tuple_label_list = [["PER", "Person"], ["ORG", "Organisation"], ["LOC", "Location"]]
         else:
@@ -102,10 +105,11 @@ class TripleExtractor:
                 self.add_named_individual(name.replace(" ", "_"), self.convert_spacy_label_to_namespace(label))
         return article_entities
 
-    def process_article(self, article: Article) -> None:
+    def process_article(self, article: Article, doPreprocessing: bool = False) -> None:
         """
         Input:
-            An Article object from the loader package
+            article: Article - An Article object from the loader package
+            doPreprocessing: bool - A boolean determining if preprocessing should be done on the content before entity extraction (default: False)
         Returns:
             A list of triples with subjects, predicates and objects from the article eg.
             ("Article", "mentions", "Folketinget")
@@ -113,6 +117,11 @@ class TripleExtractor:
 
         # Article text is split into multiple paragraph objects in the Json, this is joined into one string.
         content = ' '.join(para.value for para in article.paragraphs)
+        # Run preprocessing steps on the content if "doPreprocessing" is True
+        if doPreprocessing:
+            print('Running preprocessing for content of article with ID: <' + str(article.id) + '>')
+            content = remove_stop_words(content)
+            content = convert_to_modern_danish(content, self.nlp)
 
         # Does nlp on the text
         article_entities = self.process_article_text(content)
@@ -240,9 +249,14 @@ class TripleExtractor:
         """
         # Extract publication info and adds it to the RDF triples.
         self.extract_publication(publication)
+
+        # Do check for preprocessing threshold
+        datetime = convert_iso_string_to_date_time(publication.published_at)
+        preprocess = datetime.year < self.preprocess_year_threshold
+
         for article in publication.articles:
             # For each article, process the text and extract non-textual data in it.
-            self.process_article(article)
+            self.process_article(article, preprocess)
             self.extract_article(article, publication)
 
         # Writes named individuals to the output file.
