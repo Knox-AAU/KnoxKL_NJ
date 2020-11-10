@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import List
 import spacy
 from environment.EnvironmentConstants import EnvironmentVariables as ev
-from loader.JsonWrapper import Publication, Article
+from knox_source_data_io.models.publication import Publication, Article
 from rdf.RdfConstants import RelationTypeConstants
 from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
 from extractor.TripleExtractorEnum import TripleExtractorEnum
