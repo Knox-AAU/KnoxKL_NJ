@@ -113,6 +113,21 @@ class Test:
             generate_relation(RelationTypeConstants.KNOX_NAME),
             generate_literal("Aalborg")] in self.extractor.triples
     
+    def test_process_article_with_preprocessing(self):
+        article = self.publication.articles[1]
+
+        self.extractor.triples.clear()
+        self.extractor.named_individual.clear()
+        self.extractor.process_article(article, True)
+
+        _object = generate_uri_reference(self.namespace, ["Location"], "Ålborg")
+        _subject = generate_uri_reference(self.namespace, ["Article"], str(1))
+        relation = generate_relation(RelationTypeConstants.KNOX_MENTIONS)
+
+        assert [_subject, relation, _object] in self.extractor.triples
+        assert [_object, generate_relation(RelationTypeConstants.KNOX_NAME), generate_literal('Ålborg')] in self.extractor.triples
+
+        
     def test_process_publication(self):
         self.extractor.triples.clear()
         self.extractor.named_individual.clear()
