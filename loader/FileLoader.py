@@ -1,10 +1,11 @@
 from watcher.FileWatcher import FileWatcher
 from watchdog.events import FileSystemEventHandler
 from knox_source_data_io.io_handler import IOHandler, Generator, Wrapper
-from loader.JsonWrapper import Publication
+from knox_source_data_io.models.publication import Publication
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 import os, shutil
 from knox_util import print
+from extractor.TripleExtractor import TripleExtractor
 
 class Handler(FileSystemEventHandler):
     """
@@ -27,7 +28,7 @@ class Handler(FileSystemEventHandler):
                 # TODO Fix so that this is a single method call
                 try:
                     publication: Publication = load_json(event.src_path)
-                    print(publication, 'debug')
+                    TripleExtractor('da_core_news_lg').process_publication(publication)
                     move_file(event.src_path, ev.instance.get_value(ev.instance.OUTPUT_DIRECTORY), get_file_name_from_path(event.src_path))
                 except FileExistsError as e:
                     pass # Intentional pass
@@ -62,7 +63,7 @@ def process_existing(path: str) -> None:
         try:
             # TODO create separate function to handle this
             news = load_json(path)
-
+            TripleExtractor('da_core_news_lg').process_publication(news)
             move_file(path, ev.instance.get_value(ev.instance.OUTPUT_DIRECTORY), split_path[-1])
         except Exception as e:
             print(f'Move file <{path}> with exception: {e}', 'warning')
@@ -86,7 +87,7 @@ def load_json(json_path: str) -> Publication:
     handler = IOHandler(Generator(app="This app", version=1.0), "https://repos.libdom.net/schema/publication.schema.json")
     with open(json_path, "r", encoding="utf-8") as json_file:
         wrap: Wrapper = handler.read_json(json_file)
-        return Publication(wrap['content'])
+        return wrap.content
 
 def start_watch_directory(directory: str):
     """
