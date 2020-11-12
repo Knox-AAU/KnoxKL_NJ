@@ -6,5 +6,5 @@ KNOX = ClosedNamespace(
     uri=URIRef(ev.instance.get_value(ev.instance.KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")),
     terms=[
         "isPublishedBy", "mentions", "isPublishedOn", "publishes", "Email", "DateMention", "Link",
-        "Name", "PublicationDate", "ArticleTitle", "isWrittenBy"]
+        "Name", "PublicationDay", "PublicationMonth", "PublicationYear", "ArticleTitle", "isWrittenBy"]
 )
