@@ -64,7 +64,7 @@ class Test:
 
         self.extractor.extract_article(article, self.publication)
 
-        assert len(self.extractor.triples) == 8
+        assert len(self.extractor.triples) == 10
 
     def test_write_named_individual(self):
         
@@ -135,4 +135,4 @@ class Test:
             self.extractor.process_publication(self.publication)
         except EnvironmentError:
             pass # Pass Environment Errors as this is because there are missing Environment Variables on the test server     
-        assert len(self.extractor.triples) == 42
+        assert len(self.extractor.triples) == 46
