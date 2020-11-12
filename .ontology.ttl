@@ -104,17 +104,17 @@ knox:Name
 knox:PublicationDay
 	a owl:DatatypeProperty ;
 	rdfs:domain knox:Article ;
-	rdfs:range xsd:gDay .
+	rdfs:range xsd:integer .
 
 knox:PublicationMonth
 	a owl:DatatypeProperty ;
 	rdfs:domain knox:Article ;
-	rdfs:range xsd:gMonth .
+	rdfs:range xsd:integer .
 
 knox:PublicationYear
 	a owl:DatatypeProperty ;
 	rdfs:domain knox:Article ;
-	rdfs:range xsd:gYear .
+	rdfs:range xsd:integer .
 
 knox:ArticleTitle
 	a owl:DatatypeProperty ;
