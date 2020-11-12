@@ -62,11 +62,6 @@ knox:mentions
 	           knox:Date,
 			   knox:Organisation .
 
-knox:isPublishedOn
-	rdf:type owl:ObjectProperty ;
-	rdfs:domain knox:Article ;
-	rdfs:range knox:Media .
-
 knox:publishes
 	rdf:type owl:ObjectProperty ;
 	rdfs:domain knox:Publisher ;
