@@ -1,4 +1,5 @@
 from __future__ import annotations
+from datetime import date
 from typing import List
 import spacy
 from environment.EnvironmentConstants import EnvironmentVariables as ev
@@ -8,7 +9,7 @@ from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_l
 from extractor.TripleExtractorEnum import TripleExtractorEnum
 from preproc.PreProcessor import remove_stop_words, convert_to_modern_danish
 from knox_util import print, convert_iso_string_to_date_time
-
+import datetime
 
 class TripleExtractor:
 
