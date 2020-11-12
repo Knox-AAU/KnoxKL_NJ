@@ -22,9 +22,6 @@ knox:Article
 
 knox:Location
 	rdf:type owl:Class .
-	
-knox:Media
-	rdf:type owl:Class .
 
 knox:Date
 	a owl:Class .
@@ -104,10 +101,20 @@ knox:Name
 	rdfs:domain knox:Organisation ;
 	rdfs:range xsd:string .
 
-knox:PublicationDate
+knox:PublicationDay
 	a owl:DatatypeProperty ;
 	rdfs:domain knox:Article ;
-	rdfs:range xsd:dateTime .
+	rdfs:range xsd:gDay .
+
+knox:PublicationMonth
+	a owl:DatatypeProperty ;
+	rdfs:domain knox:Article ;
+	rdfs:range xsd:gMonth .
+
+knox:PublicationYear
+	a owl:DatatypeProperty ;
+	rdfs:domain knox:Article ;
+	rdfs:range xsd:gYear .
 
 knox:ArticleTitle
 	a owl:DatatypeProperty ;
