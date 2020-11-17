@@ -37,7 +37,7 @@ def print(message: str, level: str = 'info') -> None:
         default - info
     """
     if parserArgs == None:
-        __builtins__.print('message')
+        __builtins__.print(f'{message}')
         return
     if level == 'off':
         __builtins__.print(message)
