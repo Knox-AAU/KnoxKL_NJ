@@ -14,7 +14,7 @@ def sendTripleToDb(triple_content: str, headers: dict = {'content-type': 'applic
     Sends the triple data to the Data layer database based on the provided headers and to the endpoint defined in the environment variables.
     Handles the case when a connection could not be established to the defined endpoints, in that case the function returns False
     """
-    if not endpoint: # Endpoint has not been defined, use environment variables
+    if not endpoint: # Endpoint has not been defined, use environment variables, if exists
         endpoint = ev.instance.get_value(ev.instance.TRIPLE_DATA_ENDPOINT)
 
     if not endpoint:
