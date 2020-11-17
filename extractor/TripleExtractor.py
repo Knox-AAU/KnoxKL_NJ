@@ -1,4 +1,5 @@
 from __future__ import annotations
+from datetime import date
 from typing import List
 import spacy
 from environment.EnvironmentConstants import EnvironmentVariables as ev
@@ -8,7 +9,7 @@ from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_l
 from extractor.TripleExtractorEnum import TripleExtractorEnum
 from preproc.PreProcessor import remove_stop_words, convert_to_modern_danish
 from knox_util import print, convert_iso_string_to_date_time
-
+import datetime
 
 class TripleExtractor:
 
@@ -204,10 +205,21 @@ class TripleExtractor:
 
         # Adds the publication date to the article, if it exists.
         if publication.published_at != "":
+            datetime = convert_iso_string_to_date_time(publication.published_at)
             self.triples.append([
                 generate_uri_reference(self.namespace, [TripleExtractorEnum.ARTICLE], article_id),
-                generate_relation(RelationTypeConstants.KNOX_PUBLICATION_DATE),
-                generate_literal(publication.published_at)
+                generate_relation(RelationTypeConstants.KNOX_PUBLICATION_DAY),
+                generate_literal(datetime.day)
+            ])
+            self.triples.append([
+                generate_uri_reference(self.namespace, [TripleExtractorEnum.ARTICLE], article_id),
+                generate_relation(RelationTypeConstants.KNOX_PUBLICATION_MONTH),
+                generate_literal(datetime.month)
+            ])
+            self.triples.append([
+                generate_uri_reference(self.namespace, [TripleExtractorEnum.ARTICLE], article_id),
+                generate_relation(RelationTypeConstants.KNOX_PUBLICATION_YEAR),
+                generate_literal(datetime.year)
             ])
 
         # For each file that an article is extracted from, add it to the article as a data property
