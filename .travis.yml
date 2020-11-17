@@ -1,8 +1,9 @@
 language: python
-jobs:
+
+matrix:
   include:
     - name: "Python 3.8.0 on Xenial Linux"
-      python: 3.8
+      python: 3.8 
     - name: "Python 3.8.0 on Windows"
       os: windows
       language: shell
@@ -19,7 +20,7 @@ install:
   - echo "[global]">>~/pip/pip.ini
   - echo "extra-index-url = https://repos.libdom.net/">>~/.pip/pip.conf
   - echo "extra-index-url = https://repos.libdom.net/">>~/pip/pip.ini
-  - "pip install -r requirements_test.txt"
+  - "pip install -r requirements_dev.txt"
   - "python -m spacy download da_core_news_sm"
   - "python -m spacy download da_core_news_lg"
 

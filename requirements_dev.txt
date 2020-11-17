@@ -4,8 +4,11 @@ pandas==1.1.3
 networkx==2.5
 matplotlib==3.3.2
 pytest==6.1.1
+pytest-cov==2.10.1
 watchdog==0.10.3
 python-dotenv==0.14.0
 rdflib==5.0.0
 knox-source-data-io
 knox-filewatcher
+flask==1.1.2
+flask_restful==0.3.8

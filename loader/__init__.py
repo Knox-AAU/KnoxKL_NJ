@@ -1,9 +1,9 @@
 import knox_util, os
 
 from environment.EnvironmentConstants import EnvironmentVariables as ev
-from loader.FileLoader import load_json, move_to_folder
+from loader.FileLoader import load_json, move_file
 
-def process_existing(path: str) -> None:
+def process_existing(path: str, output_path: str, error_path: str) -> None:
     """
     Input:
         path: str - The input directory path, that will be processed
@@ -26,10 +26,10 @@ def process_existing(path: str) -> None:
             # TODO create separate function to handle this
             news = load_json(path)
 
-            move_to_folder(path, ev().get_value(ev().OUTPUT_DIRECTORY), split_path[-1])
-        except:
-            move_to_folder(path, ev().get_value(ev().ERROR_DIRECTORY), split_path[-1])
+            shutil.move(src=path, dst=f'{output_path}{split_path[-1]}')
+        except Exception as e:
+            print(e)
+            #shutil.move(src=path, dst=f'{error_path}{split_path[-1]}')
 
-
+    print('Finished processing files created between sessions')
     # Simulated finished
-

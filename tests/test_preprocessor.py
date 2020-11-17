@@ -6,8 +6,8 @@ class Test:
     def test_preprocessor_returns_correct_words(self):
         data = "Motivation er et begreb, der refererer til en proces"
         result = PreProcessor.remove_stop_words(data)
-        assert ['Motivation','begreb', 'refererer', 'proces'] == result
-        assert 'er' not in result
+        assert 'Motivation begreb refererer proces' == result
+        assert result.find(' er ') == -1
     
 
     def test_preprocessor_conversion(self):
