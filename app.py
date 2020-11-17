@@ -77,7 +77,7 @@ if __name__ == "__main__":
         raise TypeError(
             f'Expected directory but got a file. in:{input_dir} out:{output_dir} err:{err_dir}')
     setup()
-    process_existing(input_dir)
+    process_existing(input_dir, output_dir, err_dir)
 
     start_watch_directory(input_dir)
 
