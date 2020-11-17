@@ -1,10 +1,12 @@
 from rdflib import Graph, Literal, URIRef, BNode
-from rdflib.namespace import RDFS, OWL, RDF as Rdf, XSD
+from rdflib.namespace import RDFS, OWL, XSD, RDF as Rdf
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 import os
 from rdf import KNOX
 
-def store_rdf_triples(rdfTriples, output_file_name = ev().get_value(ev().OUTPUT_FILE_NAME), destination_folder = ev().get_value(ev().RDF_OUTPUT_FOLDER), output_format = ev().get_value(ev().OUTPUT_FORMAT)):
+def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.instance.OUTPUT_FILE_NAME), 
+                destination_folder = ev.instance.get_value(ev.instance.RDF_OUTPUT_FOLDER), 
+                output_format = ev.instance.get_value(ev.instance.OUTPUT_FORMAT)):
     """
     Input:
         rdfTriples: list of RDF triples with correct type - List containing triples on the form (Subject, RelationPredicate, Object).
@@ -14,6 +16,11 @@ def store_rdf_triples(rdfTriples, output_file_name = ev().get_value(ev().OUTPUT_
     The format and output folder of the files are dependent of the configation of the .env file
     
     """
+    # Check if the environment has been set properly, raise error if not
+    if output_file_name is None or destination_folder is None or output_format is None:
+        err_format = "A Required Environment Variable is undefined[{0}={1}, {2}={3}, {4}={5}]"
+        raise EnvironmentError(err_format.format(ev.instance.OUTPUT_FILE_NAME, output_file_name, ev.instance.RDF_OUTPUT_FOLDER, destination_folder, ev.instance.OUTPUT_FORMAT, output_format))
+
     # Get the "graph" in order to contain the rdfTriples
     g = Graph()
     

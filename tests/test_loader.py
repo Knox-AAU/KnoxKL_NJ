@@ -1,5 +1,5 @@
 from loader.FileLoader import load_json
-from loader.JsonWrapper import Publication, Article, Paragraph, Byline
+from knox_source_data_io.models.publication import Publication, Article, Paragraph, Byline
 from loader import process_existing
 import os
 import pytest
@@ -51,13 +51,13 @@ class Test:
         assert news.published_at == '2018-03-27T00:00:00+02:00'
 
     def test_load_json_has_byline_with_content(self):
-        news = load_json(self.path)
+        news: Publication = load_json(self.path)
 
         assert type(news.articles[0].byline) == Byline
         assert news.articles[0].byline.name == 'Michael Jackson'
         assert news.articles[0].byline.email == 'MJ@king_of_pop.org'
     
-    @xfail(strict=True, raises=TypeError)
+    @xfail(strict=True, raises=AttributeError)
     def test_load_json_should_error_on_wrong_format(self):
         news = load_json('./tests/data/test_data.json')
 

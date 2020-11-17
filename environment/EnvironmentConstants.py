@@ -18,6 +18,7 @@ class EnvironmentVariables:
             self.KNOX_18_NAMESPACE = "KNOX_18_NAMESPACE"
             self.OUTPUT_FORMAT = "OUTPUT_FORMAT"
             self.OUTPUT_FILE_NAME = "OUTPUT_FILE_NAME"
+            self.TRIPLE_DATA_ENDPOINT = "TRIPLE_DATA_ENDPOINT"
             load_dotenv()
         
         def get_value(self, key: str, default = None):
