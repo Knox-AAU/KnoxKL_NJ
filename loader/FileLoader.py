@@ -49,7 +49,7 @@ def process_existing(input_path: str, output_path: str, err_path: str) -> None:
     This method will look through the input directory, and determine whether a file has been processed previously
     When the file has been processed, it will be moved to the output directory.
     """
-    print(f'Checking for existing files in \'{path}\'...')
+    print(f'Checking for existing files in \'{input_path}\'...')
     paths = [os.path.join(input_path, fn) for fn in next(os.walk(input_path))[2]]
     if len(paths) == 0:
         print('No files were created between sessions', 'info')
