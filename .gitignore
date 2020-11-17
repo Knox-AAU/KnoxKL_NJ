@@ -138,3 +138,6 @@ output/
 
 # Idea
 .idea/
+
+# folder
+labels/rawfiles/*.json
