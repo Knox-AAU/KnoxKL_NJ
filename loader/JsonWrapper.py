@@ -1,5 +1,6 @@
 from knox_source_data_io.models.model import Model
 from typing import List
+from knox_util import print
 
 class Byline:
     """
@@ -67,8 +68,12 @@ class Article:
         content = content if content is not None else {}
         self.extracted_from = []
         js_extracted_from = content.get("extracted_from", [])
-        for val in js_extracted_from:
-            self.extracted_from.append(val)
+        # Added a case for we somehow received a string instead of an array of strings
+        if type(js_extracted_from) is str:
+            self.extracted_from.append(js_extracted_from)
+        else:
+            for val in js_extracted_from:
+                self.extracted_from.append(val)
         self.confidence = content.get("confidence", 0.0)
         self.id = content.get("id", 0)
         self.page = content.get("page", 0)
@@ -111,3 +116,7 @@ class Publication(Model):
         js_article = content.get("articles", [])
         for val in js_article:
             self.articles.append(Article(val))
+        print(f'Initialised publication {self.publication}', 'debug')
+    
+    def __str__(self):
+        return f'n:{self.publication} p:{self.pages} d:{self.published_at} b:{self.publisher}'

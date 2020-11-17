@@ -3,8 +3,8 @@ from environment.EnvironmentConstants import EnvironmentVariables as ev
 from rdflib import URIRef
 
 KNOX = ClosedNamespace(
-    uri=URIRef(ev().get_value(ev().KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")),
+    uri=URIRef(ev.instance.get_value(ev.instance.KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")),
     terms=[
         "isPublishedBy", "mentions", "isPublishedOn", "publishes", "Email", "DateMention", "Link",
-        "Name", "PublicationDate", "ArticleTitle", "isWrittenBy"]
+        "Name", "PublicationDay", "PublicationMonth", "PublicationYear", "ArticleTitle", "isWrittenBy"]
 )
