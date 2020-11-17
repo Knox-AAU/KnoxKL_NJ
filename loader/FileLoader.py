@@ -41,7 +41,7 @@ class Handler(FileSystemEventHandler):
                         print("Did not find file with path <" + event.src_path + ">, it was likely moved just before...", 'warning')
 
 
-def process_existing(path: str) -> None:
+def process_existing(input_path: str, output_path: str, err_path: str) -> None:
     """
     Input:
         path: str - The input directory path, that will be processed
@@ -50,7 +50,7 @@ def process_existing(path: str) -> None:
     When the file has been processed, it will be moved to the output directory.
     """
     print(f'Checking for existing files in \'{path}\'...')
-    paths = [os.path.join(path, fn) for fn in next(os.walk(path))[2]]
+    paths = [os.path.join(input_path, fn) for fn in next(os.walk(input_path))[2]]
     if len(paths) == 0:
         print('No files were created between sessions', 'info')
         return
@@ -64,10 +64,10 @@ def process_existing(path: str) -> None:
             # TODO create separate function to handle this
             news = load_json(path)
             TripleExtractor('da_core_news_lg').process_publication(news)
-            move_file(path, ev.instance.get_value(ev.instance.OUTPUT_DIRECTORY), split_path[-1])
+            move_file(path, ev.instance.get_value(output_path), split_path[-1])
         except Exception as e:
             print(f'Move file <{path}> with exception: {e}', 'warning')
-            move_file(path, ev.instance.get_value(ev.instance.ERROR_DIRECTORY), split_path[-1])
+            move_file(path, ev.instance.get_value(err_path), split_path[-1])
 
 
     # Simulated finished
