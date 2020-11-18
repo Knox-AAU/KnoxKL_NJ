@@ -1,20 +1,22 @@
 from __future__ import annotations
 from datetime import date
-from typing import List
+from typing import List, OrderedDict
 import spacy
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 from knox_source_data_io.models.publication import Publication, Article
 from rdf.RdfConstants import RelationTypeConstants
 from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
 from extractor.TripleExtractorEnum import TripleExtractorEnum
-from preproc.PreProcessor import remove_stop_words, convert_to_modern_danish
+from preproc import PreProcessor
 from knox_util import print, convert_iso_string_to_date_time
 import datetime
 
+
 class TripleExtractor:
 
-    def __init__(self, model, tuple_label_list=None, ignore_label_list=None) -> None:
-        self.nlp = spacy.load(model)
+    nlp: OrderedDict = None
+    def __init__(self, tuple_label_list=None, ignore_label_list=None) -> None:
+        PreProcessor.nlp = self.nlp
         self.namespace = ev.instance.get_value(ev.instance.KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
         self.triples = []
         self.named_individual = []
@@ -117,12 +119,12 @@ class TripleExtractor:
         """
 
         # Article text is split into multiple paragraph objects in the Json, this is joined into one string.
-        content = ' '.join(para.value for para in article.paragraphs)
+        content = ' '.join(para.value for para in article.paragraphs).replace('”', '"')
         # Run preprocessing steps on the content if "doPreprocessing" is True
         if doPreprocessing:
             print('Running preprocessing for content of article with ID: <' + str(article.id) + '>')
-            content = remove_stop_words(content)
-            content = convert_to_modern_danish(content, self.nlp)
+            content = PreProcessor.remove_stop_words(content)
+            content = PreProcessor.convert_to_modern_danish(content)
 
         # Does nlp on the text
         article_entities = self.process_article_text(content)
@@ -251,7 +253,7 @@ class TripleExtractor:
                 generate_uri_reference(self.namespace, ref=prop2)
             ])
 
-    def process_publication(self, publication: Publication) -> None:
+    def process_publication(self, publication: Publication, file_path: str) -> None:
         """
         Input:
             A NewsStruct from the loader package.
@@ -275,4 +277,4 @@ class TripleExtractor:
         self.write_named_individual()
 
         # Function from rdf.RdfCreator, writes triples to file
-        store_rdf_triples(self.triples)
+        store_rdf_triples(self.triples, file_path)
