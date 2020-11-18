@@ -2,6 +2,7 @@ from rdflib import Graph, Literal, URIRef, BNode
 from rdflib.namespace import RDFS, OWL, XSD, RDF as Rdf
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 import os
+from rest.DataRequest import send_triple_to_db
 from rdf import KNOX
 
 def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.instance.OUTPUT_FILE_NAME), 
@@ -43,6 +44,11 @@ def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.in
 
     file_extention = __calculateFileExtention__(output_format)
     g.serialize(format=output_format, encoding="utf-8", destination=destination_folder + output_file_name + file_extention)
+    with open(f'{destination_folder}{output_file_name}{file_extention}', 'r', encoding='utf-8') as f:
+        content = f.read()
+        success = send_triple_to_db(content, endpoint=ev.instance.get_value(ev.instance.TRIPLE_DATA_ENDPOINT))
+        if not success:
+            print(f'Unable to send file to database', 'error')
 
 def generate_blank_node():
     """

@@ -1,5 +1,7 @@
+import spacy
 from extractor.TripleExtractor import TripleExtractor
 from loader.FileLoader import load_json
+import spacy
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 from rdf.RdfConstants import RelationTypeConstants
 from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
@@ -7,7 +9,8 @@ from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_l
 
 
 class Test:
-    extractor = TripleExtractor("da_core_news_lg")
+    TripleExtractor.nlp = spacy.load("da_core_news_lg")
+    extractor = TripleExtractor()
     namespace = ev.instance.get_value(ev.instance.KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
     publication = load_json("./tests/data/test_jason.json")
 
@@ -82,8 +85,7 @@ class Test:
 
        
     def test_extractor_with_custom_labels(self):
-        extractor2 = TripleExtractor("da_core_news_lg", 
-            [["ANI", "Animal"], ["MED", "Media"], ["GAM", "Game"]], 
+        extractor2 = TripleExtractor([["ANI", "Animal"], ["MED", "Media"], ["GAM", "Game"]], 
             [["FOR", "Forbidden"]])
 
         ani_string = "ANI"
