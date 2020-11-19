@@ -15,12 +15,12 @@ import re
 def scrape():
     nlp = spacy.load('da_core_news_lg')
 
-    py = glob.glob(r'C:\Users\skyri\Desktop\Software\P5-Project\labels\rawfiles\2020-02*aalborg.json')
+    filelist = glob.glob(r'C:\Users\skyri\Desktop\Software\P5-Project\labels\rawfiles\2020-02*aalborg.json')
 
     with open(r'C:\Users\skyri\Desktop\Software\P5-Project\labels\rawtext.txt', 'w', encoding='utf-8') as target:
         target.write('TRAIN_DATA = [')
-
-        for file in py:
+        
+        for file in filelist:
             handler = IOHandler(Generator(app='This app', version=1.0), 'https://repos.libdom.net/schema/publication.schema.json')
             with open(file, 'r', encoding='utf-8') as json_file:
                 wrap: Wrapper = handler.read_json(json_file)
