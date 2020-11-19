@@ -6,12 +6,13 @@ import warnings
 from pathlib import Path
 import spacy
 from spacy.util import minibatch, compounding
-
+import labels.rawtext as train_file
 # new entity label
 LABEL = "ANIMAL"
 
 # training data
-TRAIN_DATA = [
+TRAIN_DATA = train_file.TRAIN_DATA_DATES
+OLD_TRAIN_DATA = [
     ("Hvordan du bedst passer på hesten i varmen", {"entities": [(27, 33, LABEL)]},),
     ("Bider de?", {"entities": []}),
     ("Jeg købte en fisk nede ved havnen", {"entities":[(13, 17, LABEL)]}),
@@ -69,7 +70,7 @@ def main(model="da_core_news_lg", new_model_name="da_core_news_and_animals", out
     else:
         ner = nlp.get_pipe("ner")
 
-    ner.add_label(LABEL)  # add new entity label to entity recognizer
+    ner.add_label('DATE')  # add new entity label to entity recognizer
     # Adding extraneous labels shouldn't mess anything up
     if model is None:
         optimizer = nlp.begin_training()
@@ -96,7 +97,7 @@ def main(model="da_core_news_lg", new_model_name="da_core_news_and_animals", out
             print("Losses", losses)
 
     # test the trained model
-    test_text = "Kan du lide heste?"
+    test_text = "Emil blev født d. 17. august 1998, Mathias blev født 1995 19. maj."
     doc = nlp(test_text)
     print("Entities in '%s'" % test_text)
     for ent in doc.ents:
