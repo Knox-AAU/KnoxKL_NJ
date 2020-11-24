@@ -19,7 +19,7 @@ def scrape():
 
     with open(r'C:\Users\skyri\Desktop\Software\P5-Project\labels\rawtext.txt', 'w', encoding='utf-8') as target:
         target.write('TRAIN_DATA = [')
-        
+
         for file in filelist:
             handler = IOHandler(Generator(app='This app', version=1.0), 'https://repos.libdom.net/schema/publication.schema.json')
             with open(file, 'r', encoding='utf-8') as json_file:
@@ -74,7 +74,7 @@ def find_matches(search_string: str, search_text: str, last_matches: dict) -> li
     while next_index != -1:
         index_list.append(next_index)
         next_val = next_index + len(search_string)
-        temp_dict.update({search_string: next_val})
+        last_matches.update({search_string: next_val})
 
         last_search = next_val
         next_index = search_text.find(search_string, last_search)
