@@ -6,7 +6,7 @@ import warnings
 from pathlib import Path
 import spacy
 from spacy.util import minibatch, compounding
-import labels.rawtext as train_file
+import labels.rawtext as train_file #Rawtext should be created using ScrapeJsonFiles
 # new entity label
 LABEL = "ANIMAL"
 
@@ -52,7 +52,7 @@ OLD_TRAIN_DATA = [
     output_dir=("Optional output directory", "option", "o", Path),
     n_iter=("Number of training iterations", "option", "n", int),
 )
-def main(model="da_core_news_lg", new_model_name="da_core_news_and_animals", output_dir="C:/Users/skyri/Desktop/Software/Models", n_iter=30):
+def main(model="da_core_news_lg", new_model_name="da_core_news_and_dates", output_dir="C:/Users/skyri/Desktop/Software/Models", n_iter=50):
     """Set up the pipeline and entity recognizer, and train the new entity."""
     random.seed(0)
     if model is not None:
@@ -93,8 +93,8 @@ def main(model="da_core_news_lg", new_model_name="da_core_news_and_animals", out
             losses = {}
             for batch in batches:
                 texts, annotations = zip(*batch)
-                nlp.update(texts, annotations, sgd=optimizer, drop=0.35, losses=losses)
-            print("Losses", losses)
+                nlp.update(texts, annotations, sgd=optimizer, drop=0.225, losses=losses)
+            print("Working on iteration: " + str(itn + 1) + '/' + str(n_iter) + ' with losses ', losses)
 
     # test the trained model
     test_text = "Emil blev født d. 17. august 1998, Mathias blev født 1995 19. maj."
