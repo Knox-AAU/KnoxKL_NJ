@@ -42,6 +42,8 @@ def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.in
         success = send_triple_to_db(content, endpoint=ev.instance.get_value(ev.instance.TRIPLE_DATA_ENDPOINT))
         if not success:
             print(f'Unable to send file to database', 'error')
+            raise Exception('Unable to post to the database')
+        print(f'Successfully sent publication <{output_file_name}> to server', 'info')
 
 def generate_blank_node():
     """
