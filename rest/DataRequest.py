@@ -3,7 +3,7 @@ from environment.EnvironmentConstants import EnvironmentVariables as ev
 from knox_util import print
 import traceback
 
-def send_triple_to_db(triple_content: str, headers: dict = {'content-type': 'application/json'}, endpoint: str = None) -> bool:
+def send_triple_to_db(triple_content: str, headers: dict = {'content-type': 'application/json; charset=utf-8'}, endpoint: str = None) -> bool:
     """
     Input:
         triple_content: str - The triple content to be stored in the database formatted as a single string
@@ -25,13 +25,13 @@ def send_triple_to_db(triple_content: str, headers: dict = {'content-type': 'app
 
     try:
         print('Sending POST request to endpoint <{}>, with headers <{}> and limited content <{}>'.format(endpoint, headers, triple_content[0:min(25, len(triple_content))]), 'debug')
-        response: requests.Response = requests.post(url=endpoint, headers=headers, data=triple_content)
+        response: requests.Response = requests.post(url=endpoint, headers=headers, data=triple_content.encode("utf-8"))
         if response.status_code == 200:
             print('Responded with status code <{}>, success...'.format(response.status_code), 'debug')
             return True
         else:
-            print('Responded with status code <{}>'.format(response.status_code), 'warning')
+            print('Responded with status code <{}>. Message: <{}>'.format(response.status_code, response.text), 'warning')
             return False
     except requests.exceptions.ConnectionError as e: # Connection was refused return False
-        print(f'Unable to connect to endpoint. {traceback.extract_tb()}', 'error')
+        print(f'Unable to connect to endpoint. {traceback.format_exc()}', 'error')
         return False
