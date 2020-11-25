@@ -1,5 +1,5 @@
 from environment.EnvironmentConstants import EnvironmentVariables as ev
-from rest.DataRequest import sendTripleToDb
+from rest.DataRequest import send_triple_to_db
 import pytest
 import requests
 
@@ -11,6 +11,6 @@ test_endpoint: str = 'http://127.0.0.1:54321/update'
 class Test:
 
     def test_no_connection(self):
-        retval = sendTripleToDb(content, endpoint=test_endpoint)
+        retval = send_triple_to_db(content, endpoint=test_endpoint)
 
         assert retval.__eq__(False)

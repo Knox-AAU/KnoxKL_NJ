@@ -144,11 +144,11 @@ class Test:
         file_name = "TesterFilexyzwasd"
 
         try:
-            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle')
-        except Exception:
-            assert False
-        else:
+            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle', 'http://test')
+        except FileNotFoundError:
             assert True
+        else:
+            assert False
 
         expected_path = os.path.abspath(self.output_path + file_name + ".ttl") 
         assert os.path.exists(expected_path)
@@ -179,7 +179,12 @@ class Test:
         prefix_string = '@prefix '
 
         # Create the output
-        store_rdf_triples(test_triples, file_name, self.output_path, 'turtle')
+        try:
+            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle', 'http://test')
+        except FileNotFoundError:
+            assert True
+        else:
+            assert False
 
         # Check output
         output_string = ''
