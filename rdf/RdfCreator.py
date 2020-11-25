@@ -4,6 +4,7 @@ from environment.EnvironmentConstants import EnvironmentVariables as ev
 import os
 from rest.DataRequest import send_triple_to_db
 from rdf import KNOX
+from requests.exceptions import ConnectionError
 
 def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.instance.OUTPUT_FILE_NAME), 
                 destination_folder = ev.instance.get_value(ev.instance.RDF_OUTPUT_FOLDER), 
@@ -45,7 +46,7 @@ def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.in
         success = send_triple_to_db(content, endpoint=endpoint)
         if not success:
             print(f'Unable to send file to database', 'error')
-            raise FileNotFoundError('Unable to post to the database')
+            raise ConnectionError('Unable to post to the database')
         print(f'Successfully sent publication <{output_file_name}> to server', 'info')
 
 def generate_blank_node():
