@@ -7,7 +7,7 @@ from rdf import KNOX
 
 def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.instance.OUTPUT_FILE_NAME), 
                 destination_folder = ev.instance.get_value(ev.instance.RDF_OUTPUT_FOLDER), 
-                output_format = ev.instance.get_value(ev.instance.OUTPUT_FORMAT)):
+                output_format = ev.instance.get_value(ev.instance.OUTPUT_FORMAT), endpoint: str = None):
     """
     Input:
         rdfTriples: list of RDF triples with correct type - List containing triples on the form (Subject, RelationPredicate, Object).
@@ -35,11 +35,14 @@ def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.in
     if not os.path.exists(os.path.abspath(destination_folder)):
         os.mkdir(os.path.abspath(destination_folder))
 
+    if endpoint is None:
+        endpoint = ev.instance.get_value(ev.instance.TRIPLE_DATA_ENDPOINT)
+
     file_extention = __calculateFileExtention__(output_format)
     g.serialize(format=output_format, encoding="utf-8", destination=destination_folder + output_file_name + file_extention)
     with open(f'{destination_folder}{output_file_name}{file_extention}', 'r', encoding='utf-8') as f:
         content = f.read()
-        success = send_triple_to_db(content, endpoint=ev.instance.get_value(ev.instance.TRIPLE_DATA_ENDPOINT))
+        success = send_triple_to_db(content, endpoint=endpoint)
         if not success:
             print(f'Unable to send file to database', 'error')
             raise FileNotFoundError('Unable to post to the database')

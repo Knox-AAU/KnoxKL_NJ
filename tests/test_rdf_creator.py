@@ -144,7 +144,7 @@ class Test:
         file_name = "TesterFilexyzwasd"
 
         try:
-            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle')
+            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle', 'http://test')
         except FileNotFoundError:
             assert True
         else:
@@ -180,12 +180,12 @@ class Test:
 
         # Create the output
         try:
-            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle')
+            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle', 'http://test')
         except FileNotFoundError:
             assert True
         else:
             assert False
-            
+
         # Check output
         output_string = ''
         with open(file_path, 'r', encoding='utf-8') as output:
