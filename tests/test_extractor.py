@@ -134,7 +134,7 @@ class Test:
         self.extractor.triples.clear()
         self.extractor.named_individual.clear()
         try:
-            self.extractor.process_publication(self.publication)
+            self.extractor.process_publication(self.publication, './output/')
         except EnvironmentError:
             pass # Pass Environment Errors as this is because there are missing Environment Variables on the test server     
         assert len(self.extractor.triples) == 46
