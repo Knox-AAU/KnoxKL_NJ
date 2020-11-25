@@ -3,6 +3,7 @@ from rdflib import BNode
 from rdf.RdfConstants import RelationTypeConstants as rConst
 import os
 from datetime import datetime
+from requests.exceptions import ConnectionError
 
 class Test:
 
@@ -145,7 +146,7 @@ class Test:
 
         try:
             store_rdf_triples(test_triples, file_name, self.output_path, 'turtle', 'http://test')
-        except FileNotFoundError:
+        except ConnectionError:
             assert True
         else:
             assert False
@@ -181,7 +182,7 @@ class Test:
         # Create the output
         try:
             store_rdf_triples(test_triples, file_name, self.output_path, 'turtle', 'http://test')
-        except FileNotFoundError:
+        except ConnectionError:
             assert True
         else:
             assert False
