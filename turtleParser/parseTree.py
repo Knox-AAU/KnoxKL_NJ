@@ -1,5 +1,5 @@
-from node import Node
-from categories import Categories
+from turtleParser.node import Node
+from turtleParser.categories import Categories
 
 class ParseTree:
     def __init__(self, text):

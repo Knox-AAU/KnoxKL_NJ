@@ -1,7 +1,7 @@
-import productions
-import util
-import turtleExtractor
-from categories import Categories
+import turtleParser.productions as oroductions
+import turtleParser.util as util
+import turtleParser.turtleExtractor as turtleExtractor
+from turtleParser.categories import Categories
 
 def getNameSpaceTriples(pt):
     prefixTriples = list()

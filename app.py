@@ -2,7 +2,8 @@
 import spacy
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 ev()
-
+from turtleParser.turtleParser import RuntimeOntology as ro
+ro()
 import argparse
 import logging.config
 import logging
