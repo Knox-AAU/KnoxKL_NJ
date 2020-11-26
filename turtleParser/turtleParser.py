@@ -30,4 +30,4 @@ def Parse(text):
     return tripleList
 
 def ParseFromfile(filePath):
-    return Parse(util.TextFromFilePath("ttlFiles/testFile.ttl"))
+    return Parse(util.TextFromFilePath(filePath))
