@@ -31,7 +31,3 @@ def Parse(text):
 
 def ParseFromfile(filePath):
     return Parse(util.TextFromFilePath("ttlFiles/testFile.ttl"))
-
-text = Parse(util.TextFromFilePath("ttlFiles/testFile.ttl"))
-for x in text:
-    print(x)
