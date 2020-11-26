@@ -19,8 +19,9 @@ class EnvironmentVariables:
             self.OUTPUT_FORMAT = "OUTPUT_FORMAT"
             self.OUTPUT_FILE_NAME = "OUTPUT_FILE_NAME"
             self.TRIPLE_DATA_ENDPOINT = "TRIPLE_DATA_ENDPOINT"
+            self.ONTOLOGY_FILEPATH = "ONTOLOGY_FILEPATH"
             load_dotenv()
-        
+            
         def get_value(self, key: str, default = None):
             """
             Input:
