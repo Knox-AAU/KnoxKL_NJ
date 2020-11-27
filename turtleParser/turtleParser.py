@@ -20,7 +20,7 @@ class RuntimeOntology:
             self.Relations = list()
 
             #Parse turtle file
-            outputs = ParseFromFile(ev.instance.get_value(ev.instance.ONTOLOGY_FILEPATH))
+            outputs = ParseFromFile(ev.instance.get_value(ev.instance.ONTOLOGY_FILEPATH, ".ontology.ttl") )
 
             #Categorise the output
             for output in outputs:
