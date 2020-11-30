@@ -20,20 +20,6 @@ def letterList():
     letterList = list(string.ascii_lowercase) + list(string.ascii_uppercase)
     return letterList
 
-def StripWhitespacesAndNewlines(string):
-    """
-    Removes all spaces and newlines from a string
-    
-    Input:
-        string: str - Input string to be stripped from spaces and newlines
-    Return:
-        stripedString: str - The string that is stripped of spaces and newlines.
-    """ 
-    #Make array with words, removing whitespaces and so on
-    words = string.split()
-    stripedString = ''.join(words)
-    return stripedString
-
 def TextFromFilePath(filePath):
     """
     Opens a ttl file and extracts all the text that the file contains
@@ -49,3 +35,64 @@ def TextFromFilePath(filePath):
         return None
     text = f.read()
     return text
+
+def DeleteComments(text):
+    """
+    Deletes COMMENTs by scanning for (# (char)* '\\n'). '#' is used in IRIREFs and STRINGs
+    
+    Input:
+        text: str - turtle text
+    Return:
+        preproText: str - turtle text without comments
+    """ 
+    preproText = ""
+    isCOMMENTInterpolation = False #if true, Look for '\n'
+    isIRIREFInterpolation = False #if true, Look for '>'
+    isSTRINGInterpolation = False #if true, Look for '"'
+    for i in range(len(text)):
+        c = text[i]
+
+        #End comment
+        if isCOMMENTInterpolation:
+            if c == '\n':
+                isCOMMENTInterpolation = False
+                continue
+            continue
+
+        #End iriref
+        if isIRIREFInterpolation:
+            if c == '>':
+                isIRIREFInterpolation = False
+                preproText = preproText + c
+                continue
+            preproText = preproText + c
+            continue
+
+        #End string
+        if isSTRINGInterpolation:
+            if c == '"':
+                isSTRINGInterpolation = False
+                preproText = preproText + c
+                continue
+            preproText = preproText + c
+            continue
+
+        #Start comment
+        if c == '#':
+            isCOMMENTInterpolation = True
+            continue
+            
+        #Start iriref
+        if c == '<':
+            isIRIREFInterpolation = True
+            preproText = preproText + c
+            continue
+
+        #Start String
+        if c == '"':
+            isSTRINGInterpolation = True
+            preproText = preproText + c
+            continue
+
+        preproText = preproText + c
+    return preproText

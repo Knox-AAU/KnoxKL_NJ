@@ -1,8 +1,8 @@
 #The productions of this parser follows the official turtle(.ttl) grammar: https://www.w3.org/TR/turtle/#grammar-production-PNAME_NS
-import util
-from categories import Categories
-from node import Node
-from parseTree import ParseTree
+import turtleParser.util as util
+from turtleParser.categories import Categories
+from turtleParser.node import Node
+from turtleParser.parseTree import ParseTree
 
 #NONTERMINALS
 #1 (statements)*
