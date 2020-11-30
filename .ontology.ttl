@@ -25,6 +25,9 @@ knox:Location
 
 knox:Date
 	a owl:Class .
+
+knox:Medical
+	a owl:Class .
 		
 knox:Organisation
 	a owl:Class .
@@ -36,8 +39,6 @@ knox:Publisher
 knox:Publication
 	a owl:Class .
 
-#knox:Object
-		#	rdf:type owl:Class .
 	
 #Object Properties
 # Object Properties are the relations between classes and should be read as:
@@ -58,9 +59,9 @@ knox:mentions
 	rdfs:domain knox:Article ;
 	rdfs:range knox:Location,
 			   knox:Person ,
-	#	rdfs:range knox:Object ;
 	           knox:Date,
-			   knox:Organisation .
+			   knox:Organisation ,
+			   knox:Medical .
 
 knox:publishes
 	rdf:type owl:ObjectProperty ;

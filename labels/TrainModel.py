@@ -1,3 +1,4 @@
+# Code imported from https://github.com/explosion/spaCy/blob/master/examples/training/train_new_entity_type.py
 from __future__ import unicode_literals, print_function
 
 import plac
@@ -5,7 +6,7 @@ import random
 import warnings
 from pathlib import Path
 import spacy
-from spacy.util import minibatch, compounding
+from spacy.util import minibatch, compounding   
 import labels.output.training_data as train_file
 import labels.output.medical_data as medical_file
 
@@ -38,7 +39,9 @@ def main(model="C:/Users/skyri/Desktop/Software/Models/Good-Date-backup", new_mo
     else:
         ner = nlp.get_pipe("ner")
 
-    ner.add_label('MEDICAL')  # add new entity label to entity recognizer
+    ner.add_label('MEDICAL')  
+    
+    # add new entity label to entity recognizer
     # Adding extraneous labels shouldn't mess anything up
     if model is None:
         optimizer = nlp.begin_training()
