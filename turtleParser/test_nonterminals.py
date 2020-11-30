@@ -1,6 +1,6 @@
-import productions
-import util
-from categories import Categories
+import turtleParser.productions as productions
+import turtleParser.util as util
+from turtleParser.categories import Categories
 
 #1 TurtleDoc
 def test_TurtleDoc_none():

@@ -1,4 +1,4 @@
-from categories import Categories
+from turtleParser.categories import Categories
 
 class Node:
     def __init__(self, category, index, char=' '):
