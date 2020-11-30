@@ -11,6 +11,7 @@ __pycache__/
 *.so
 
 hidden.py
+hidden2.py
 logs/
 input/
 output/
@@ -145,3 +146,6 @@ output/
 
 # folder
 labels/rawfiles/*.json
+
+# VSCode files
+.vsls.json
