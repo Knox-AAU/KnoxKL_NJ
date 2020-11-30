@@ -3,6 +3,7 @@ from datetime import date
 from typing import List, OrderedDict
 import spacy
 from environment.EnvironmentConstants import EnvironmentVariables as ev
+from turtleParser.turtleParser import RuntimeOntology as ro
 from knox_source_data_io.models.publication import Publication, Article
 from rdf.RdfConstants import RelationTypeConstants
 from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
@@ -17,7 +18,7 @@ class TripleExtractor:
     nlp: OrderedDict = None
     def __init__(self, tuple_label_list=None, ignore_label_list=None) -> None:
         PreProcessor.nlp = self.nlp
-        self.namespace = ev.instance.get_value(ev.instance.KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
+        self.namespace = ro.instance.GetOntologyNamespace()
         self.triples = []
         self.named_individual = []
         self.preprocess_year_threshold = 1948

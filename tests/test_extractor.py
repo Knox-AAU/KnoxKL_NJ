@@ -5,13 +5,13 @@ import spacy
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 from rdf.RdfConstants import RelationTypeConstants
 from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
-
+from turtleParser.turtleParser import RuntimeOntology as ro
 
 
 class Test:
     TripleExtractor.nlp = spacy.load("da_core_news_lg")
     extractor = TripleExtractor()
-    namespace = ev.instance.get_value(ev.instance.KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
+    namespace = ro.instance.GetOntologyNamespace()
     publication = load_json("./tests/data/test_jason.json")
 
     def test_spacy_conversion_to_label(self):
