@@ -28,7 +28,7 @@ def main(model="C:/Users/skyri/Desktop/Software/Models/Good-Date-backup", new_mo
         nlp = spacy.load(model)  # load existing spaCy model
         print("Loaded model '%s'" % model)
     else:
-        nlp = spacy.blank("en")  # create blank Language class
+        nlp = spacy.blank("da")  # create blank Language class
         print("Created blank 'en' model")
     # Add entity recognizer to model if it's not in the pipeline
     # nlp.create_pipe works for built-ins that are registered with spaCy
