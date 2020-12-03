@@ -1,6 +1,6 @@
 from __future__ import annotations
 from datetime import date
-from typing import List, OrderedDict
+from typing import Dict, List, OrderedDict
 import spacy
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 from knox_source_data_io.models.publication import Publication, Article
@@ -10,6 +10,7 @@ from extractor.TripleExtractorEnum import TripleExtractorEnum
 from preproc import PreProcessor
 from knox_util import print, convert_iso_string_to_date_time
 import datetime
+from extractor.WordFrequencyHandler import WordFrequencyHandler
 
 
 class TripleExtractor:
@@ -29,6 +30,8 @@ class TripleExtractor:
             self.ignore_label_list = ["MISC"]
         else:
             self.ignore_label_list = ignore_label_list
+        
+        self.word_frequency_handler = WordFrequencyHandler()
 
     def add_named_individual(self, prop_1, prop_2) -> None:
         """
@@ -120,6 +123,10 @@ class TripleExtractor:
 
         # Article text is split into multiple paragraph objects in the Json, this is joined into one string.
         content = ' '.join(para.value for para in article.paragraphs).replace('”', '"')
+
+        # Count the word frequency
+        self.word_frequency_handler.do_word_count_for_article(article.headline, content, article.extracted_from)
+
         # Run preprocessing steps on the content if "doPreprocessing" is True
         if doPreprocessing:
             print('Running preprocessing for content of article with ID: <' + str(article.id) + '>')
@@ -278,3 +285,5 @@ class TripleExtractor:
 
         # Function from rdf.RdfCreator, writes triples to file
         store_rdf_triples(self.triples, file_path)
+
+        self.word_frequency_handler.send_pending_counts(file_path)
