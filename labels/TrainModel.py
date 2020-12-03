@@ -1,12 +1,13 @@
 # Code imported from https://github.com/explosion/spaCy/blob/master/examples/training/train_new_entity_type.py
 from __future__ import unicode_literals, print_function
+from numpy.core.fromnumeric import take
 
 import plac
 import random
 import warnings
 from pathlib import Path
 import spacy
-from spacy.util import minibatch, compounding   
+from spacy.util import minibatch, compounding, decaying
 import labels.output.training_data as train_file
 import labels.output.medical_data as medical_file
 
@@ -55,7 +56,7 @@ def main(model="C:/Users/skyri/Desktop/Software/Models/Good-Date-backup", new_mo
     with nlp.disable_pipes(*other_pipes), warnings.catch_warnings():
         # show warnings for misaligned entity spans once
         warnings.filterwarnings("once", category=UserWarning, module='spacy')
-
+        dropout = decaying(0.6, 0.2, 1e-4)
         sizes = compounding(1.0, 4.0, 1.001)
         # batch up the examples using spaCy's minibatch
         for itn in range(n_iter):
@@ -64,7 +65,7 @@ def main(model="C:/Users/skyri/Desktop/Software/Models/Good-Date-backup", new_mo
             losses = {}
             for batch in batches:
                 texts, annotations = zip(*batch)
-                nlp.update(texts, annotations, sgd=optimizer, drop=0.25, losses=losses)
+                nlp.update(texts, annotations, sgd=optimizer, drop=next(dropout), losses=losses)
             print("Working on iteration: " + str(itn + 1) + '/' + str(n_iter) + ' with losses ', losses)
 
     # test the trained model
