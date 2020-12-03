@@ -1,3 +1,5 @@
+#Conll-2003 format. Can be imported into https://inception-project.github.io/ or similar annotation platforms.
+#Hand-annotated.
 DANMARK _ O I-LOC
 : _ O O
 Der _ O O
