@@ -35,3 +35,25 @@ def send_triple_to_db(triple_content: str, headers: dict = {'content-type': 'app
     except requests.exceptions.ConnectionError as e: # Connection was refused return False
         print(f'Unable to connect to endpoint. {traceback.format_exc()}', 'error')
         return False
+
+def send_word_count_to_db(word_count_json: str, headers: dict = {'content-type': 'application/json; charset=utf-8'}, endpoint: str = None) -> bool:
+    if not endpoint: # Endpoint has not been defined, use environment variables, if exists
+        endpoint = ev.instance.get_value(ev.instance.WORD_COUNT_DATA_ENDPOINT)
+
+    if not endpoint:
+        msg = 'Endpoint for sending word count data has not been set or configured in the environment variables, please define environment variable: <{}>'.format(ev.instance.WORD_COUNT_DATA_ENDPOINT)
+        print(msg, 'error')
+        raise EnvironmentError(msg)
+
+    try:
+        print('Sending POST request to endpoint <{}>, with headers <{}> and limited content <{}>'.format(endpoint, headers, word_count_json[0:min(25, len(word_count_json))]), 'debug')
+        response: requests.Response = requests.post(url=endpoint, headers=headers, data=word_count_json.encode("utf-8"))
+        if response.status_code == 200:
+            print('Responded with status code <{}>, success...'.format(response.status_code), 'debug')
+            return True
+        else:
+            print('Responded with status code <{}>. Message: <{}>'.format(response.status_code, response.text), 'warning')
+            return False
+    except requests.exceptions.ConnectionError as e: # Connection was refused return False
+        print(f'Unable to connect to endpoint. {traceback.format_exc()}', 'error')
+        return False
