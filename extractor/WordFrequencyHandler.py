@@ -10,16 +10,15 @@ class WordFrequencyHandler():
 
     def __init__(self) -> None:
         self.tf = TermFrequency()
-        self.currentKey = ''
         self.word_frequencies_ready_for_sending = []
     
     def do_word_count_for_article(self, articleTitle: str, articleContent: str, extracted_from_list: List) -> None:
-        self.currentKey = articleTitle
         self.tf.process(articleTitle, articleContent)
 
         extracted_from: str = self.__concatenate_extracted_from__(extracted_from_list)
 
-        self.__convert_to_word_frequency_JSON_object__(extracted_from)
+        self.__convert_to_word_frequency_JSON_object__(articleTitle, extracted_from)
+        self.__reset__()
 
     def __concatenate_extracted_from__(self, path_list: List) -> str:
         ret_val: str = ''
@@ -35,22 +34,16 @@ class WordFrequencyHandler():
         
         return ret_val
 
-    def __convert_to_word_frequency_JSON_object__(self, extracted_from: str):
-        if self.currentKey == '':
-            print(f'Could not convert to word frequency object because CurrentKey is <{self.currentKey}>, with termfrequence object <{self.tf}>', 'debug')
-            pass
-        
-        frequencyData = self.tf[self.currentKey]
-        frequencyObject = __WordFrequency__(self.currentKey, extracted_from, frequencyData)
+    def __convert_to_word_frequency_JSON_object__(self, title: str, extracted_from: str):
+        frequencyData = self.tf[title]
+        frequencyObject = __WordFrequency__(title, extracted_from, frequencyData)
         
         json_object = json.dumps(frequencyObject, cls=__WordFrequenctEncoder__, sort_keys=True, indent=4, ensure_ascii=False)
 
         self.word_frequencies_ready_for_sending.append(json_object)
-        self.__reset_current_count__()
 
-    def __reset_current_count__(self, hard_reset=False):
+    def __reset__(self, hard_reset=False):
         self.tf = TermFrequency()
-        self.currentKey = ''
         if hard_reset:
             self.word_frequencies_ready_for_sending = []
 
@@ -65,9 +58,13 @@ class WordFrequencyHandler():
 
         if not success:
             self.__create_file_back_up__(backup_file_name)
+        
+        self.__reset__(True)
     
-    def __create_file_back_up__(self, file_name: str) -> None:
-        error_dir: str = ev.instance.get_value(ev.instance.ERROR_DIRECTORY)
+    def __create_file_back_up__(self, file_name: str, error_dir: str = ev.instance.get_value(ev.instance.ERROR_DIRECTORY)) -> None:
+        if not error_dir:
+            raise EnvironmentError(f'Environment Variable <{ev.instance.ERROR_DIRECTORY}> not specified...')
+
         file_path: str = error_dir + 'word_count_' + file_name
 
         with open(file_path, 'w', encoding='utf-8') as file:
