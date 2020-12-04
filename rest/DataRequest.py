@@ -7,10 +7,10 @@ def send_triple_to_db(triple_content: str, headers: dict = {'content-type': 'app
     """
     Input:
         triple_content: str - The triple content to be stored in the database formatted as a single string
-        headers: dict - A dictionary containing the headers for the post requests (default: {'content-type': 'application/json'})
+        headers: dict - A dictionary containing the headers for the post requests (default: {'content-type': 'application/json'; charset=utf-8})
         endpoint: str - The endpoint for the REST call (default: None, means check environment variables)
     Returns:
-        success: bool - Indicates whether the sending of triple date to the database were successful
+        success: bool - Indicates whether the sending of triple data to the database were successful
 
     Sends the triple data to the Data layer database based on the provided headers and to the endpoint defined in the environment variables.
     Handles the case when a connection could not be established to the defined endpoints, in that case the function returns False
@@ -37,6 +37,17 @@ def send_triple_to_db(triple_content: str, headers: dict = {'content-type': 'app
         return False
 
 def send_word_count_to_db(word_count_json: str, headers: dict = {'content-type': 'application/json; charset=utf-8'}, endpoint: str = None) -> bool:
+    """
+    Input:
+        word_count_json: str - The word count data to be stored in the database formatted as a JSON string
+        headers: dict - A dictionary containing the headers for the post requests (default: {'content-type': 'application/json; charset=utf-8'})
+        endpoint: str - The endpoint for the REST call (default: None, means check environment variables)
+    Returns:
+        success: bool - Indicates whether the sending of word count data to the database were successful
+
+    Sends the word count data to the Data layer database based on the provided headers and to the endpoint defined in the environment variables.
+    Handles the case when a connection could not be established to the defined endpoints, in that case the function returns False
+    """
     if not endpoint: # Endpoint has not been defined, use environment variables, if exists
         endpoint = ev.instance.get_value(ev.instance.WORD_COUNT_DATA_ENDPOINT)
 
