@@ -134,7 +134,6 @@ class Test:
         test_title = 'title_key'
         test_content = 'This is awesome content'
         back_up_file_name = 'thisistestfilefortestingtest_send_pending_count.json'
-        prepender = 'word_count_'
 
         handler.tf.process(test_title, test_content)
         # Check that something exists
@@ -146,7 +145,7 @@ class Test:
         # Expect to fail because of a Connection error
         # This triggers writing to a file
         error_dir = ev.instance.get_value(ev.instance.ERROR_DIRECTORY, './')
-        file_path = error_dir + prepender + back_up_file_name
+        file_path = error_dir + handler.back_up_file_prefix + back_up_file_name
         abs_path = os.path.abspath(file_path)
         
         assert os.path.exists(abs_path)
@@ -159,12 +158,11 @@ class Test:
         # Setup
         error_dir = './err/'
         test_file = 'thisIsSpecificForTest__create_file_back_up__.json'
-        prepender = 'word_count_'
         handler = WordFrequencyHandler()
 
         handler.__create_file_back_up__(test_file, error_dir)
 
-        abs_path = os.path.abspath(error_dir + prepender + test_file)
+        abs_path = os.path.abspath(error_dir + handler.back_up_file_prefix + test_file)
         assert os.path.exists(abs_path)
 
         with open(abs_path, 'r', encoding='utf-8') as file:
