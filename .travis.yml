@@ -18,8 +18,8 @@ install:
   - echo "" >> logs/pytest-logs.txt
   - echo "[global]">>~/.pip/pip.conf
   - echo "[global]">>~/pip/pip.ini
-  - echo "extra-index-url = https://repos.libdom.net/">>~/.pip/pip.conf
-  - echo "extra-index-url = https://repos.libdom.net/">>~/pip/pip.ini
+  - echo "extra-index-url = https://repos.knox.cs.aau.dk/">>~/.pip/pip.conf
+  - echo "extra-index-url = https://repos.knox.cs.aau.dk/">>~/pip/pip.ini
   - "pip install -r requirements_dev.txt"
   - "python -m spacy download da_core_news_sm"
   - "python -m spacy download da_core_news_lg"
