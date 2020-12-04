@@ -85,10 +85,11 @@ class WordFrequencyHandler():
             self.word_frequencies_ready_for_sending = []
 
     
-    def send_pending_counts(self, backup_file_name: str) -> None:
+    def send_pending_counts(self, backup_file_name: str, error_dir: str = ev.instance.get_value(ev.instance.ERROR_DIRECTORY)) -> None:
         """
         Inputs:
             backup_file_name: str - The file name of the backup file generated on unsuccessful transfer to Data layer
+            error_dir: str - The relative path from project root to create backup file (default: ERROR_DIRECTORY set in Environment Variables)
         
         Sends the pending word frequency data to the Data layer DB
         """
@@ -100,18 +101,18 @@ class WordFrequencyHandler():
                 break
 
         if not success:
-            self.__create_file_back_up__(backup_file_name)
+            self.__create_file_back_up__(backup_file_name, error_dir)
         else:
             print('Succesfully sent pending word count data to database', 'info')
         
         # Do hard reset, all have been sent
         self.__reset__(True)
     
-    def __create_file_back_up__(self, file_name: str, error_dir: str = ev.instance.get_value(ev.instance.ERROR_DIRECTORY)) -> None:
+    def __create_file_back_up__(self, file_name: str, error_dir: str ) -> None:
         """
         Inputs:
             file_name: str - Name of the backup file to create
-            error_dir: str - The relative path from project root to create backup file (default: ERROR_DIRECTORY set in Environment Variables)
+            error_dir: str - The relative path from project root to create backup file
         
         Writes the content of pending word count data to a JSON file with the specified name in the specified directory
         """
