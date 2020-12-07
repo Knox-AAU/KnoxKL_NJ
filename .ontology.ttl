@@ -10,8 +10,7 @@
 
 #Class definitions
 knox:Person
-	rdf:type owl:Class ;
-	rdfs:comment "People from the texts"@da-dk .
+	rdf:type owl:Class .
 	
 knox:Author
 	rdf:type owl:Class ;
@@ -88,13 +87,15 @@ knox:Link
 	rdfs:domain knox:Article ;
 	rdfs:range xsd:string .
 
-knox:Name
+knox:Value
 	a owl:DatatypeProperty ;
 	rdfs:domain knox:Person ;
 	rdfs:domain knox:Publisher ;
 	rdfs:domain knox:Publication ;
 	rdfs:domain knox:Location ;
 	rdfs:domain knox:Organisation ;
+	rdfs:domain knox:Date ;
+	rdfs:domain knox:Medical ;
 	rdfs:range xsd:string .
 
 knox:PublicationDay
