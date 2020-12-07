@@ -31,7 +31,7 @@ def read_json_file(path:str) -> str:
 
 def read_txt_file(path:str) -> str:
 
-    with open(r'C:\Users\skyri\Desktop\Software\P5-Project\labels\output\ny_text.txt', 'r', encoding='utf-8') as source:
+    with open(path, 'r', encoding='utf-8') as source:
         text = source.read()
 
 
@@ -42,9 +42,9 @@ def write_model_entities(inputtext:str):
     Writes the entities in the inputtext into the file specified.
     The format written is the one used my train_model.py    
     '''
-    nlp = spacy.load('C:/Users/skyri/Desktop/Software/Models/Good-Date-backup')
+    nlp = spacy.load('Path to spaCy model')
 
-    with open(r'C:\Users\skyri\Desktop\Software\P5-Project\labels\output\medical_data2.py', 'w', encoding='utf-8') as target:
+    with open(r'Path to write annotated training data.', 'w', encoding='utf-8') as target:
         target.write('TRAIN_DATA = [')
 
         temp = nlp(inputtext.replace('\n', ' '))
