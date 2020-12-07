@@ -67,10 +67,10 @@ def process_existing(input_path: str, output_path: str, err_path: str) -> None:
             # TODO create separate function to handle this
             news = load_json(path)
             TripleExtractor().process_publication(news, split_path[-1])
-            move_file(path, ev.instance.get_value(output_path), split_path[-1])
+            move_file(path, output_path, split_path[-1])
         except Exception as e:
             print(f'Move file <{path}> with exception: {e}', 'warning')
-            move_file(path, ev.instance.get_value(err_path), split_path[-1])
+            move_file(path, err_path, split_path[-1])
 
 
     # Simulated finished
