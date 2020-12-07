@@ -8,8 +8,15 @@ class Triple_test(Resource):
     def post(self):
         return 'returned content: <{}>'.format(str(request.data.decode('utf-8')))
 
+class Word_count_test(Resource):
+    def post(self):
+        data = str(request.data.decode('utf-8'))
+        print(f'Received data: <{data}>')
+        return 'Received word_count OK'
+
 api.add_resource(Triple_test, '/update') # Endpoint
+api.add_resource(Word_count_test, '/wordCountData')
 
 
 if __name__ == '__main__':
-     app.run(port='53254')
+     app.run(port='53253')

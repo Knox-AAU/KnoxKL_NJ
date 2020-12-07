@@ -27,4 +27,5 @@ An example is: RDF_OUTPUT_FOLDER="./rdf_output/"
 | KNOX_18_NAMESPACE | The base namespace url resources from the Knox project  |
 | OUTPUT_FORMAT | The format for the generated RDF file, example is "turtle", possible formats can be found at "https://rdflib.readthedocs.io/en/stable/plugin_parsers.html"  |
 | OUTPUT_FILE_NAME | The file name of the RDF output  |
-| TRIPLE_DATA_ENDPOINT | The endpoint for the REST API for the Data Layer, needs the whole information as string, example: "http://127.0.0.1:8080/update" |
+| TRIPLE_DATA_ENDPOINT | The triple data endpoint for the REST API for the Data Layer, needs the whole information as string, example: "http://127.0.0.1:8080/update" |
+| WORD_COUNT_DATA_ENDPOINT | The word count endpoint for the REST API for the Data Layer, needs the whole information as string, example: "http://127.0.0.1:8080/wordCountData" |
