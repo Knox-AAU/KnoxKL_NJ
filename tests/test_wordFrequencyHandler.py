@@ -2,7 +2,7 @@ from environment.EnvironmentConstants import EnvironmentVariables as ev
 ev()
 import os
 import pytest
-from extractor.WordFrequencyHandler import WordFrequencyHandler
+from extractor.WordFrequencyHandler import WordFrequencyHandler, __WordFrequency__, __WordFrequenctEncoder__
 import json
 
 
@@ -133,10 +133,16 @@ class Test:
         handler = WordFrequencyHandler()
         test_title = 'title_key'
         test_content = 'This is awesome content'
+        test_extracted_from = 'ThisWasExtractedFromHere'
         back_up_file_name = 'thisistestfilefortestingtest_send_pending_count.json'
         error_dir = ev.instance.get_value(ev.instance.ERROR_DIRECTORY, './')
 
         handler.tf.process(test_title, test_content)
+
+        frequencyData = handler.tf[test_title]
+        frequencyObject = __WordFrequency__(test_title, test_extracted_from, frequencyData)
+        json_object = json.dumps(frequencyObject, cls=__WordFrequenctEncoder__, sort_keys=True, indent=4, ensure_ascii=False)
+        handler.word_frequencies_ready_for_sending.append(json_object)
         # Check that something exists
         counts = handler.tf[test_title]
         assert len(counts) == 4

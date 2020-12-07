@@ -93,7 +93,7 @@ class WordFrequencyHandler():
         
         Sends the pending word frequency data to the Data layer DB
         """
-        success: bool = False
+        success: bool = True
         for word_count_json in self.word_frequencies_ready_for_sending:
             success: bool = send_json_data_to_db(word_count_json, ev.instance.WORD_COUNT_DATA_ENDPOINT)
             if not success:
