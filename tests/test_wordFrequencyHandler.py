@@ -128,6 +128,7 @@ class Test:
 
 #
 
+    @xfail(strict=True, raises=EnvironmentError)
     def test_send_pending_count(self):
         # Setup
         handler = WordFrequencyHandler()
