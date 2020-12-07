@@ -77,11 +77,6 @@ knox:Email
 	rdfs:domain knox:Author ;
 	rdfs:range xsd:string .
 
-knox:DateMention
-	a owl:DatatypeProperty ;
-	rdfs:domain knox:Date ;
-	rdfs:range xsd:date .
-
 knox:Link
 	rdf:type owl:DatatypeProperty ;
 	rdfs:domain knox:Article ;

@@ -10,7 +10,7 @@ import glob
 
 def get_folder_files_list(path:str) -> list:
     """
-    docstring
+    Outputs a list of files from the directory given.
     """
 
     filelist = glob.glob(path)
@@ -18,7 +18,7 @@ def get_folder_files_list(path:str) -> list:
     return filelist
 
 def read_json_file(path:str) -> str:
-
+    '''Reads a specified json files following the Publication format and returns the text as a string'''
     handler = IOHandler(Generator(app='This app', version=1.0), 'https://repos.libdom.net/schema/publication.schema.json')
     with open(path, 'r', encoding='utf-8') as json_file:
         wrap: Wrapper = handler.read_json(json_file)
@@ -30,7 +30,7 @@ def read_json_file(path:str) -> str:
     return text
 
 def read_txt_file(path:str) -> str:
-
+    '''Reads and returns the text of a file'''
     with open(path, 'r', encoding='utf-8') as source:
         text = source.read()
 
@@ -80,6 +80,7 @@ def write_model_entities(inputtext:str):
         target.write(']')
 
 def find_matches(search_string: str, search_text: str, last_matches: dict) -> list:
+    '''Finds matches in the recognized entities'''
     index_list = []
 
     last_search = last_matches.get(search_string, 0)
