@@ -145,8 +145,8 @@ class Test:
         file_name = "TesterFilexyzwasd"
 
         try:
-            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle', 'http://test')
-        except ConnectionError:
+            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle')
+        except EnvironmentError:
             assert True
         else:
             assert False
@@ -181,8 +181,8 @@ class Test:
 
         # Create the output
         try:
-            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle', 'http://test')
-        except ConnectionError:
+            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle')
+        except EnvironmentError:
             assert True
         else:
             assert False
