@@ -5,7 +5,7 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 #Defining the knox namespace as an ontology.
-<http://www.knoxwhatever.aau.dk/nordjyske>
+knox:
 	rdf:type owl:Ontology .
 
 #Class definitions
