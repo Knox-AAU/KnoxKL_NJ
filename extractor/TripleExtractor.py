@@ -20,7 +20,7 @@ class TripleExtractor:
         self.named_individual = []
         self.preprocess_year_threshold = 1948
         if tuple_label_list is None:
-            self.tuple_label_list = [["PER", "Person"], ["ORG", "Organisation"], ["LOC", "Location"]]
+            self.tuple_label_list = [["PER", "Person"], ["ORG", "Organisation"], ["LOC", "Location"], ["DATE", "Date"], ["MEDICAL", "Medical"]]
         else:
             self.tuple_label_list = tuple_label_list
         if ignore_label_list is None:
