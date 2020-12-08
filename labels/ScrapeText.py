@@ -1,6 +1,3 @@
-#Quick and dirty grab raw text from json files.
-from re import escape
-from spacy import load
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 ev()
 from knox_source_data_io.io_handler import IOHandler, Generator, Wrapper
