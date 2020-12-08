@@ -8,7 +8,7 @@ from rest.DataRequest import send_json_data_to_db
 
 class WordFrequencyHandler():
     """
-    Class wrapper for the word frequency count module produced by Group-D in the know project
+    Class wrapper for the word frequency count module produced by Group-D in the knox project
     """
 
     def __init__(self) -> None:

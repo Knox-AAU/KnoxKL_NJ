@@ -106,11 +106,9 @@ class RuntimeOntology:
             RuntimeOntology.instance = RuntimeOntology.__RuntimeOntology()
         return RuntimeOntology.instance
 
-
 def Parse(text):
     """
     Parses turtle text format
-
     Input:
         text: str - a turtle(ttl.) string to be parsed
     Return:
@@ -120,7 +118,7 @@ def Parse(text):
     preproText = util.DeleteComments(text)
 
     #Parse
-    pt = productions.ParseTree(text)
+    pt = productions.ParseTree(preproText)
     productions.TurtleDoc(pt)
 
     #Extract namespaces
