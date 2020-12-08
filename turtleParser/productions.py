@@ -31,12 +31,13 @@ def TurtleDoc(pt):
 def Statement(pt, parent):
     new = Node(Categories.statement, parent.Index())
 
-    #prefixID
+    #directive
     temp = Directive(pt, new)
     if temp.Size > 0:
         new.add(temp)
         return new
-    
+
+    #triples
     temp = triples(pt, new)
     if temp.Size > 0:
         new.add(temp)

@@ -87,7 +87,7 @@ def load_json(json_path: str) -> Publication:
     
     This function creates and loads a news struct into memort
     """
-    handler = IOHandler(Generator(app="This app", version=1.0), "https://repos.libdom.net/schema/publication.schema.json")
+    handler = IOHandler(Generator(app="This app", version=1.0), "https://repos.knox.cs.aau.dk/schema/publication.schema.json")
     with open(json_path, "r", encoding="utf-8") as json_file:
         wrap: Wrapper = handler.read_json(json_file)
         return wrap.content

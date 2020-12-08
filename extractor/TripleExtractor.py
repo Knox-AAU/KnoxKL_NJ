@@ -1,8 +1,5 @@
 from __future__ import annotations
-from datetime import date
-from typing import Dict, List, OrderedDict
-import spacy
-from environment.EnvironmentConstants import EnvironmentVariables as ev
+from typing import List, OrderedDict
 from turtleParser.turtleParser import RuntimeOntology as ro
 from knox_source_data_io.models.publication import Publication, Article
 from rdf.RdfConstants import RelationTypeConstants
@@ -10,7 +7,6 @@ from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_l
 from extractor.TripleExtractorEnum import TripleExtractorEnum
 from preproc import PreProcessor
 from knox_util import print, convert_iso_string_to_date_time
-import datetime
 from extractor.WordFrequencyHandler import WordFrequencyHandler
 
 
@@ -73,7 +69,7 @@ class TripleExtractor:
     def convert_spacy_label_to_namespace(self, string: str) -> str:
         """
         Input:
-            A string matching a spacy label
+            string: str - A string matching a spacy label
         Returns:
             A string matching a class in the ontology.
         """
@@ -88,7 +84,7 @@ class TripleExtractor:
     def process_article_text(self, article_text: str) -> List[(str, str)]:
         """
         Input:
-            Takes a string
+            article_text: str - The entire content of an article
         Returns:
             A list of "string" and label pairs. Eg: [("Jens Jensen", Person), ...]
 
@@ -158,9 +154,10 @@ class TripleExtractor:
     def extract_article(self, article: Article, publication: Publication) -> None:
         """
         Input:
-            Takes an Article and Publication object from the loader.JsonWrapper package.
+            article: Article - An instance of the article from input file
+            publication: Publication - The publication object holding information about a publicaion
 
-            Creates the RDF triples unique to the article.
+        Creates triple based on data received through the input file
         """
         # id of the article
         article_id = str(article.id)
@@ -241,9 +238,9 @@ class TripleExtractor:
                     generate_literal(ocr_file)
                 ])
 
-    def write_named_individual(self) -> None:
+    def append_named_individual(self) -> None:
         """
-        Writes each named individual to the file.
+        Appends each named individual to the triples list.
         """
 
         # prop1 = The specific location/person/organisation or so on
@@ -264,8 +261,8 @@ class TripleExtractor:
     def process_publication(self, publication: Publication, file_path: str) -> None:
         """
         Input:
-            A NewsStruct from the loader package.
-
+            publication: Publication - A Publication class which is the content of a newspaper
+            file_path : str - File path to the publication being processed
 
         Writes entity triples to file
         """
@@ -281,8 +278,8 @@ class TripleExtractor:
             self.process_article(article, preprocess)
             self.extract_article(article, publication)
 
-        # Writes named individuals to the output file.
-        self.write_named_individual()
+        # Adds named individuals to the triples list.
+        self.append_named_individual()
 
         # Function from rdf.RdfCreator, writes triples to file
         store_rdf_triples(self.triples, file_path)
