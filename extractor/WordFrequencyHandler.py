@@ -4,7 +4,7 @@ from knox_util import print
 import json
 from json import JSONEncoder
 from environment.EnvironmentConstants import EnvironmentVariables as ev
-from rest.DataRequest import send_word_count_to_db
+from rest.DataRequest import send_json_data_to_db
 
 class WordFrequencyHandler():
     """
@@ -93,9 +93,9 @@ class WordFrequencyHandler():
         
         Sends the pending word frequency data to the Data layer DB
         """
-        success: bool = False
+        success: bool = True
         for word_count_json in self.word_frequencies_ready_for_sending:
-            success: bool = send_word_count_to_db(word_count_json)
+            success: bool = send_json_data_to_db(word_count_json, ev.instance.WORD_COUNT_DATA_ENDPOINT)
             if not success:
                 print(f'Sending word count data to Data layer failed for <{word_count_json}>, stopping sending and creating back_up...', 'error')
                 break

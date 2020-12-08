@@ -1,5 +1,6 @@
+from os import error
 from environment.EnvironmentConstants import EnvironmentVariables as ev
-from rest.DataRequest import send_triple_to_db
+from rest.DataRequest import send_json_data_to_db
 import pytest
 import requests
 
@@ -9,8 +10,8 @@ content: str = 'This content is for testing'
 test_endpoint: str = 'http://127.0.0.1:54321/update'
 
 class Test:
-
-    def test_no_connection(self):
-        retval = send_triple_to_db(content, endpoint=test_endpoint)
+    @xfail(strict=True, raises=EnvironmentError)
+    def test_environment_error(self):
+        retval = send_json_data_to_db(content, endpoint_name=test_endpoint)
 
         assert retval.__eq__(False)

@@ -2,13 +2,13 @@ from rdflib import Graph, Literal, URIRef, BNode
 from rdflib.namespace import NamespaceManager, RDFS, OWL, XSD, RDF as Rdf
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 import os
-from rest.DataRequest import send_triple_to_db
+from rest.DataRequest import send_json_data_to_db
 from rdf import KNOX
 from requests.exceptions import ConnectionError
 
 def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.instance.OUTPUT_FILE_NAME), 
                 destination_folder = ev.instance.get_value(ev.instance.RDF_OUTPUT_FOLDER), 
-                output_format = ev.instance.get_value(ev.instance.OUTPUT_FORMAT), endpoint: str = None):
+                output_format = ev.instance.get_value(ev.instance.OUTPUT_FORMAT)):
     """
     Input:
         rdfTriples: list of RDF triples with correct type - List containing triples on the form (Subject, RelationPredicate, Object).
@@ -36,14 +36,11 @@ def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.in
     if not os.path.exists(os.path.abspath(destination_folder)):
         os.mkdir(os.path.abspath(destination_folder))
 
-    if endpoint is None:
-        endpoint = ev.instance.get_value(ev.instance.TRIPLE_DATA_ENDPOINT)
-
     file_extention = __calculateFileExtention__(output_format)
     g.serialize(format=output_format, encoding="utf-8", destination=destination_folder + output_file_name + file_extention)
     with open(f'{destination_folder}{output_file_name}{file_extention}', 'r', encoding='utf-8') as f:
         content = f.read()
-        success = send_triple_to_db(content, endpoint=endpoint)
+        success = send_json_data_to_db(content, ev.instance.TRIPLE_DATA_ENDPOINT)
         if not success:
             print(f'Unable to send file to database', 'error')
             raise ConnectionError('Unable to post to the database')
