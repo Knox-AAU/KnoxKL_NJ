@@ -25,7 +25,7 @@ class RuntimeOntology:
             #Categorise the output
             for output in outputs:
                 #Namespace?
-                if output[0] == "prefix":
+                if output[0] == "@prefix":
                     self.Namespaces.append(output)
                     continue
                 
