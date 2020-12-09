@@ -26,8 +26,8 @@ def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.in
     # Get the "graph" in order to contain the rdfTriples
     # Switch the bad namespacemanager with the good one which do not create prefix'es
     g: Graph = Graph()
-    goodManager = KnoxNameSpaceManager(g)
-    g.namespace_manager = goodManager
+    nameSpaceManager = KnoxNameSpaceManager(g)
+    g.namespace_manager = nameSpaceManager
     
     for sub, rel, obj in rdfTriples:
         g.add((sub, rel, obj))
