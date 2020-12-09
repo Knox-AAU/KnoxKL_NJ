@@ -15,12 +15,13 @@ class EnvironmentVariables:
             self.OUTPUT_DIRECTORY = "OUTPUT_DIRECTORY"
             self.ERROR_DIRECTORY = "ERROR_DIRECTORY"
             self.RDF_OUTPUT_FOLDER = "RDF_OUTPUT_FOLDER"
-            self.KNOX_18_NAMESPACE = "KNOX_18_NAMESPACE"
             self.OUTPUT_FORMAT = "OUTPUT_FORMAT"
             self.OUTPUT_FILE_NAME = "OUTPUT_FILE_NAME"
             self.TRIPLE_DATA_ENDPOINT = "TRIPLE_DATA_ENDPOINT"
+            self.ONTOLOGY_FILEPATH = "ONTOLOGY_FILEPATH"
+            self.WORD_COUNT_DATA_ENDPOINT = "WORD_COUNT_DATA_ENDPOINT"
             load_dotenv()
-        
+            
         def get_value(self, key: str, default = None):
             """
             Input:

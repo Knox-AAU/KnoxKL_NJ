@@ -1,8 +1,10 @@
 from rdflib import Graph, Literal, URIRef, BNode
-from rdflib.namespace import RDFS, OWL, XSD, RDF as Rdf
+from rdflib.namespace import NamespaceManager, RDFS, OWL, XSD, RDF as Rdf
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 import os
+from rest.DataRequest import send_json_data_to_db
 from rdf import KNOX
+from requests.exceptions import ConnectionError
 
 def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.instance.OUTPUT_FILE_NAME), 
                 destination_folder = ev.instance.get_value(ev.instance.RDF_OUTPUT_FOLDER), 
@@ -22,20 +24,13 @@ def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.in
         raise EnvironmentError(err_format.format(ev.instance.OUTPUT_FILE_NAME, output_file_name, ev.instance.RDF_OUTPUT_FOLDER, destination_folder, ev.instance.OUTPUT_FORMAT, output_format))
 
     # Get the "graph" in order to contain the rdfTriples
-    g = Graph()
+    # Switch the bad namespacemanager with the good one which do not create prefix'es
+    g: Graph = Graph()
+    nameSpaceManager = KnoxNameSpaceManager(g)
+    g.namespace_manager = nameSpaceManager
     
     for sub, rel, obj in rdfTriples:
         g.add((sub, rel, obj))
-    
-    # Bind namespaces to aliases
-    g.bind("rdf", Rdf)
-    g.bind("owl", OWL)
-    g.bind("rdfs", RDFS)
-    g.bind("xsd", XSD)
-    g.bind("knox", KNOX)
-
-    # Print it
-    #print("--------- PRINT THE KNOWLEDGE ---------")
     
     # Check if output folder already exist, create it if not
     if not os.path.exists(os.path.abspath(destination_folder)):
@@ -43,6 +38,13 @@ def store_rdf_triples(rdfTriples, output_file_name = ev.instance.get_value(ev.in
 
     file_extention = __calculateFileExtention__(output_format)
     g.serialize(format=output_format, encoding="utf-8", destination=destination_folder + output_file_name + file_extention)
+    with open(f'{destination_folder}{output_file_name}{file_extention}', 'r', encoding='utf-8') as f:
+        content = f.read()
+        success = send_json_data_to_db(content, ev.instance.TRIPLE_DATA_ENDPOINT)
+        if not success:
+            print(f'Unable to send file to database', 'error')
+            raise ConnectionError('Unable to post to the database')
+        print(f'Successfully sent publication <{output_file_name}> to server', 'info')
 
 def generate_blank_node():
     """
@@ -140,3 +142,19 @@ def __calculateFileExtention__(format):
         "xml": ".xml"}
     
     return switch.get(format, "")
+
+class KnoxNameSpaceManager(NamespaceManager):
+    """
+    An override of rdflib built-in NamespaceManager.
+    This is used in order to escape the default prefix'es being added to the output
+    """
+
+    def __init__(self, graph):
+        self.graph = graph
+        self.__cache = {}
+        self.__cache_strict = {}
+        self.__log = None
+        self.__strie = {}
+        self.__trie = {}
+        for p, n in self.namespaces():  # self.bind is not always called
+            insert_trie(self.__trie, str(n))

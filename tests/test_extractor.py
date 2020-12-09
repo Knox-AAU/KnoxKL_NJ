@@ -1,14 +1,17 @@
+import spacy
 from extractor.TripleExtractor import TripleExtractor
 from loader.FileLoader import load_json
+import spacy
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 from rdf.RdfConstants import RelationTypeConstants
 from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
-
+from turtleParser.turtleParser import RuntimeOntology as ro
 
 
 class Test:
-    extractor = TripleExtractor("da_core_news_lg")
-    namespace = ev.instance.get_value(ev.instance.KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
+    TripleExtractor.nlp = spacy.load("da_core_news_lg")
+    extractor = TripleExtractor()
+    namespace = ro.instance.GetOntologyNamespace()
     publication = load_json("./tests/data/test_jason.json")
 
     def test_spacy_conversion_to_label(self):
@@ -66,12 +69,12 @@ class Test:
 
         assert len(self.extractor.triples) == 10
 
-    def test_write_named_individual(self):
+    def test_append_named_individual(self):
         
         initial_triples_length = len(self.extractor.triples)
         named_individuals = self.extractor.named_individual
         named_individuals_length = len(named_individuals)
-        self.extractor.write_named_individual()
+        self.extractor.append_named_individual()
 
         #Each named individual adds two triples to the final triple list.
         assert len(self.extractor.triples) == initial_triples_length + 2*named_individuals_length
@@ -82,8 +85,7 @@ class Test:
 
        
     def test_extractor_with_custom_labels(self):
-        extractor2 = TripleExtractor("da_core_news_lg", 
-            [["ANI", "Animal"], ["MED", "Media"], ["GAM", "Game"]], 
+        extractor2 = TripleExtractor([["ANI", "Animal"], ["MED", "Media"], ["GAM", "Game"]], 
             [["FOR", "Forbidden"]])
 
         ani_string = "ANI"
@@ -132,7 +134,7 @@ class Test:
         self.extractor.triples.clear()
         self.extractor.named_individual.clear()
         try:
-            self.extractor.process_publication(self.publication)
+            self.extractor.process_publication(self.publication, './output/')
         except EnvironmentError:
             pass # Pass Environment Errors as this is because there are missing Environment Variables on the test server     
         assert len(self.extractor.triples) == 46
