@@ -17,7 +17,7 @@ def remove_stop_words(content: str) -> str:
     This function will filter out all danish stopwords (see: https://en.wikipedia.org/wiki/Stop_word)
     Furthermore, commas and periods will be removed, as these are included as stopwords (see: https://ordnet.dk/ddo/ordbog?query=stopord)
 
-    Wiki references have been removed as this methid will be tested using wiki text
+    Wiki references have been removed as this method will be tested using wiki text
 
     """
 

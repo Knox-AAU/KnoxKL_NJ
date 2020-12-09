@@ -69,12 +69,12 @@ class Test:
 
         assert len(self.extractor.triples) == 10
 
-    def test_write_named_individual(self):
+    def test_append_named_individual(self):
         
         initial_triples_length = len(self.extractor.triples)
         named_individuals = self.extractor.named_individual
         named_individuals_length = len(named_individuals)
-        self.extractor.write_named_individual()
+        self.extractor.append_named_individual()
 
         #Each named individual adds two triples to the final triple list.
         assert len(self.extractor.triples) == initial_triples_length + 2*named_individuals_length

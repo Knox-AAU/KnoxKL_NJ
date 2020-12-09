@@ -13,7 +13,7 @@ def getNameSpaceTriples(pt):
         prefixTriple = list()
         
         #Subject (prefix)
-        prefixTriple.append("prefix")
+        prefixTriple.append("@prefix")
 
         #Predicate (short namespace)
         shortList = prefix.getStringsByCategory(Categories.PNAME_NS)
