@@ -1,18 +1,16 @@
 #!/usr/bin/python3
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 ev()
-
+from turtleParser.turtleParser import RuntimeOntology as ro
+ro()
 import argparse
-import logging.config
-import logging
-import knox_util
 import os
 import sys
 import subprocess
-from multiprocessing import Process
-from loader.FileLoader import start_watch_directory, process_existing
+from loader.FileLoader import start_watch_directory, process_existing, TripleExtractor
 import platform
 import knox_util
+import spacy
 from knox_util import print
 
 
@@ -22,7 +20,7 @@ assert platform.python_version_tuple()[1] == '8', 'This script requires python 3
 input_dir = ev.instance.get_value(ev.instance.INPUT_DIRECTORY)
 output_dir = ev.instance.get_value(ev.instance.OUTPUT_DIRECTORY)
 err_dir = ev.instance.get_value(ev.instance.ERROR_DIRECTORY)
-
+spaCy_model_label = "lg"
 
 def get_git_commit():
     return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').replace('\n', '')
@@ -52,7 +50,7 @@ def create_parser():
                         'off', 'quiet', 'info', 'info-only', 'warning', 'error', 'debug'], help='Sets the verbosity level of the printed output')
     parser.add_argument('-l', '--debug', action='store_true',
                         help='Starts the program with debug logging enabled')
-    parser.add_argument('-m', '--model', default='sm', const='sm', dest='model', nargs='?', choices=['sm', 'md', 'lg'],
+    parser.add_argument('-m', '--model', default='lg', const='lg', dest='model', nargs='?', choices=['sm', 'md', 'lg', 'cstm'],
                         help='Specify which model the program should use (default: %(default)s)')
     return parser
 
@@ -60,13 +58,20 @@ def create_parser():
 def parse_args(args, parser):
     return parser.parse_args(args)
 
-parser = create_parser()
-parserArgs = parse_args(sys.argv[1:], parser)
-knox_util.parserArgs = parserArgs
-
 # Main matter of the script
 
 if __name__ == "__main__":
+    
+    parser = create_parser()
+    parserArgs = parse_args(sys.argv[1:], parser)
+    spaCy_model_label = parserArgs.model
+    spaCy_model = f'da_core_news_{spaCy_model_label}'
+    knox_util.parserArgs = parserArgs
+    print(f'Model argument <{spaCy_model_label}> received from argument parser', 'debug')
+    print(f'Loading spaCy model...')
+    TripleExtractor.nlp = spacy.load(spaCy_model)
+    print(f'Model <{spaCy_model}> loaded!')
+
     if input_dir is None or \
        output_dir is None or \
        err_dir is None:

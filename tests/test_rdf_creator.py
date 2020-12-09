@@ -3,11 +3,12 @@ from rdflib import BNode
 from rdf.RdfConstants import RelationTypeConstants as rConst
 import os
 from datetime import datetime
+from requests.exceptions import ConnectionError
 
 class Test:
 
     
-    output_path = './test/output'
+    output_path = './test/output/'
     if not os.path.exists(output_path):
         os.makedirs(output_path)
 
@@ -95,7 +96,7 @@ class Test:
 
     def test_generate_uri_ref(self):
         namespace_string = "http://www.example.org/"
-        sub_uri_list = ["FirstUri", "SecondUri", "ThridUri"]
+        sub_uri_list = ["FirstUri", "SecondUri", "ThirdUri"]
         ref_string = "TestRef"
 
         result = generate_uri_reference(namespace_string)
@@ -138,23 +139,17 @@ class Test:
 
 
     def test_store_rdf_triples(self):
-        test_triples = []
-        test_triples.append([generate_uri_reference("knox18", ["person"], "Bob"), generate_relation(rConst.RDF_TYPE), generate_uri_reference("Object")])
-        test_triples.append([generate_uri_reference("knox18", ["person", "important", "localhero"], "BobTheMan"), generate_relation(rConst.RDFS_LABEL), generate_literal("Hero")])
-        test_triples.append([generate_uri_reference("Test1"), generate_relation(rConst.RDFS_COMMENT), generate_literal("COMMENT")])
-        test_triples.append([generate_uri_reference("Test2"), generate_relation(rConst.RDF_PROPERTY), generate_literal("PROPERTY")])
-        test_triples.append([generate_uri_reference("TestOwl"), generate_relation(rConst.OWL_INVERSE_OF), generate_literal(10)])
-        test_triples.append([generate_uri_reference("TestXSD"), generate_relation(rConst.XSD_DATE_TIME), generate_literal(datetime.now())])
+        test_triples = self.create_test_triples()
 
         
         file_name = "TesterFilexyzwasd"
 
         try:
             store_rdf_triples(test_triples, file_name, self.output_path, 'turtle')
-        except Exception:
-            assert False
-        else:
+        except EnvironmentError:
             assert True
+        else:
+            assert False
 
         expected_path = os.path.abspath(self.output_path + file_name + ".ttl") 
         assert os.path.exists(expected_path)
@@ -176,3 +171,42 @@ class Test:
         result = __calculateFileExtention__(format)
 
         assert result.__eq__(expected)
+    
+    def test_no_prefix(self):
+        # Create some test data
+        test_triples = self.create_test_triples()
+        file_name = 'testerfilexyz'
+        file_path = self.output_path + file_name + '.ttl'
+        prefix_string = '@prefix '
+
+        # Create the output
+        try:
+            store_rdf_triples(test_triples, file_name, self.output_path, 'turtle')
+        except EnvironmentError:
+            assert True
+        else:
+            assert False
+
+        # Check output
+        output_string = ''
+        with open(file_path, 'r', encoding='utf-8') as output:
+            output_string = ' '.join(line for line in output.readlines())
+        
+        index = output_string.find(prefix_string)
+        assert index.__eq__(-1)
+
+        # Clean up
+        abs_path = os.path.abspath(self.output_path + file_name + ".ttl") 
+        if os.path.exists(abs_path):
+            os.remove(abs_path)
+
+    def create_test_triples(self):
+        test_triples = []
+        test_triples.append([generate_uri_reference("knox18", ["person"], "Bob"), generate_relation(rConst.RDF_TYPE), generate_uri_reference("Object")])
+        test_triples.append([generate_uri_reference("knox18", ["person", "important", "localhero"], "BobTheMan"), generate_relation(rConst.RDFS_LABEL), generate_literal("Hero")])
+        test_triples.append([generate_uri_reference("Test1"), generate_relation(rConst.RDFS_COMMENT), generate_literal("COMMENT")])
+        test_triples.append([generate_uri_reference("Test2"), generate_relation(rConst.RDF_PROPERTY), generate_literal("PROPERTY")])
+        test_triples.append([generate_uri_reference("TestOwl"), generate_relation(rConst.OWL_INVERSE_OF), generate_literal(10)])
+        test_triples.append([generate_uri_reference("TestXSD"), generate_relation(rConst.XSD_DATE_TIME), generate_literal(datetime.now())])
+
+        return test_triples

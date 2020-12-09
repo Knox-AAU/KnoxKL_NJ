@@ -1,32 +1,34 @@
 from __future__ import annotations
-from datetime import date
-from typing import List
-import spacy
-from environment.EnvironmentConstants import EnvironmentVariables as ev
+from typing import List, OrderedDict
+from turtleParser.turtleParser import RuntimeOntology as ro
 from knox_source_data_io.models.publication import Publication, Article
 from rdf.RdfConstants import RelationTypeConstants
 from rdf.RdfCreator import generate_uri_reference, generate_relation, generate_literal, store_rdf_triples
 from extractor.TripleExtractorEnum import TripleExtractorEnum
-from preproc.PreProcessor import remove_stop_words, convert_to_modern_danish
+from preproc import PreProcessor
 from knox_util import print, convert_iso_string_to_date_time
-import datetime
+from extractor.WordFrequencyHandler import WordFrequencyHandler
+
 
 class TripleExtractor:
 
-    def __init__(self, model, tuple_label_list=None, ignore_label_list=None) -> None:
-        self.nlp = spacy.load(model)
-        self.namespace = ev.instance.get_value(ev.instance.KNOX_18_NAMESPACE, "http://www.thisistesturl.example/")
+    nlp: OrderedDict = None
+    def __init__(self, tuple_label_list=None, ignore_label_list=None) -> None:
+        PreProcessor.nlp = self.nlp
+        self.namespace = ro.instance.GetOntologyNamespace()
         self.triples = []
         self.named_individual = []
         self.preprocess_year_threshold = 1948
         if tuple_label_list is None:
-            self.tuple_label_list = [["PER", "Person"], ["ORG", "Organisation"], ["LOC", "Location"]]
+            self.tuple_label_list = [["PER", "Person"], ["ORG", "Organisation"], ["LOC", "Location"], ["DATE", "Date"], ["MEDICAL", "Medical"]]
         else:
             self.tuple_label_list = tuple_label_list
         if ignore_label_list is None:
             self.ignore_label_list = ["MISC"]
         else:
             self.ignore_label_list = ignore_label_list
+        
+        self.word_frequency_handler = WordFrequencyHandler()
 
     def add_named_individual(self, prop_1, prop_2) -> None:
         """
@@ -67,7 +69,7 @@ class TripleExtractor:
     def convert_spacy_label_to_namespace(self, string: str) -> str:
         """
         Input:
-            A string matching a spacy label
+            string: str - A string matching a spacy label
         Returns:
             A string matching a class in the ontology.
         """
@@ -82,7 +84,7 @@ class TripleExtractor:
     def process_article_text(self, article_text: str) -> List[(str, str)]:
         """
         Input:
-            Takes a string
+            article_text: str - The entire content of an article
         Returns:
             A list of "string" and label pairs. Eg: [("Jens Jensen", Person), ...]
 
@@ -117,12 +119,16 @@ class TripleExtractor:
         """
 
         # Article text is split into multiple paragraph objects in the Json, this is joined into one string.
-        content = ' '.join(para.value for para in article.paragraphs)
+        content = ' '.join(para.value for para in article.paragraphs).replace('”', '"')
+
+        # Count the word frequency
+        self.word_frequency_handler.do_word_count_for_article(article.headline, content, article.extracted_from)
+
         # Run preprocessing steps on the content if "doPreprocessing" is True
         if doPreprocessing:
             print('Running preprocessing for content of article with ID: <' + str(article.id) + '>')
-            content = remove_stop_words(content)
-            content = convert_to_modern_danish(content, self.nlp)
+            content = PreProcessor.remove_stop_words(content)
+            content = PreProcessor.convert_to_modern_danish(content)
 
         # Does nlp on the text
         article_entities = self.process_article_text(content)
@@ -148,9 +154,10 @@ class TripleExtractor:
     def extract_article(self, article: Article, publication: Publication) -> None:
         """
         Input:
-            Takes an Article and Publication object from the loader.JsonWrapper package.
+            article: Article - An instance of the article from input file
+            publication: Publication - The publication object holding information about a publicaion
 
-            Creates the RDF triples unique to the article.
+        Creates triple based on data received through the input file
         """
         # id of the article
         article_id = str(article.id)
@@ -231,9 +238,9 @@ class TripleExtractor:
                     generate_literal(ocr_file)
                 ])
 
-    def write_named_individual(self) -> None:
+    def append_named_individual(self) -> None:
         """
-        Writes each named individual to the file.
+        Appends each named individual to the triples list.
         """
 
         # prop1 = The specific location/person/organisation or so on
@@ -251,11 +258,11 @@ class TripleExtractor:
                 generate_uri_reference(self.namespace, ref=prop2)
             ])
 
-    def process_publication(self, publication: Publication) -> None:
+    def process_publication(self, publication: Publication, file_path: str) -> None:
         """
         Input:
-            A NewsStruct from the loader package.
-
+            publication: Publication - A Publication class which is the content of a newspaper
+            file_path : str - File path to the publication being processed
 
         Writes entity triples to file
         """
@@ -271,8 +278,10 @@ class TripleExtractor:
             self.process_article(article, preprocess)
             self.extract_article(article, publication)
 
-        # Writes named individuals to the output file.
-        self.write_named_individual()
+        # Adds named individuals to the triples list.
+        self.append_named_individual()
 
         # Function from rdf.RdfCreator, writes triples to file
-        store_rdf_triples(self.triples)
+        store_rdf_triples(self.triples, file_path)
+
+        self.word_frequency_handler.send_pending_counts(file_path)

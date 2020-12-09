@@ -11,6 +11,7 @@ __pycache__/
 *.so
 
 hidden.py
+hidden2.py
 logs/
 input/
 output/
@@ -142,3 +143,9 @@ output/
 
 # Idea
 .idea/
+
+#Exclude Nordjyske files
+labels/rawfiles/*
+
+#Visual Studio Liveshare
+.vsls.json

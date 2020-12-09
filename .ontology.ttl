@@ -5,13 +5,12 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 #Defining the knox namespace as an ontology.
-<http://www.knoxwhatever.aau.dk/nordjyske>
+knox:
 	rdf:type owl:Ontology .
 
 #Class definitions
 knox:Person
 	rdf:type owl:Class ;
-	rdfs:comment "People from the texts"@da-dk .
 	
 knox:Author
 	rdf:type owl:Class ;
@@ -25,6 +24,9 @@ knox:Location
 
 knox:Date
 	a owl:Class .
+
+knox:Medical
+	a owl:Class .
 		
 knox:Organisation
 	a owl:Class .
@@ -36,8 +38,6 @@ knox:Publisher
 knox:Publication
 	a owl:Class .
 
-#knox:Object
-		#	rdf:type owl:Class .
 	
 #Object Properties
 # Object Properties are the relations between classes and should be read as:
@@ -58,9 +58,9 @@ knox:mentions
 	rdfs:domain knox:Article ;
 	rdfs:range knox:Location,
 			   knox:Person ,
-	#	rdfs:range knox:Object ;
 	           knox:Date,
-			   knox:Organisation .
+			   knox:Organisation ,
+			   knox:Medical .
 
 knox:publishes
 	rdf:type owl:ObjectProperty ;
@@ -77,23 +77,20 @@ knox:Email
 	rdfs:domain knox:Author ;
 	rdfs:range xsd:string .
 
-knox:DateMention
-	a owl:DatatypeProperty ;
-	rdfs:domain knox:Date ;
-	rdfs:range xsd:date .
-
 knox:Link
 	rdf:type owl:DatatypeProperty ;
 	rdfs:domain knox:Article ;
 	rdfs:range xsd:string .
 
-knox:Name
+knox:Value
 	a owl:DatatypeProperty ;
 	rdfs:domain knox:Person ;
 	rdfs:domain knox:Publisher ;
 	rdfs:domain knox:Publication ;
 	rdfs:domain knox:Location ;
 	rdfs:domain knox:Organisation ;
+	rdfs:domain knox:Date ;
+	rdfs:domain knox:Medical ;
 	rdfs:range xsd:string .
 
 knox:PublicationDay
