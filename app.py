@@ -22,7 +22,6 @@ output_dir = ev.instance.get_value(ev.instance.OUTPUT_DIRECTORY)
 err_dir = ev.instance.get_value(ev.instance.ERROR_DIRECTORY)
 spaCy_model_label = "lg"
 
-
 def get_git_commit():
     return subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD']).decode('ascii').replace('\n', '')
 
