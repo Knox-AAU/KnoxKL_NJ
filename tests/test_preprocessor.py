@@ -22,7 +22,8 @@ class Test:
     selv brudt sammen? Af hvad Art er
     dne Styrke, der holder det oppe?
     """
-        result = PreProcessor.convert_to_modern_danish(data, spacy.load('da_core_news_lg'))
+        PreProcessor.nlp = spacy.load('da_core_news_lg')
+        result = PreProcessor.convert_to_modern_danish(data)
         assert "formål" in result and "formaal" not in result
         assert "rejsen" in result and "reisen" not in result
         assert "egenskaber" in result and "Egenskaber" not in result

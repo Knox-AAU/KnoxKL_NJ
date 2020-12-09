@@ -4,6 +4,7 @@ from knox_source_data_io.io_handler import IOHandler, Generator, Wrapper
 from knox_source_data_io.models.publication import Publication
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 import os, shutil
+import traceback
 from knox_util import print
 from extractor.TripleExtractor import TripleExtractor
 
@@ -27,21 +28,23 @@ class Handler(FileSystemEventHandler):
                 print('It was a json file that caused the event', 'debug')
                 # TODO Fix so that this is a single method call
                 try:
+                    split_path = os.path.split(event.src_path)
+
                     publication: Publication = load_json(event.src_path)
-                    TripleExtractor('da_core_news_lg').process_publication(publication)
+                    TripleExtractor().process_publication(publication, split_path[-1])
                     move_file(event.src_path, ev.instance.get_value(ev.instance.OUTPUT_DIRECTORY), get_file_name_from_path(event.src_path))
                 except FileExistsError as e:
                     pass # Intentional pass
                 except Exception as e:
                     if os.path.exists(event.src_path):
-                        print(f'Move file <{event.src_path}> with exception: {e}', 'error')
+                        print(f'Move file <{event.src_path}>. {traceback.format_exc()}', 'error')
                         move_file(event.src_path, ev.instance.get_value(ev.instance.ERROR_DIRECTORY), get_file_name_from_path(event.src_path))
                     else:
                         # Its detected as a modification when the file is moved, so it naturally fails to move when the file already has been moved
                         print("Did not find file with path <" + event.src_path + ">, it was likely moved just before...", 'warning')
 
 
-def process_existing(path: str) -> None:
+def process_existing(input_path: str, output_path: str, err_path: str) -> None:
     """
     Input:
         path: str - The input directory path, that will be processed
@@ -49,8 +52,8 @@ def process_existing(path: str) -> None:
     This method will look through the input directory, and determine whether a file has been processed previously
     When the file has been processed, it will be moved to the output directory.
     """
-    print(f'Checking for existing files in \'{path}\'...')
-    paths = [os.path.join(path, fn) for fn in next(os.walk(path))[2]]
+    print(f'Checking for existing files in \'{input_path}\'...')
+    paths = [os.path.join(input_path, fn) for fn in next(os.walk(input_path))[2]]
     if len(paths) == 0:
         print('No files were created between sessions', 'info')
         return
@@ -63,11 +66,11 @@ def process_existing(path: str) -> None:
         try:
             # TODO create separate function to handle this
             news = load_json(path)
-            TripleExtractor('da_core_news_lg').process_publication(news)
-            move_file(path, ev.instance.get_value(ev.instance.OUTPUT_DIRECTORY), split_path[-1])
+            TripleExtractor().process_publication(news, split_path[-1])
+            move_file(path, output_path, split_path[-1])
         except Exception as e:
             print(f'Move file <{path}> with exception: {e}', 'warning')
-            move_file(path, ev.instance.get_value(ev.instance.ERROR_DIRECTORY), split_path[-1])
+            move_file(path, err_path, split_path[-1])
 
 
     # Simulated finished
@@ -84,7 +87,7 @@ def load_json(json_path: str) -> Publication:
     
     This function creates and loads a news struct into memort
     """
-    handler = IOHandler(Generator(app="This app", version=1.0), "https://repos.libdom.net/schema/publication.schema.json")
+    handler = IOHandler(Generator(app="This app", version=1.0), "https://repos.knox.cs.aau.dk/schema/publication.schema.json")
     with open(json_path, "r", encoding="utf-8") as json_file:
         wrap: Wrapper = handler.read_json(json_file)
         return wrap.content

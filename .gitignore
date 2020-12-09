@@ -144,8 +144,8 @@ output/
 # Idea
 .idea/
 
-# folder
-labels/rawfiles/*.json
+#Exclude Nordjyske files
+labels/rawfiles/*
 
-# VSCode files
+#Visual Studio Liveshare
 .vsls.json
