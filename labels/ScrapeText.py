@@ -16,6 +16,7 @@ def get_folder_files_list(path:str) -> list:
 
 def read_json_file(path:str) -> str:
     '''Reads a specified json files following the Publication format and returns the text as a string'''
+
     handler = IOHandler(Generator(app='This app', version=1.0), 'https://repos.knox.cs.aau.dk/schema/publication.schema.json')
     with open(path, 'r', encoding='utf-8') as json_file:
         wrap: Wrapper = handler.read_json(json_file)
