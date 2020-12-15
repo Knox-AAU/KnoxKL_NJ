@@ -1,5 +1,6 @@
 from resources.term_frequency import TermFrequency
 from typing import List
+from preproc.PreProcessor import remove_stop_words
 from knox_util import print
 import json
 from json import JSONEncoder
@@ -26,7 +27,7 @@ class WordFrequencyHandler():
         Entry point for running word counting on a string og text
         """
         # Process the article text
-        self.tf.process(articleTitle, articleContent)
+        self.tf.process(articleTitle, remove_stop_words(articleContent))
 
         # Create extracted from string
         extracted_from: str = self.__concatenate_extracted_from__(extracted_from_list)

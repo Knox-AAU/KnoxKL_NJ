@@ -10,7 +10,7 @@ xfail = pytest.mark.xfail
 
 class Test:
     
-    def test_do_word_count_for_article(self):
+    def test_do_word_count_for_article_will_process_correct_amount_of_articles(self):
         # Setup
         handler = WordFrequencyHandler()
         test_title = 'title_key'
@@ -43,7 +43,7 @@ class Test:
         actual = handler.__concatenate_extracted_from__(test_extracted_list)
         assert actual == expected
 
-    def test___concatenate_extracted_from__single_entry(self):
+    def test___concatenate_extracted_from__can_contain_single_entry(self):
         # Setup
         test_extracted_list = ['FromHere']
         handler = WordFrequencyHandler()
@@ -52,7 +52,7 @@ class Test:
         actual = handler.__concatenate_extracted_from__(test_extracted_list)
         assert actual == expected
 
-    def test___concatenate_extracted_from__multiple_entries(self):
+    def test___concatenate_extracted_from__can_contain_multiple_entries(self):
         # Setup
         test_extracted_list = ['FromHere', 'ViaThis', 'ToThere']
         handler = WordFrequencyHandler()
@@ -63,7 +63,7 @@ class Test:
 
 #
 
-    def test___convert_to_word_frequency_JSON_object__(self):
+    def test___convert_to_word_frequency_JSON_object___produces_json_object(self):
         # Setup
         handler = WordFrequencyHandler()
         test_title = 'title_key'
@@ -85,7 +85,7 @@ class Test:
 
 #
 
-    def test___reset__(self):
+    def test___reset__no_hard_reset_should_reset_wordcount_but_not_ready_for_sending(self):
         # Setup
         handler = WordFrequencyHandler()
         test_title = 'title_key'
@@ -106,7 +106,7 @@ class Test:
         assert len(handler.tf[test_title]) == 0
         assert len(handler.word_frequencies_ready_for_sending) > 0
 
-    def test___reset__hard_reset(self):
+    def test___reset__hard_reset_sets_length_to_zero(self):
         handler = WordFrequencyHandler()
         test_title = 'title_key'
         test_content = 'This is awesome content'
@@ -128,40 +128,7 @@ class Test:
 
 #
 
-    @xfail(strict=True, raises=EnvironmentError)
-    def test_send_pending_count(self):
-        # Setup
-        handler = WordFrequencyHandler()
-        test_title = 'title_key'
-        test_content = 'This is awesome content'
-        test_extracted_from = 'ThisWasExtractedFromHere'
-        back_up_file_name = 'thisistestfilefortestingtest_send_pending_count.json'
-        error_dir = ev.instance.get_value(ev.instance.ERROR_DIRECTORY, './')
-
-        handler.tf.process(test_title, test_content)
-
-        frequencyData = handler.tf[test_title]
-        frequencyObject = __WordFrequency__(test_title, test_extracted_from, frequencyData)
-        json_object = json.dumps(frequencyObject, cls=__WordFrequenctEncoder__, sort_keys=True, indent=4, ensure_ascii=False)
-        handler.word_frequencies_ready_for_sending.append(json_object)
-        # Check that something exists
-        counts = handler.tf[test_title]
-        assert len(counts) == 4
-        
-        handler.send_pending_counts(back_up_file_name, error_dir)
-
-        # Expect to fail because of a Connection error
-        # This triggers writing to a file
-        file_path = error_dir + handler.back_up_file_prefix + back_up_file_name
-        abs_path = os.path.abspath(file_path)
-        
-        assert os.path.exists(abs_path)
-
-        # Cleanup
-        os.remove(abs_path)
-#
-
-    def test___create_file_back_up__(self):
+    def test___create_file_back_up__can_craete_backup_file_with_content(self):
         # Setup
         error_dir = ev.instance.get_value(ev.instance.ERROR_DIRECTORY, './')
         test_file = 'thisIsSpecificForTest__create_file_back_up__.json'

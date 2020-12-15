@@ -98,7 +98,7 @@ class Test:
         assert extractor2.convert_spacy_label_to_namespace(gam_string) == "Game"
         assert extractor2.convert_spacy_label_to_namespace(for_string) == "FOR"
 
-    def test_process_article(self):
+    def test_process_article_should_return_correctly_labeled_triples(self):
         article = self.publication.articles[1]
 
         self.extractor.triples.clear()
@@ -115,7 +115,7 @@ class Test:
             generate_relation(RelationTypeConstants.KNOX_NAME),
             generate_literal("Aalborg")] in self.extractor.triples
     
-    def test_process_article_with_preprocessing(self):
+    def test_process_article_with_preprocessing_should_return_correctly_labeled_triples(self):
         article = self.publication.articles[1]
 
         self.extractor.triples.clear()
