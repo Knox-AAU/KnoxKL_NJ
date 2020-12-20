@@ -10,7 +10,7 @@ knox:
 
 #Class definitions
 knox:Person
-	rdf:type owl:Class ;
+	rdf:type owl:Class .
 	
 knox:Author
 	rdf:type owl:Class ;
