@@ -12,6 +12,36 @@ Requires Python 3.8.x (64-Bit)
     * Medium (46MB) - `python3 -m spacy download da_core_news_md`
     * REQUIRED - Large (546MB) - `python3 -m spacy download da_core_news_lg`
 
+### Adding Knox specific packages
+
+In order to install Knox specific packages in your projects, you must first add the knox package repository to your pip indexes. The index can either be specified on every `pip install`, or be configured in a configuration file.
+
+To simply specify an extra index on `pip install`, run the the following command:
+
+```
+pip install --extra-index-url https://repos.knox.aau.dk your packages here
+```
+
+To add the repostory to your repository indexes, paste the following into your pip configuration file
+
+```ini
+[global]
+extra-index-url = https://repos.knox.cs.aau.dk/
+```
+
+#### Cofiguration files (Windows)
+
+For Windows the following configuration files should be available. If they are not available you can create them.
+
+* `~/pip/pip.ini`
+* `./venv/pip.ini`
+
+#### Configuration files (Linux)
+
+For Linux the following configuration files should be available. If they are not available you can create them.
+
+* `~/.pip/pip.conf`
+* `./venv/pip.conf`
 
 ## Env variables
 In the root of the project a `.env` file should be created.
