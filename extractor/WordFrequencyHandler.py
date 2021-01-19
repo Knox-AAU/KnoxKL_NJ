@@ -6,6 +6,7 @@ import json
 from json import JSONEncoder
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 from rest.DataRequest import send_json_data_to_db
+import re
 
 class WordFrequencyHandler():
     """
@@ -26,6 +27,9 @@ class WordFrequencyHandler():
         
         Entry point for running word counting on a string og text
         """
+        articleContent = re.sub(r'\d+\s*', '', articleContent)
+        articleContent = re.sub(r'[.,\-\/:;!"\\@?\'¨~^#%&()<>[\]{}]','',articleContent)
+
         # Process the article text
         self.tf.process(articleTitle, remove_stop_words(articleContent))
 
@@ -70,6 +74,10 @@ class WordFrequencyHandler():
         frequencyData = self.tf[title]
         frequencyObject = __WordFrequency__(title, extracted_from, frequencyData)
         
+        if frequencyObject.articletitle == '':
+            print('Found empty title. Skipping', 'debug')
+            return
+
         json_object = json.dumps(frequencyObject, cls=__WordFrequenctEncoder__, sort_keys=True, indent=4, ensure_ascii=False)
 
         self.word_frequencies_ready_for_sending.append(json_object)
@@ -143,10 +151,14 @@ class __WordFrequency__():
     def __init__(self, title: str, extracted_from: str, frequencyData: List) -> None:
         self.words: List = []
         for word in frequencyData:
+            if word == '':
+                print('Found empty word, skipping...', 'debug')
+                continue
+
             count = frequencyData[word]
             self.words.append(__Word__(word,count))
 
-        self.articleTitle: str = title
+        self.articletitle: str = title
         self.filepath: str = extracted_from
         self.totalwordsinarticle: int = len(self.words)
 

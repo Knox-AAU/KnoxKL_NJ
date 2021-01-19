@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python
 from environment.EnvironmentConstants import EnvironmentVariables as ev
 ev()
 from turtleParser.turtleParser import RuntimeOntology as ro
