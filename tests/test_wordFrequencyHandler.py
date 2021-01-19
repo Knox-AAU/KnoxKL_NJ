@@ -80,7 +80,7 @@ class Test:
         json_string = handler.word_frequencies_ready_for_sending[0]
         
         json_object = json.loads(json_string)
-        assert json_object['articleTitle'] == test_title
+        assert json_object['articletitle'] == test_title
         assert json_object['totalwordsinarticle'] == distinct_word_count
 
 #
