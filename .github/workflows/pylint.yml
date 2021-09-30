@@ -21,9 +21,9 @@ jobs:
     - name: Install spaCy model
       run: |
         python3 -m spacy download da_core_news_lg  
-    - name: Analysing the code with pylint
-      run: |
-        pylint `ls -R|grep .py$|xargs`
+    #- name: Analysing the code with pylint
+    #  run: |
+     #   pylint `ls -R|grep .py$|xargs`
     - name: Run pytest 
       run: | 
         pytest 
