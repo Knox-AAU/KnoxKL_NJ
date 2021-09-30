@@ -18,12 +18,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install pylint
         pip install --extra-index-url https://repos.knox.cs.aau.dk/ -r requirements_dev.txt
+        
     - name: Install spaCy model
       run: |
         python3 -m spacy download da_core_news_lg  
-    #- name: Analysing the code with pylint
-    #  run: |
-     #   pylint `ls -R|grep .py$|xargs`
+        
     - name: Run pytest 
-      run: | 
-        pytest 
+      run: pytest 
+      
+    - name: Analysing the code with pylint
+      run: pylint `ls -R|grep .py$|xargs`
+
