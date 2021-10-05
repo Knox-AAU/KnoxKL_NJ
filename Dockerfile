@@ -1,3 +1,4 @@
+
 # syntax=docker/dockerfile:1
 # Base image
 FROM python:3.8-slim-buster
@@ -32,5 +33,7 @@ RUN python3 -m spacy download da_core_news_lg
 
 # Copy the source code to the work directory
 COPY --chown=appuser:root . .
+
+EXPOSE 8000
 
 CMD [ "python3", "app.py"]
